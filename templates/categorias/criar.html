@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+<!-- herda o layout principal -->
+
+{% block content %}
+
+<h2>Criar Categoria</h2>
+<!-- título da página -->
+
+<form method="POST">
+<!-- formulário enviado via POST -->
+
+{% csrf_token %}
+<!-- proteção contra ataque CSRF -->
+
+<div class="mb-3">
+
+<label>Nome da Categoria</label>
+<!-- rótulo do campo -->
+
+<input type="text" name="nome" class="form-control" required>
+<!-- campo de entrada para o nome da categoria -->
+
+</div>
+
+<button type="submit" class="btn btn-primary">
+Salvar
+</button>
+<!-- botão para enviar o formulário -->
+
+</form>
+
+{% endblock %}

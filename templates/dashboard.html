@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+<!-- faz essa página herdar o layout principal definido no arquivo base.html -->
+
+{% block content %}
+<!-- tudo que estiver dentro desse bloco será inserido dentro do base.html -->
+
+<h2 class="mb-4">Dashboard Financeiro</h2>
+<!-- título principal da página -->
+
+<div class="row">
+<!-- cria uma linha Bootstrap para organizar os cartões -->
+
+<div class="col-md-4">
+<!-- define uma coluna que ocupa 4 partes da tela em dispositivos médios -->
+
+<div class="card text-white bg-success mb-3">
+<!-- cria um cartão Bootstrap com fundo verde -->
+
+<div class="card-body">
+
+<h5 class="card-title">Saldo Total</h5>
+<!-- título do cartão -->
+
+<h3>R$ {{ saldo }}</h3>
+<!-- exibe o saldo total enviado pelo backend Django -->
+
+</div>
+
+</div>
+</div>
+
+
+<div class="col-md-4">
+<!-- coluna para o cartão de receitas -->
+
+<div class="card text-white bg-primary mb-3">
+<!-- cartão azul -->
+
+<div class="card-body">
+
+<h5 class="card-title">Receitas</h5>
+<!-- título do cartão -->
+
+<h3>R$ {{ receitas }}</h3>
+<!-- exibe o total de receitas vindo do backend -->
+
+</div>
+
+</div>
+</div>
+
+
+<div class="col-md-4">
+<!-- coluna para o cartão de despesas -->
+
+<div class="card text-white bg-danger mb-3">
+<!-- cartão vermelho -->
+
+<div class="card-body">
+
+<h5 class="card-title">Despesas</h5>
+<!-- título do cartão -->
+
+<h3>R$ {{ despesas }}</h3>
+<!-- exibe o total de despesas vindo do backend -->
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+
+<div class="card mt-4">
+<!-- cria um novo cartão para o gráfico financeiro -->
+
+<div class="card-body">
+
+<h5 class="card-title">Resumo Financeiro</h5>
+<!-- título do gráfico -->
+
+<canvas id="graficoFinanceiro"></canvas>
+<!-- elemento canvas onde o Chart.js irá desenhar o gráfico -->
+
+</div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- importa a biblioteca Chart.js usada para criar gráficos interativos -->
+
+<script>
+
+const ctx = document.getElementById('graficoFinanceiro').getContext('2d');
+// seleciona o elemento canvas onde o gráfico será renderizado
+
+const grafico = new Chart(ctx, {
+
+type: 'bar',
+// define que o gráfico será do tipo barra
+
+data: {
+
+labels: ['Receitas', 'Despesas'],
+// define os rótulos do gráfico
+
+datasets: [{
+
+label: 'Resumo Financeiro',
+// legenda do gráfico
+
+data: [{{ receitas }}, {{ despesas }}],
+// valores enviados pelo backend Django
+
+backgroundColor: [
+'rgba(54, 162, 235, 0.7)',
+// cor da barra de receitas
+
+'rgba(255, 99, 132, 0.7)'
+// cor da barra de despesas
+],
+
+borderColor: [
+'rgba(54, 162, 235, 1)',
+'rgba(255, 99, 132, 1)'
+],
+
+borderWidth: 1
+// espessura da borda do gráfico
+
+}]
+
+},
+
+options: {
+
+responsive: true,
+// torna o gráfico responsivo em diferentes tamanhos de tela
+
+scales: {
+
+y: {
+
+beginAtZero: true
+// faz o eixo Y começar do zero
+
+}
+
+}
+
+}
+
+});
+
+</script>
+
+{% endblock %}
