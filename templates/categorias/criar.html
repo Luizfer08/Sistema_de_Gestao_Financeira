@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
-<!-- herda o layout principal -->
+<!-- herda o layout principal do sistema -->
 
 {% block content %}
+<!-- conteúdo da página -->
 
-<h2>Criar Categoria</h2>
+<h2 class="mb-4">Nova Categoria</h2>
 <!-- título da página -->
 
 <form method="POST">
@@ -14,18 +15,24 @@
 
 <div class="mb-3">
 
-<label>Nome da Categoria</label>
+<label class="form-label">Nome da Categoria</label>
 <!-- rótulo do campo -->
 
-<input type="text" name="nome" class="form-control" required>
-<!-- campo de entrada para o nome da categoria -->
+<input type="text" name="nome" class="form-control" placeholder="Ex: Alimentação, Salário..." required>
+<!-- campo para digitar o nome da categoria -->
 
 </div>
 
-<button type="submit" class="btn btn-primary">
-Salvar
+
+<button type="submit" class="btn btn-success">
+Salvar Categoria
 </button>
-<!-- botão para enviar o formulário -->
+<!-- botão de envio -->
+
+<a href="/categorias" class="btn btn-secondary">
+Voltar
+</a>
+<!-- botão para voltar à listagem -->
 
 </form>
 

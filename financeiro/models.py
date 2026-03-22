@@ -33,6 +33,12 @@ class Receita(models.Model):  # cria a tabela de receitas (dinheiro que entra)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)  
     # relaciona a receita ao usuário que cadastrou
 
+    recorrente = models.BooleanField(default=False)
+    # define se a receita é recorrente (ex: salário mensal)
+
+    data_fim = models.DateField(null=True, blank=True)
+    # define até quando a recorrência acontece (opcional)    
+
     def __str__(self):
         return self.descricao
 
@@ -53,6 +59,12 @@ class Despesa(models.Model):  # cria a tabela de despesas (dinheiro que sai)
 
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)  
     # usuário responsável por essa despesa
+
+    recorrente = models.BooleanField(default=False)
+    # define se a despesa é recorrente (ex: Netflix, aluguel)
+
+    data_fim = models.DateField(null=True, blank=True)
+    # data limite da recorrência
 
     def __str__(self):
         return self.descricao

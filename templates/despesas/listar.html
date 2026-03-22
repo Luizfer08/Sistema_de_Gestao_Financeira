@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Despesas</h2>
+
+<a href="/despesas/criar" class="btn btn-danger mb-3">
+Nova Despesa
+</a>
+
+<table class="table table-striped">
+
+<thead>
+<tr>
+<th>Descrição</th>
+<th>Valor</th>
+<th>Data</th>
+<th>Categoria</th>
+<th>Recorrente</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for despesa in despesas %}
+
+<tr>
+
+<td>{{ despesa.descricao }}</td>
+
+<td>R$ {{ despesa.valor }}</td>
+
+<td>{{ despesa.data }}</td>
+
+<td>{{ despesa.categoria.nome }}</td>
+
+<td>
+{% if despesa.recorrente %}
+Sim
+{% else %}
+Não
+{% endif %}
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% endblock %}

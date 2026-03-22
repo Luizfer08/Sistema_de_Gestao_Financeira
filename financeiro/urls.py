@@ -14,4 +14,12 @@ urlpatterns = [
     path('categorias/criar/', views.criar_categoria, name='criar_categoria'),
     # rota para criar uma nova categoria
 
+    path('receitas/criar/', views.criar_receita, name='criar_receita'),
+
+    path('despesas/criar/', views.criar_despesa, name='criar_despesa'),
+
+    path('receitas/', views.listar_receitas, name='listar_receitas'),
+    
+    path('despesas/', views.listar_despesas, name='listar_despesas'),
+
 ]
