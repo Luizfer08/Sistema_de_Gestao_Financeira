@@ -21,6 +21,7 @@ Nova Receita
 <th>Data</th>
 <th>Categoria</th>
 <th>Recorrente</th>
+<th>Ações</th>
 </tr>
 
 </thead>
@@ -51,6 +52,18 @@ Não
 {% endif %}
 </td>
 <!-- mostra se é recorrente -->
+
+<td>
+
+<a href="/receitas/editar/{{ receita.id }}" class="btn btn-warning btn-sm">
+Editar
+</a>
+
+<a href="/receitas/excluir/{{ receita.id }}" class="btn btn-danger btn-sm">
+Excluir
+</a>
+
+</td>
 
 </tr>
 

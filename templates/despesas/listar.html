@@ -17,6 +17,7 @@ Nova Despesa
 <th>Data</th>
 <th>Categoria</th>
 <th>Recorrente</th>
+<th>Ações</th>
 </tr>
 </thead>
 
@@ -40,6 +41,18 @@ Sim
 {% else %}
 Não
 {% endif %}
+</td>
+
+<td>
+
+<a href="/despesas/editar/{{ despesa.id }}" class="btn btn-warning btn-sm">
+Editar
+</a>
+
+<a href="/despesas/excluir/{{ despesa.id }}" class="btn btn-danger btn-sm">
+Excluir
+</a>
+
 </td>
 
 </tr>

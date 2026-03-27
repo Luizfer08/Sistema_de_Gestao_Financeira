@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+<!-- herda o layout principal -->
+
+{% block content %}
+
+<h2 class="mb-4">Editar Despesa</h2>
+<!-- título da página -->
+
+<form method="POST">
+{% csrf_token %}
+<!-- proteção contra CSRF -->
+
+<div class="mb-3">
+
+<label class="form-label">Descrição</label>
+<input type="text" name="descricao" value="{{ despesa.descricao }}" class="form-control" required>
+<!-- campo descrição já preenchido -->
+
+</div>
+
+
+<div class="mb-3">
+
+<label class="form-label">Valor</label>
+<input type="number" step="0.01" name="valor" value="{{ despesa.valor }}" class="form-control" required>
+<!-- valor da despesa -->
+
+</div>
+
+
+<div class="mb-3">
+
+<label class="form-label">Data</label>
+<input type="date" name="data" value="{{ despesa.data|date:'Y-m-d' }}" class="form-control" required>
+<!-- data formatada corretamente -->
+
+</div>
+
+
+<div class="mb-3">
+
+<label class="form-label">Categoria</label>
+<select name="categoria" class="form-control">
+
+{% for categoria in categorias %}
+
+<option value="{{ categoria.id }}" {% if categoria.id == despesa.categoria.id %}selected{% endif %}>
+{{ categoria.nome }}
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+<!-- RECORRÊNCIA -->
+<div class="form-check mb-3">
+
+<input type="checkbox" name="recorrente" class="form-check-input"
+{% if despesa.recorrente %}checked{% endif %}>
+<!-- marca se já era recorrente -->
+
+<label class="form-check-label">Despesa recorrente</label>
+
+</div>
+
+
+<div class="mb-3">
+
+<label class="form-label">Data fim (opcional)</label>
+<input type="date" name="data_fim" value="{{ despesa.data_fim|date:'Y-m-d' }}" class="form-control">
+<!-- mantém data fim se existir -->
+
+</div>
+
+<!-- BOTÕES -->
+<button type="submit" class="btn btn-warning">
+Salvar Alterações
+</button>
+<!-- botão principal -->
+
+<a href="/despesas" class="btn btn-secondary">
+Cancelar
+</a>
+<!-- voltar para listagem -->
+
+</form>
+
+{% endblock %}

@@ -1,177 +1,253 @@
-from django.shortcuts import render, redirect  # renderiza páginas e redireciona
+from django.shortcuts import render, redirect, get_object_or_404
+# funções principais
 
-from .models import Receita, Despesa, Categoria  # importa os models
+from django.contrib.auth.decorators import login_required
+# protege rotas
 
-from django.db.models import Sum  # permite somar valores
+from django.contrib.auth import authenticate, login
+# login
 
-from datetime import date  # trabalhar com datas
+from django.contrib.auth.models import User
+# usuário
+
+from django.http import JsonResponse
+# resposta JSON
+
+from django.db.models import Sum
+# soma valores
+
+from datetime import date
+
+from .models import Receita, Despesa, Categoria, Perfil
+# seus models
 
 
+# =============================
+# HOME
+# =============================
+def home(request):
+
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
+    return render(request, 'home.html')
+
+
+# =============================
+# DASHBOARD
+# =============================
+@login_required
 def dashboard(request):
-    # função principal do dashboard
 
-    hoje = date.today()
-    # pega a data atual
+    # 🔐 LGPD
+    if not request.user.perfil.aceitou_termos:
+        return redirect('home')
 
-    # SALDO ATUAL
-    total_receitas = Receita.objects.filter(usuario=request.user).aggregate(Sum('valor'))['valor__sum'] or 0
-    # soma todas receitas
+    receitas = Receita.objects.filter(usuario=request.user)
+    despesas = Despesa.objects.filter(usuario=request.user)
 
-    total_despesas = Despesa.objects.filter(usuario=request.user).aggregate(Sum('valor'))['valor__sum'] or 0
-    # soma todas despesas
+    total_receitas = receitas.aggregate(Sum('valor'))['valor__sum'] or 0
+    total_despesas = despesas.aggregate(Sum('valor'))['valor__sum'] or 0
 
-    saldo_atual = total_receitas - total_despesas
-    # calcula saldo atual
+    saldo = total_receitas - total_despesas
 
+    # previsão
+    receitas_futuras = receitas.filter(recorrente=True).aggregate(Sum('valor'))['valor__sum'] or 0
+    despesas_futuras = despesas.filter(recorrente=True).aggregate(Sum('valor'))['valor__sum'] or 0
 
-    # PREVISÃO
-    receitas_futuras = Receita.objects.filter(
-        usuario=request.user,
-        recorrente=True
-    ).aggregate(Sum('valor'))['valor__sum'] or 0
-    # soma receitas recorrentes
+    saldo_futuro = saldo + receitas_futuras - despesas_futuras
 
-    despesas_futuras = Despesa.objects.filter(
-        usuario=request.user,
-        recorrente=True
-    ).aggregate(Sum('valor'))['valor__sum'] or 0
-    # soma despesas recorrentes
-
-    saldo_futuro = saldo_atual + receitas_futuras - despesas_futuras
-    # cálculo final
-
-
-    # ALERTAS
-    alerta = None
+    # alerta
+    alerta = ""
+    alerta_tipo = ""
 
     if saldo_futuro < 0:
-        alerta = "⚠️ Atenção: Seu saldo futuro será negativo."
-
-    elif despesas_futuras > receitas_futuras:
-        alerta = "⚠️ Cuidado: Suas despesas são maiores que suas receitas."
-
-    elif saldo_futuro > 0:
-        alerta = "💡 Você terá saldo positivo. Considere investir."
-
-   
-    # CONTEXTO
-    contexto = {
-        'receitas': total_receitas,
-        'despesas': total_despesas,
-        'saldo': saldo_atual,
-        'saldo_futuro': saldo_futuro,
-        'alerta': alerta
-    }
-
-    return render(request, 'dashboard.html', contexto)
-
-
-# LISTAR CATEGORIAS
-def listar_categorias(request):
-    # busca categorias do usuário
+        alerta = "Saldo negativo previsto"
+        alerta_tipo = "danger"
+    elif saldo_futuro < 100:
+        alerta = "Saldo baixo"
+        alerta_tipo = "warning"
+    else:
+        alerta = "Saldo saudável"
+        alerta_tipo = "success"
 
     categorias = Categoria.objects.filter(usuario=request.user)
 
+    return render(request, 'dashboard.html', {
+        'saldo': saldo,
+        'receitas': total_receitas,
+        'despesas': total_despesas,
+        'saldo_futuro': saldo_futuro,
+        'alerta': alerta,
+        'alerta_tipo': alerta_tipo,
+        'categorias': categorias
+    })
+
+
+# =============================
+# RECEITAS
+# =============================
+@login_required
+def listar_receitas(request):
+
+    receitas = Receita.objects.filter(usuario=request.user)
+    return render(request, 'receitas/listar.html', {'receitas': receitas})
+
+
+@login_required
+def criar_receita(request):
+
+    if request.method == 'POST':
+        Receita.objects.create(
+            usuario=request.user,
+            nome=request.POST.get('nome'),
+            valor=request.POST.get('valor'),
+            recorrente=True if request.POST.get('recorrente') else False
+        )
+        return redirect('listar_receitas')
+
+    return render(request, 'receitas/criar.html')
+
+
+@login_required
+def editar_receita(request, id):
+
+    receita = get_object_or_404(Receita, id=id, usuario=request.user)
+
+    if request.method == 'POST':
+        receita.nome = request.POST.get('nome')
+        receita.valor = request.POST.get('valor')
+        receita.save()
+        return redirect('listar_receitas')
+
+    return render(request, 'receitas/editar.html', {'receita': receita})
+
+
+@login_required
+def excluir_receita(request, id):
+
+    receita = get_object_or_404(Receita, id=id, usuario=request.user)
+    receita.delete()
+    return redirect('listar_receitas')
+
+
+# =============================
+# DESPESAS
+# =============================
+@login_required
+def listar_despesas(request):
+
+    despesas = Despesa.objects.filter(usuario=request.user)
+    return render(request, 'despesas/listar.html', {'despesas': despesas})
+
+
+@login_required
+def criar_despesa(request):
+
+    if request.method == 'POST':
+        Despesa.objects.create(
+            usuario=request.user,
+            nome=request.POST.get('nome'),
+            valor=request.POST.get('valor'),
+            recorrente=True if request.POST.get('recorrente') else False
+        )
+        return redirect('listar_despesas')
+
+    return render(request, 'despesas/criar.html')
+
+
+@login_required
+def editar_despesa(request, id):
+
+    despesa = get_object_or_404(Despesa, id=id, usuario=request.user)
+
+    if request.method == 'POST':
+        despesa.nome = request.POST.get('nome')
+        despesa.valor = request.POST.get('valor')
+        despesa.save()
+        return redirect('listar_despesas')
+
+    return render(request, 'despesas/editar.html', {'despesa': despesa})
+
+
+@login_required
+def excluir_despesa(request, id):
+
+    despesa = get_object_or_404(Despesa, id=id, usuario=request.user)
+    despesa.delete()
+    return redirect('listar_despesas')
+
+
+# =============================
+# CATEGORIAS
+# =============================
+@login_required
+def listar_categorias(request):
+
+    categorias = Categoria.objects.filter(usuario=request.user)
     return render(request, 'categorias/listar.html', {'categorias': categorias})
 
 
-# CRIAR CATEGORIA
+@login_required
 def criar_categoria(request):
 
     if request.method == 'POST':
-        # pega dados do formulário
-
-        nome = request.POST.get('nome')
-
         Categoria.objects.create(
-            nome=nome,
-            usuario=request.user
+            usuario=request.user,
+            nome=request.POST.get('nome')
         )
-        # salva no banco
-
         return redirect('listar_categorias')
 
     return render(request, 'categorias/criar.html')
 
-def criar_receita(request):
 
-    categorias = Categoria.objects.filter(usuario=request.user)
-    # busca categorias do usuário
-
-    if request.method == 'POST':
-
-        descricao = request.POST.get('descricao')
-        valor = request.POST.get('valor')
-        data = request.POST.get('data')
-        categoria_id = request.POST.get('categoria')
-
-        recorrente = request.POST.get('recorrente') == 'on'
-        # verifica se checkbox foi marcado
-
-        data_fim = request.POST.get('data_fim') or None
-        # pega data fim (opcional)
-
-        Receita.objects.create(
-            descricao=descricao,
-            valor=valor,
-            data=data,
-            categoria_id=categoria_id,
-            usuario=request.user,
-            recorrente=recorrente,
-            data_fim=data_fim
-        )
-
-        return redirect('dashboard')
-
-    return render(request, 'receitas/criar.html', {'categorias': categorias})
-
-def criar_despesa(request):
-
-    categorias = Categoria.objects.filter(usuario=request.user)
-    # busca categorias do usuário
+# =============================
+# API LOGIN (AJAX)
+# =============================
+def api_login(request):
 
     if request.method == 'POST':
 
-        descricao = request.POST.get('descricao')
-        valor = request.POST.get('valor')
-        data = request.POST.get('data')
-        categoria_id = request.POST.get('categoria')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-        recorrente = request.POST.get('recorrente') == 'on'
-        # verifica se marcou recorrente
+        user = authenticate(request, username=username, password=password)
 
-        data_fim = request.POST.get('data_fim') or None
-        # pega data fim
+        if user:
+            login(request, user)
+            return JsonResponse({'success': True})
 
-        Despesa.objects.create(
-            descricao=descricao,
-            valor=valor,
-            data=data,
-            categoria_id=categoria_id,
-            usuario=request.user,
-            recorrente=recorrente,
-            data_fim=data_fim
+        return JsonResponse({'success': False, 'error': 'Usuário ou senha inválidos'})
+
+
+# =============================
+# API CADASTRO (AJAX + LGPD)
+# =============================
+def api_cadastro(request):
+
+    if request.method == 'POST':
+
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        aceitou = request.POST.get('aceitou')
+
+        if not aceitou:
+            return JsonResponse({'success': False, 'error': 'Aceite os termos'})
+
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'success': False, 'error': 'Usuário já existe'})
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
         )
-        # salva no banco
 
-        return redirect('dashboard')
+        perfil = Perfil.objects.get(user=user)
+        perfil.aceitou_termos = True
+        perfil.save()
 
-    return render(request, 'despesas/criar.html', {'categorias': categorias})
+        login(request, user)
 
-def listar_receitas(request):
-    # busca todas as receitas do usuário logado
-
-    receitas = Receita.objects.filter(usuario=request.user)
-    # filtra receitas pelo usuário
-
-    return render(request, 'receitas/listar.html', {'receitas': receitas})
-    # envia os dados para o template
-
-def listar_despesas(request):
-    # busca todas as despesas do usuário logado
-
-    despesas = Despesa.objects.filter(usuario=request.user)
-    # filtra despesas pelo usuário
-
-    return render(request, 'despesas/listar.html', {'despesas': despesas})
-    # envia os dados para o template
+        return JsonResponse({'success': True})

@@ -2,6 +2,10 @@ from django.db import models  # importa o módulo de modelos do Django, usado pa
 
 from django.contrib.auth.models import User  # importa o modelo de usuário padrão do Django para relacionar os dados financeiros ao usuário logado
 
+from django.db.models.signals import post_save
+
+from django.dispatch import receiver
+
 
 class Categoria(models.Model):  # cria a tabela Categoria no banco de dados
 
@@ -68,3 +72,13 @@ class Despesa(models.Model):  # cria a tabela de despesas (dinheiro que sai)
 
     def __str__(self):
         return self.descricao
+    
+class Perfil(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    aceitou_termos = models.BooleanField(default=False)
+
+
+@receiver(post_save, sender=User)
+def criar_perfil(sender, instance, created, **kwargs):
+    if created:
+        Perfil.objects.create(user=instance)
