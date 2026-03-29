@@ -1,19 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-<<<<<<< HEAD
 # render → exibe templates
 # redirect → redireciona
 # get_object_or_404 → busca objeto ou retorna 404
 
 from django.contrib.auth.decorators import login_required
 # protege rotas (usuário precisa estar logado)
-=======
-# render → carrega template
-# redirect → redireciona
-# get_object_or_404 → busca objeto ou retorna erro 404
-
-from django.contrib.auth.decorators import login_required
-# protege rotas (precisa estar logado)
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 
 from django.contrib.auth import authenticate, login
 # funções de autenticação
@@ -22,16 +13,11 @@ from django.contrib.auth.models import User
 # modelo padrão de usuário
 
 from django.http import JsonResponse
-<<<<<<< HEAD
 # resposta JSON (usado no AJAX)
-=======
-# resposta em JSON (usado em AJAX)
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 
 from django.db.models import Sum
 # usado para somar valores
 
-<<<<<<< HEAD
 from django.views.decorators.csrf import ensure_csrf_cookie
 # GARANTE QUE O COOKIE CSRF SEJA CRIADO
 
@@ -52,20 +38,12 @@ from django.db.models import Sum
 def login_view(request):
     # GARANTE QUE O CSRF FUNCIONE
     return render(request, 'financeiro/autenticacao/login.html')
-=======
-from .models import Receita, Despesa, Categoria, Perfil
-# importa seus models
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 
 
 # HOME
 def home(request):
-<<<<<<< HEAD
     if request.user.is_authenticated:
         return redirect('financeiro:dashboard')
-=======
-    # renderiza página inicial
->>>>>>> 41671f439d7288a09add963222182e842cab175e
     return render(request, 'financeiro/home.html')
 
 
@@ -73,7 +51,6 @@ def home(request):
 @login_required
 def dashboard(request):
 
-<<<<<<< HEAD
     hoje = date.today()
 
     # SALDO ATUAL 
@@ -115,40 +92,12 @@ def dashboard(request):
         'receitas': total_receitas,
         'despesas': total_despesas,
         'data_filtro': data_filtro
-=======
-    # garante que o usuário tem perfil
-    perfil, created = Perfil.objects.get_or_create(user=request.user)
-
-    # LGPD → verifica se aceitou termos
-    if not perfil.aceitou_termos:
-        return redirect('financeiro:home')
-
-    # busca dados do usuário logado
-    receitas = Receita.objects.filter(usuario=request.user)
-    despesas = Despesa.objects.filter(usuario=request.user)
-
-    # soma receitas e despesas
-    total_receitas = receitas.aggregate(Sum('valor'))['valor__sum'] or 0
-    total_despesas = despesas.aggregate(Sum('valor'))['valor__sum'] or 0
-
-    # calcula saldo
-    saldo = total_receitas - total_despesas
-
-    return render(request, 'financeiro/dashboard.html', {
-        'saldo': saldo,
-        'receitas': total_receitas,
-        'despesas': total_despesas
->>>>>>> 41671f439d7288a09add963222182e842cab175e
     })
 
 
 # RECEITAS
 @login_required
 def listar_receitas(request):
-<<<<<<< HEAD
-=======
-
->>>>>>> 41671f439d7288a09add963222182e842cab175e
     receitas = Receita.objects.filter(usuario=request.user)
 
     return render(request, 'financeiro/receitas/listar.html', {
@@ -167,10 +116,7 @@ def criar_receita(request):
             usuario=request.user,
             descricao=request.POST.get('descricao'),
             valor=request.POST.get('valor'),
-<<<<<<< HEAD
             data=request.POST.get('data'),
-=======
->>>>>>> 41671f439d7288a09add963222182e842cab175e
             categoria_id=request.POST.get('categoria'),
             recorrente=True if request.POST.get('recorrente') else False
         )
@@ -186,36 +132,23 @@ def criar_receita(request):
 def editar_receita(request, id):
 
     receita = get_object_or_404(Receita, id=id, usuario=request.user)
-<<<<<<< HEAD
     categorias = Categoria.objects.filter(usuario=request.user) 
-=======
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 
     if request.method == 'POST':
         receita.descricao = request.POST.get('descricao')
         receita.valor = request.POST.get('valor')
-<<<<<<< HEAD
         receita.data = request.POST.get('data')
         receita.categoria_id = request.POST.get('categoria')
-=======
->>>>>>> 41671f439d7288a09add963222182e842cab175e
         receita.save()
 
         return redirect('financeiro:listar_receitas')
 
     return render(request, 'financeiro/receitas/editar.html', {
-<<<<<<< HEAD
         'receita': receita,
         'categorias': categorias
     })
 
 @require_POST
-=======
-        'receita': receita
-    })
-
-
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 @login_required
 def excluir_receita(request, id):
 
@@ -247,10 +180,7 @@ def criar_despesa(request):
             usuario=request.user,
             descricao=request.POST.get('descricao'),
             valor=request.POST.get('valor'),
-<<<<<<< HEAD
             data=request.POST.get('data'),
-=======
->>>>>>> 41671f439d7288a09add963222182e842cab175e
             categoria_id=request.POST.get('categoria'),
             recorrente=True if request.POST.get('recorrente') else False
         )
@@ -266,36 +196,23 @@ def criar_despesa(request):
 def editar_despesa(request, id):
 
     despesa = get_object_or_404(Despesa, id=id, usuario=request.user)
-<<<<<<< HEAD
     categorias = Categoria.objects.filter(usuario=request.user)
-=======
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 
     if request.method == 'POST':
         despesa.descricao = request.POST.get('descricao')
         despesa.valor = request.POST.get('valor')
-<<<<<<< HEAD
         despesa.data = request.POST.get('data')
         despesa.categoria_id = request.POST.get('categoria')
-=======
->>>>>>> 41671f439d7288a09add963222182e842cab175e
         despesa.save()
 
         return redirect('financeiro:listar_despesas')
 
     return render(request, 'financeiro/despesas/editar.html', {
-<<<<<<< HEAD
         'despesa': despesa,
         'categorias': categorias
     })
 
 @require_POST
-=======
-        'despesa': despesa
-    })
-
-
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 @login_required
 def excluir_despesa(request, id):
 
@@ -304,10 +221,6 @@ def excluir_despesa(request, id):
 
     return redirect('financeiro:listar_despesas')
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 # CATEGORIAS
 @login_required
 def listar_categorias(request):
@@ -334,12 +247,8 @@ def criar_categoria(request):
     return render(request, 'financeiro/categorias/criar.html')
 
 
-<<<<<<< HEAD
 # LOGIN (API AJAX)
 @require_POST
-=======
-# LOGIN (API)
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 def api_login(request):
 
     if request.method == 'POST':
@@ -357,10 +266,7 @@ def api_login(request):
 
 
 # CADASTRO (API)
-<<<<<<< HEAD
 @require_POST
-=======
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 def api_cadastro(request):
 
     if request.method == 'POST':
@@ -382,17 +288,12 @@ def api_cadastro(request):
             password=password
         )
 
-<<<<<<< HEAD
         perfil, created = Perfil.objects.get_or_create(user=user)
-=======
-        perfil = Perfil.objects.get(user=user)
->>>>>>> 41671f439d7288a09add963222182e842cab175e
         perfil.aceitou_termos = True
         perfil.save()
 
         login(request, user)
 
-<<<<<<< HEAD
         return JsonResponse({'success': True})
     
 @require_POST
@@ -423,6 +324,3 @@ def excluir_categoria(request, id):
     categoria.delete()
 
     return redirect('financeiro:listar_categorias')
-=======
-        return JsonResponse({'success': True})
->>>>>>> 41671f439d7288a09add963222182e842cab175e

@@ -4,19 +4,9 @@ from django.contrib.auth import views as auth_views  # login/logout padrão
 from financeiro import views  # importa suas views
 
 
-<<<<<<< HEAD
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('financeiro.urls'))
-=======
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    # rota do admin do Django
-
-    path('', include('financeiro.urls')),
-    # TODAS as rotas do app financeiro começam aqui
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 ]
 
 path('resetar-senha/',

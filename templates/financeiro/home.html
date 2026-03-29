@@ -1,49 +1,8 @@
-<<<<<<< HEAD
 {% extends 'financeiro/base.html' %}
 
 {% block content %}
 
 <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
-=======
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-
-<meta charset="UTF-8">
-<title>Sistema Financeiro</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<style>
-
-body {
-    background: linear-gradient(135deg, #396afc, #2948ff);
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* CARD */
-.card-auth {
-    background: white;
-    padding: 40px;
-    border-radius: 15px;
-    width: 380px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-/* ESCONDER FORM */
-.hidden {
-    display: none;
-}
-
-</style>
-
-</head>
-
-<body>
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 
 <div class="card-auth">
 
@@ -51,18 +10,11 @@ body {
 
 <div id="mensagem"></div>
 
-<<<<<<< HEAD
 <!-- LOGIN -->
 <form id="formLogin">
 
 {% csrf_token %}
 
-=======
-
-<!-- LOGIN -->
-<form id="formLogin">
-
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 <input type="text" name="username" class="form-control mb-2" placeholder="Usuário" required>
 
 <input type="password" name="password" class="form-control mb-2" placeholder="Senha" required>
@@ -75,7 +27,6 @@ body {
 <!-- CADASTRO -->
 <form id="formCadastro" class="hidden">
 
-<<<<<<< HEAD
 {% csrf_token %}
 
 <input type="text" name="username" class="form-control mb-2" placeholder="Usuário" required>
@@ -85,19 +36,6 @@ body {
 <input type="password" name="password" class="form-control mb-2" placeholder="Senha" required>
 
 <!-- CEP -->
-=======
-<!-- usuário -->
-<input type="text" name="username" class="form-control mb-2" placeholder="Usuário" required>
-
-<!-- email -->
-<input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
-
-<!-- senha -->
-<input type="password" name="password" class="form-control mb-2" placeholder="Senha" required>
-
-
-<!-- VIA CEP  -->
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 <input type="text" id="cep" class="form-control mb-2" placeholder="CEP">
 
 <input type="text" id="endereco" class="form-control mb-2" placeholder="Endereço">
@@ -106,11 +44,7 @@ body {
 
 <input type="text" id="estado" class="form-control mb-2" placeholder="Estado">
 
-<<<<<<< HEAD
 <!-- LGPD -->
-=======
-<!-- LGPD (CHECKBOX) -->
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 <div class="form-check text-start mb-2">
     <input class="form-check-input" type="checkbox" id="termos">
     <label class="form-check-label">
@@ -122,7 +56,6 @@ body {
 
 </form>
 
-<<<<<<< HEAD
 <!-- TOGGLE -->
 <p class="text-center mt-3">
 <a href="#" onclick="toggleForm()" id="toggleText">
@@ -155,38 +88,11 @@ function getCSRFToken(){
 }
 
 // elementos
-=======
-
-<!-- BOTÃO TROCA -->
-<p class="text-center mt-3">
-
-<a href="#" onclick="toggleForm()" id="toggleText">
-Criar conta
-</a>
-
-</p>
-
-</div>
-
-<script>
-
-
-// CSRF
-function getCSRFToken() {
-    return document.cookie.split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        ?.split('=')[1];
-}
-
-
-// ELEMENTOS
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 const loginForm = document.getElementById("formLogin");
 const cadastroForm = document.getElementById("formCadastro");
 const mensagem = document.getElementById("mensagem");
 const toggleText = document.getElementById("toggleText");
 
-<<<<<<< HEAD
 // toggle
 function toggleForm(){
     loginForm.classList.toggle("hidden");
@@ -197,23 +103,6 @@ function toggleForm(){
         : "Criar conta";
 }
 
-=======
-
-// TOGGLE LOGIN/CADASTRO
-function toggleForm(){
-
-    loginForm.classList.toggle("hidden");
-    cadastroForm.classList.toggle("hidden");
-
-    if(loginForm.classList.contains("hidden")){
-        toggleText.innerText = "Já tenho conta";
-    } else {
-        toggleText.innerText = "Criar conta";
-    }
-}
-
-
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 // LOGIN
 loginForm.addEventListener("submit", function(e){
 
@@ -221,30 +110,19 @@ loginForm.addEventListener("submit", function(e){
 
     const formData = new FormData(loginForm);
 
-<<<<<<< HEAD
     fetch("{% url 'financeiro:api_login' %}", {
-=======
-    fetch("/api/login/", {
->>>>>>> 41671f439d7288a09add963222182e842cab175e
         method: "POST",
         headers: {
             "X-CSRFToken": getCSRFToken()
         },
-<<<<<<< HEAD
         credentials: "same-origin",
-=======
->>>>>>> 41671f439d7288a09add963222182e842cab175e
         body: formData
     })
     .then(res => res.json())
     .then(data => {
 
         if(data.success){
-<<<<<<< HEAD
             window.location.href = "{% url 'financeiro:dashboard' %}";
-=======
-            window.location.href = "financeiro/dashboard/";
->>>>>>> 41671f439d7288a09add963222182e842cab175e
         } else {
             mensagem.innerHTML = `<div class="alert alert-danger">Login inválido</div>`;
         }
@@ -253,10 +131,6 @@ loginForm.addEventListener("submit", function(e){
 
 });
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 // CADASTRO
 cadastroForm.addEventListener("submit", function(e){
 
@@ -264,10 +138,6 @@ cadastroForm.addEventListener("submit", function(e){
 
     const termos = document.getElementById("termos");
 
-<<<<<<< HEAD
-=======
-    // valida LGPD
->>>>>>> 41671f439d7288a09add963222182e842cab175e
     if(!termos.checked){
         mensagem.innerHTML = `<div class="alert alert-danger">Aceite os termos</div>`;
         return;
@@ -276,30 +146,19 @@ cadastroForm.addEventListener("submit", function(e){
     const formData = new FormData(cadastroForm);
     formData.append("aceitou", true);
 
-<<<<<<< HEAD
     fetch("{% url 'financeiro:api_cadastro' %}", {
-=======
-    fetch("/api/cadastro/", {
->>>>>>> 41671f439d7288a09add963222182e842cab175e
         method: "POST",
         headers: {
             "X-CSRFToken": getCSRFToken()
         },
-<<<<<<< HEAD
         credentials: "same-origin",
-=======
->>>>>>> 41671f439d7288a09add963222182e842cab175e
         body: formData
     })
     .then(res => res.json())
     .then(data => {
 
         if(data.success){
-<<<<<<< HEAD
             window.location.href = "{% url 'financeiro:dashboard' %}";
-=======
-            window.location.href = "financeiro/dashboard/";
->>>>>>> 41671f439d7288a09add963222182e842cab175e
         } else {
             mensagem.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
         }
@@ -308,10 +167,7 @@ cadastroForm.addEventListener("submit", function(e){
 
 });
 
-<<<<<<< HEAD
 // CEP
-=======
->>>>>>> 41671f439d7288a09add963222182e842cab175e
 document.getElementById('cep').addEventListener('blur', function(){
 
     const cep = this.value;
@@ -330,10 +186,4 @@ document.getElementById('cep').addEventListener('blur', function(){
 
 </script>
 
-<<<<<<< HEAD
 {% endblock %}
-=======
-</body>
-
-</html>
->>>>>>> 41671f439d7288a09add963222182e842cab175e
