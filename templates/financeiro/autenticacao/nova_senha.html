@@ -1,0 +1,18 @@
+{% extends 'financeiro/base.html' %}
+
+{% block content %}
+
+<h3>Definir nova senha</h3>
+
+<form method="POST">
+{% csrf_token %}
+
+{{ form.as_p }}
+
+<button class="btn btn-success">
+Salvar nova senha
+</button>
+
+</form>
+
+{% endblock %}

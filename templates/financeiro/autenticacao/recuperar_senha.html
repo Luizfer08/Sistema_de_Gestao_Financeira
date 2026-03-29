@@ -1,0 +1,18 @@
+{% extends 'financeiro/base.html' %}
+
+{% block content %}
+
+<h3>Recuperar Senha</h3>
+
+<form method="POST">
+{% csrf_token %}
+
+<input type="email" name="email" class="form-control mb-3" placeholder="Digite seu email">
+
+<button class="btn btn-primary">
+Enviar link de recuperação
+</button>
+
+</form>
+
+{% endblock %}

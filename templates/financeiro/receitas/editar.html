@@ -1,0 +1,40 @@
+{% extends 'financeiro/base.html' %}
+
+{% block content %}
+
+<h2>Editar Receita</h2>
+
+<form method="POST">
+{% csrf_token %}
+
+<input type="text" name="descricao" value="{{ receita.descricao }}" class="form-control mb-2">
+
+<input type="number" name="valor" value="{{ receita.valor }}" class="form-control mb-2">
+
+<input type="date" name="data" value="{{ receita.data|date:'Y-m-d' }}" class="form-control mb-2">
+
+<select name="categoria" class="form-control mb-2">
+{% for categoria in categorias %}
+<option value="{{ categoria.id }}" {% if categoria.id == receita.categoria.id %}selected{% endif %}>
+{{ categoria.nome }}
+</option>
+{% endfor %}
+</select>
+
+<div class="form-check mb-2">
+<input type="checkbox" name="recorrente" class="form-check-input"
+{% if receita.recorrente %}checked{% endif %}>
+<label class="form-check-label">Recorrente</label>
+</div>
+
+<input type="date" name="data_fim" value="{{ receita.data_fim|date:'Y-m-d' }}" class="form-control mb-2">
+
+<button type="submit" class="btn btn-primary">Salvar Alterações</button>
+
+<a href="{% url 'financeiro:listar_receitas' %}" class="btn btn-secondary">
+    Cancelar
+</a>
+
+</form>
+
+{% endblock %}

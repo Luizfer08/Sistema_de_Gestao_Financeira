@@ -1,0 +1,68 @@
+{% extends 'financeiro/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Categorias</h2>
+
+    <!-- BOTÃO NOVA -->
+    <a href="{% url 'financeiro:criar_categoria' %}" class="btn btn-success mb-3">
+        Nova Categoria
+    </a>
+
+    <!-- SE EXISTEM CATEGORIAS -->
+    {% if categorias %}
+
+    <table class="table table-striped">
+
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for c in categorias %}
+            <tr>
+
+                <td>{{ c.nome }}</td>
+
+                <td>
+
+                    <!-- EDITAR -->
+                    <a href="{% url 'financeiro:editar_categoria' c.id %}" class="btn btn-warning btn-sm">
+                        Editar
+                    </a>
+
+                    <!-- EXCLUIR -->
+                    <form action="{% url 'financeiro:excluir_categoria' c.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button class="btn btn-danger btn-sm">
+                            Excluir
+                        </button>
+                    </form>
+
+                </td>
+
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <!-- MENSAGEM -->
+    <div class="alert alert-info text-center">
+        Nenhuma categoria cadastrada
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'financeiro/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Receitas</h2>
+
+    <!-- BOTÃO NOVA -->
+    <a href="{% url 'financeiro:criar_receita' %}" class="btn btn-success mb-3">
+        Nova Receita
+    </a>
+
+    {% if receitas %}
+
+    <table class="table table-striped">
+
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for r in receitas %}
+            <tr>
+
+                <td>{{ r.descricao }}</td>
+                <td>R$ {{ r.valor }}</td>
+                <td>{{ r.data }}</td>
+
+                <td>
+
+                    <!-- EDITAR -->
+                    <a href="{% url 'financeiro:editar_receita' r.id %}" class="btn btn-warning btn-sm">
+                        Editar
+                    </a>
+
+                    <!-- EXCLUIR -->
+                    <form action="{% url 'financeiro:excluir_receita' r.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button class="btn btn-danger btn-sm">
+                            Excluir
+                        </button>
+                    </form>
+
+                </td>
+
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="alert alert-info text-center">
+        Nenhuma receita cadastrada
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'financeiro/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Despesas</h2>
+
+    <!-- BOTÃO NOVA -->
+    <a href="{% url 'financeiro:criar_despesa' %}" class="btn btn-success mb-3">
+        Nova Despesa
+    </a>
+
+    {% if despesas %}
+
+    <table class="table table-striped">
+
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for d in despesas %}
+            <tr>
+
+                <td>{{ d.descricao }}</td>
+                <td>R$ {{ d.valor }}</td>
+                <td>{{ d.data }}</td>
+
+                <td>
+
+                    <!-- EDITAR -->
+                    <a href="{% url 'financeiro:editar_despesa' d.id %}" class="btn btn-warning btn-sm">
+                        Editar
+                    </a>
+
+                    <!-- EXCLUIR -->
+                    <form action="{% url 'financeiro:excluir_despesa' d.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button class="btn btn-danger btn-sm">
+                            Excluir
+                        </button>
+                    </form>
+
+                </td>
+
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="alert alert-info text-center">
+        Nenhuma despesa cadastrada
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
