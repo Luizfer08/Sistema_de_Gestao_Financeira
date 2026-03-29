@@ -152,7 +152,7 @@ loginForm.addEventListener("submit", function(e){
     .then(data => {
 
         if(data.success){
-            window.location.href = "/dashboard/";
+            window.location.href = "financeiro/dashboard/";
         } else {
             mensagem.innerHTML = `<div class="alert alert-danger">Login inválido</div>`;
         }
@@ -189,7 +189,7 @@ cadastroForm.addEventListener("submit", function(e){
     .then(data => {
 
         if(data.success){
-            window.location.href = "/dashboard/";
+            window.location.href = "financeiro/dashboard/";
         } else {
             mensagem.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
         }

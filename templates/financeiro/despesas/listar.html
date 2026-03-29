@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'financeiro/base.html' %}
 
 {% block content %}
 
 <h2>Despesas</h2>
 
-<a href="/despesas/criar" class="btn btn-danger mb-3">
+<a href="financeiro/despesas/criar" class="btn btn-danger mb-3">
 Nova Despesa
 </a>
 
@@ -58,11 +58,11 @@ Não
 
 <td>
 
-<a href="/despesas/editar/{{ despesa.id }}" class="btn btn-warning btn-sm">
+<a href="financeiro/despesas/editar/{{ despesa.id }}" class="btn btn-warning btn-sm">
 Editar
 </a>
 
-<a href="/despesas/excluir/{{ despesa.id }}" class="btn btn-danger btn-sm">
+<a href="financeiro/despesas/excluir/{{ despesa.id }}" class="btn btn-danger btn-sm">
 Excluir
 </a>
 
