@@ -1,39 +1,19 @@
 {% extends 'base.html' %}
-<!-- herda o layout principal do sistema -->
 
 {% block content %}
-<!-- conteúdo da página -->
 
-<h2 class="mb-4">Nova Categoria</h2>
-<!-- título da página -->
+<div class="container mt-4">
 
-<form method="POST">
-<!-- formulário enviado via POST -->
+    <h3>Nova Categoria</h3>
 
-{% csrf_token %}
-<!-- proteção contra ataque CSRF -->
+    <form method="POST">
+        {% csrf_token %}
 
-<div class="mb-3">
+        <input type="text" name="nome" class="form-control mb-2" placeholder="Nome da categoria" required>
 
-<label class="form-label">Nome da Categoria</label>
-<!-- rótulo do campo -->
-
-<input type="text" name="nome" class="form-control" placeholder="Ex: Alimentação, Salário..." required>
-<!-- campo para digitar o nome da categoria -->
+        <button class="btn btn-success">Salvar</button>
+    </form>
 
 </div>
-
-
-<button type="submit" class="btn btn-success">
-Salvar Categoria
-</button>
-<!-- botão de envio -->
-
-<a href="/categorias" class="btn btn-secondary">
-Voltar
-</a>
-<!-- botão para voltar à listagem -->
-
-</form>
 
 {% endblock %}

@@ -21,6 +21,22 @@ Nova Categoria
 
 </thead>
 
+{% if categorias %}
+
+<ul>
+    {% for c in categorias %}
+        <li>{{ c.nome }}</li>
+    {% endfor %}
+</ul>
+
+{% else %}
+
+<div class="alert alert-info text-center">
+    Nenhuma categoria cadastrada
+</div>
+
+{% endif %}
+
 <tbody>
 
 {% for categoria in categorias %}

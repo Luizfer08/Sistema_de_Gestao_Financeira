@@ -53,6 +53,20 @@ Não
 </td>
 <!-- mostra se é recorrente -->
 
+{% if receitas %}
+
+<table class="table">
+    <!-- tabela normal -->
+</table>
+
+{% else %}
+
+<div class="alert alert-info text-center">
+    Nenhuma receita cadastrada
+</div>
+
+{% endif %}
+
 <td>
 
 <a href="/receitas/editar/{{ receita.id }}" class="btn btn-warning btn-sm">

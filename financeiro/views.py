@@ -1,46 +1,39 @@
 from django.shortcuts import render, redirect, get_object_or_404
-# funções principais
+# renderiza páginas
 
 from django.contrib.auth.decorators import login_required
 # protege rotas
 
 from django.contrib.auth import authenticate, login
-# login
+# autenticação
 
 from django.contrib.auth.models import User
-# usuário
+# modelo de usuário
 
 from django.http import JsonResponse
-# resposta JSON
+# respostas JSON (AJAX)
 
 from django.db.models import Sum
-# soma valores
-
-from datetime import date
+# somar valores
 
 from .models import Receita, Despesa, Categoria, Perfil
 # seus models
 
 
-# =============================
 # HOME
-# =============================
 def home(request):
-
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-
     return render(request, 'home.html')
 
 
-# =============================
 # DASHBOARD
-# =============================
 @login_required
 def dashboard(request):
 
-    # 🔐 LGPD
-    if not request.user.perfil.aceitou_termos:
+    # garante perfil (evita erro)
+    perfil, created = Perfil.objects.get_or_create(user=request.user)
+
+    # LGPD
+    if not perfil.aceitou_termos:
         return redirect('home')
 
     receitas = Receita.objects.filter(usuario=request.user)
@@ -51,42 +44,14 @@ def dashboard(request):
 
     saldo = total_receitas - total_despesas
 
-    # previsão
-    receitas_futuras = receitas.filter(recorrente=True).aggregate(Sum('valor'))['valor__sum'] or 0
-    despesas_futuras = despesas.filter(recorrente=True).aggregate(Sum('valor'))['valor__sum'] or 0
-
-    saldo_futuro = saldo + receitas_futuras - despesas_futuras
-
-    # alerta
-    alerta = ""
-    alerta_tipo = ""
-
-    if saldo_futuro < 0:
-        alerta = "Saldo negativo previsto"
-        alerta_tipo = "danger"
-    elif saldo_futuro < 100:
-        alerta = "Saldo baixo"
-        alerta_tipo = "warning"
-    else:
-        alerta = "Saldo saudável"
-        alerta_tipo = "success"
-
-    categorias = Categoria.objects.filter(usuario=request.user)
-
     return render(request, 'dashboard.html', {
         'saldo': saldo,
         'receitas': total_receitas,
-        'despesas': total_despesas,
-        'saldo_futuro': saldo_futuro,
-        'alerta': alerta,
-        'alerta_tipo': alerta_tipo,
-        'categorias': categorias
+        'despesas': total_despesas
     })
 
 
-# =============================
 # RECEITAS
-# =============================
 @login_required
 def listar_receitas(request):
 
@@ -97,16 +62,23 @@ def listar_receitas(request):
 @login_required
 def criar_receita(request):
 
+    categorias = Categoria.objects.filter(usuario=request.user)
+
     if request.method == 'POST':
+
         Receita.objects.create(
             usuario=request.user,
-            nome=request.POST.get('nome'),
+            descricao=request.POST.get('descricao'),  # 🔥 corrigido
             valor=request.POST.get('valor'),
+            categoria_id=request.POST.get('categoria'),
             recorrente=True if request.POST.get('recorrente') else False
         )
+
         return redirect('listar_receitas')
 
-    return render(request, 'receitas/criar.html')
+    return render(request, 'receitas/criar.html', {
+        'categorias': categorias
+    })
 
 
 @login_required
@@ -115,7 +87,7 @@ def editar_receita(request, id):
     receita = get_object_or_404(Receita, id=id, usuario=request.user)
 
     if request.method == 'POST':
-        receita.nome = request.POST.get('nome')
+        receita.descricao = request.POST.get('descricao')
         receita.valor = request.POST.get('valor')
         receita.save()
         return redirect('listar_receitas')
@@ -131,9 +103,7 @@ def excluir_receita(request, id):
     return redirect('listar_receitas')
 
 
-# =============================
 # DESPESAS
-# =============================
 @login_required
 def listar_despesas(request):
 
@@ -144,16 +114,23 @@ def listar_despesas(request):
 @login_required
 def criar_despesa(request):
 
+    categorias = Categoria.objects.filter(usuario=request.user)
+
     if request.method == 'POST':
+
         Despesa.objects.create(
             usuario=request.user,
-            nome=request.POST.get('nome'),
+            descricao=request.POST.get('descricao'),  # 🔥 alinhado
             valor=request.POST.get('valor'),
+            categoria_id=request.POST.get('categoria'),
             recorrente=True if request.POST.get('recorrente') else False
         )
+
         return redirect('listar_despesas')
 
-    return render(request, 'despesas/criar.html')
+    return render(request, 'despesas/criar.html', {
+        'categorias': categorias
+    })
 
 
 @login_required
@@ -162,7 +139,7 @@ def editar_despesa(request, id):
     despesa = get_object_or_404(Despesa, id=id, usuario=request.user)
 
     if request.method == 'POST':
-        despesa.nome = request.POST.get('nome')
+        despesa.descricao = request.POST.get('descricao')
         despesa.valor = request.POST.get('valor')
         despesa.save()
         return redirect('listar_despesas')
@@ -178,9 +155,7 @@ def excluir_despesa(request, id):
     return redirect('listar_despesas')
 
 
-# =============================
 # CATEGORIAS
-# =============================
 @login_required
 def listar_categorias(request):
 
@@ -201,9 +176,7 @@ def criar_categoria(request):
     return render(request, 'categorias/criar.html')
 
 
-# =============================
 # API LOGIN (AJAX)
-# =============================
 def api_login(request):
 
     if request.method == 'POST':
@@ -220,9 +193,7 @@ def api_login(request):
         return JsonResponse({'success': False, 'error': 'Usuário ou senha inválidos'})
 
 
-# =============================
 # API CADASTRO (AJAX + LGPD)
-# =============================
 def api_cadastro(request):
 
     if request.method == 'POST':
