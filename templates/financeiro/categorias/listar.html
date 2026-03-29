@@ -1,4 +1,5 @@
 {% extends 'financeiro/base.html' %}
+<<<<<<< HEAD
 
 {% block content %}
 
@@ -65,4 +66,58 @@
 
 </div>
 
+=======
+<!-- herda o layout principal -->
+
+{% block content %}
+
+<h2>Categorias</h2>
+
+<a href="financeiro/categorias/criar" class="btn btn-success mb-3">
+Nova Categoria
+</a>
+<!-- botão para criar nova categoria -->
+
+<table class="table table-striped">
+<!-- tabela Bootstrap -->
+
+<thead>
+
+<tr>
+<th>Nome</th>
+</tr>
+
+</thead>
+
+{% if categorias %}
+
+<ul>
+    {% for c in categorias %}
+        <li>{{ c.nome }}</li>
+    {% endfor %}
+</ul>
+
+{% else %}
+
+<div class="alert alert-info text-center">
+    Nenhuma categoria cadastrada
+</div>
+
+{% endif %}
+
+<tbody>
+
+{% for categoria in categorias %}
+
+<tr>
+<td>{{ categoria.nome }}</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 {% endblock %}

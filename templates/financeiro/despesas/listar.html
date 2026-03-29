@@ -2,6 +2,7 @@
 
 {% block content %}
 
+<<<<<<< HEAD
 <div class="container mt-4">
 
     <h2>Despesas</h2>
@@ -67,4 +68,80 @@
 
 </div>
 
+=======
+<h2>Despesas</h2>
+
+<a href="financeiro/despesas/criar" class="btn btn-danger mb-3">
+Nova Despesa
+</a>
+
+<table class="table table-striped">
+
+<thead>
+<tr>
+<th>Descrição</th>
+<th>Valor</th>
+<th>Data</th>
+<th>Categoria</th>
+<th>Recorrente</th>
+<th>Ações</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for despesa in despesas %}
+
+<tr>
+
+<td>{{ despesa.descricao }}</td>
+
+<td>R$ {{ despesa.valor }}</td>
+
+<td>{{ despesa.data }}</td>
+
+<td>{{ despesa.categoria.nome }}</td>
+
+<td>
+{% if despesa.recorrente %}
+Sim
+{% else %}
+Não
+{% endif %}
+</td>
+
+{% if despesas %}
+
+<table class="table">
+</table>
+
+{% else %}
+
+<div class="alert alert-info text-center">
+    Nenhuma despesa cadastrada
+</div>
+
+{% endif %}
+
+<td>
+
+<a href="financeiro/despesas/editar/{{ despesa.id }}" class="btn btn-warning btn-sm">
+Editar
+</a>
+
+<a href="financeiro/despesas/excluir/{{ despesa.id }}" class="btn btn-danger btn-sm">
+Excluir
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 {% endblock %}

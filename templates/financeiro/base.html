@@ -1,10 +1,14 @@
+<<<<<<< HEAD
 {% load static %}
 <!-- permite usar arquivos estáticos -->
 
+=======
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
+<<<<<<< HEAD
     <meta charset="UTF-8">
     <title>Gestão Financeira</title>
 
@@ -121,3 +125,108 @@
 </html>
 
 # teste git
+=======
+
+<meta charset="UTF-8">
+<!-- define a codificação de caracteres -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- permite que o site seja responsivo -->
+
+<title>Sistema de Gestão Financeira</title>
+<!-- título exibido na aba do navegador -->
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- importa o Bootstrap para estilização -->
+
+</head>
+
+<body>
+
+<!-- NAVBAR (MENU SUPERIOR) -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<div class="container">
+
+<a class="navbar-brand" href="/dashboard">
+Gestão Financeira
+</a>
+<!-- nome do sistema -->
+
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<!-- botão para menu em telas pequenas -->
+
+
+<div class="collapse navbar-collapse" id="menu">
+
+<ul class="navbar-nav">
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'dashboard' %}">
+        Dashboard
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'listar_categorias' %}">
+        Categorias
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'criar_receita' %}">
+        Nova Receita
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'criar_despesa' %}">
+        Nova Despesa
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link text-danger" href="{% url 'logout' %}">
+        Sair
+    </a>
+</li>
+
+</ul>
+</div>
+
+</div>
+
+</nav>
+
+
+<!-- CONTEÚDO PRINCIPAL -->
+
+<div class="container mt-4">
+
+{% block content %}
+{% endblock %}
+<!-- aqui cada página será carregada -->
+
+</div>
+
+
+<!-- RODAPÉ -->
+
+<footer class="bg-dark text-white text-center mt-5 p-3">
+
+<p>Sistema de Gestão Financeira © 2026</p>
+
+</footer>
+
+
+<!-- SCRIPT BOOTSTRAP -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- scripts do Bootstrap -->
+
+</body>
+
+</html>
+>>>>>>> 41671f439d7288a09add963222182e842cab175e

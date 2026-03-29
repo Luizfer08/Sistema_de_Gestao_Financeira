@@ -46,7 +46,11 @@ ROOT_URLCONF = 'gestao_financeira.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+<<<<<<< HEAD
         'DIRS': [BASE_DIR /'templates'], # diretório onde ficam os arquivos de template HTML
+=======
+        'DIRS': ['templates'], # diretório onde ficam os arquivos de template HTML
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -108,9 +112,17 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+<<<<<<< HEAD
 LOGIN_URL = 'financeiro:home'
 LOGIN_REDIRECT_URL = 'financeiro:dashboard'
 LOGOUT_REDIRECT_URL = 'financeiro:home'
+=======
+LOGIN_URL = '/login/'
+# se não estiver logado, manda pro login
+
+LOGIN_REDIRECT_URL = '/'
+# depois do login, vai pro dashboard
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 
 # impede cliquejacking
 X_FRAME_OPTIONS = 'DENY'
@@ -135,3 +147,7 @@ EMAIL_HOST_USER = 'seuemail@gmail.com'
 
 EMAIL_HOST_PASSWORD = 'senha_app_gmail'
 
+<<<<<<< HEAD
+=======
+LOGIN_REDIRECT_URL = '/dashboard/'
+>>>>>>> 41671f439d7288a09add963222182e842cab175e

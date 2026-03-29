@@ -4,11 +4,16 @@
 
 <style>
 
+<<<<<<< HEAD
 /* FUNDO */
+=======
+/* FUNDO GERAL */
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 body {
     background: #f4f6f9;
 }
 
+<<<<<<< HEAD
 /* CARDS PADRÃO */
 .card-premium {
     border: none;
@@ -55,18 +60,45 @@ body {
 }
 
 /* BOTÃO */
+=======
+/* CARDS PREMIUM */
+.card-premium {
+    border: none;
+    border-radius: 15px;
+    padding: 10px;
+    color: white;
+    transition: 0.3s;
+}
+
+/* HOVER SUAVE */
+.card-premium:hover {
+    transform: translateY(-4px);
+}
+
+/* CORES */
+.bg-saldo { background: linear-gradient(135deg, #11998e, #38ef7d); }
+.bg-receita { background: linear-gradient(135deg, #396afc, #2948ff); }
+.bg-despesa { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
+
+/* BOTÃO PREMIUM */
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 .btn-premium {
     background: rgba(255,255,255,0.2);
     border: none;
     color: white;
     font-weight: 500;
     border-radius: 8px;
+<<<<<<< HEAD
     padding: 5px 10px;
+=======
+    transition: 0.2s;
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 }
 
 .btn-premium:hover {
     background: white;
     color: black;
+<<<<<<< HEAD
 }
 
 </style>
@@ -92,15 +124,92 @@ body {
 <h6 class="mb-0">Receitas</h6>
 
 <a href="{% url 'financeiro:listar_receitas' %}" class="btn btn-sm btn-premium">
+=======
+    transform: scale(1.05);
+}
+
+/* SALDO FUTURO */
+.saldo-box {
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+}
+
+/* ANIMAÇÃO DE ENTRADA */
+.card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardEntrada 0.6s ease forwards;
+}
+
+.card:nth-child(1){ animation-delay:0.1s }
+.card:nth-child(2){ animation-delay:0.2s }
+.card:nth-child(3){ animation-delay:0.3s }
+.card:nth-child(4){ animation-delay:0.4s }
+
+@keyframes cardEntrada {
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+/* HOVER CARD */
+
+.card:hover{
+    transform: translateY(-4px);
+    box-shadow:0 10px 20px rgba(0,0,0,0.15);
+    transition:0.2s;
+}
+
+
+</style>
+
+
+<h2 class="mb-4">Dashboard Financeiro</h2>
+
+<div class="row">
+
+<!-- SALDO -->
+<div class="col-md-4">
+<div class="card card-premium bg-saldo">
+
+<h6>Saldo Atual</h6>
+<h2>R$ {{ saldo }}</h2>
+
+</div>
+</div>
+
+<!-- RECEITAS -->
+<div class="col-md-4">
+<div class="card card-premium bg-receita">
+
+<div class="d-flex justify-content-between">
+<h6>Receitas</h6>
+
+<a href="financeiro/receitas" class="btn btn-sm btn-premium">
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 Visualizar
 </a>
 </div>
 
+<<<<<<< HEAD
 <h2 class="mt-2">R$ {{ receitas }}</h2>
+=======
+<h2>R$ {{ receitas }}</h2>
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 
 </div>
 </div>
 
+<<<<<<< HEAD
 <div class="col-md-4 mb-3">
 <div class="card-premium bg-despesa">
 
@@ -108,27 +217,52 @@ Visualizar
 <h6 class="mb-0">Despesas</h6>
 
 <a href="{% url 'financeiro:listar_despesas' %}" class="btn btn-sm btn-premium">
+=======
+<!-- DESPESAS -->
+<div class="col-md-4">
+<div class="card card-premium bg-despesa">
+
+<div class="d-flex justify-content-between">
+<h6>Despesas</h6>
+
+<a href="financeiro/despesas" class="btn btn-sm btn-premium">
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 Visualizar
 </a>
 </div>
 
+<<<<<<< HEAD
 <h2 class="mt-2">R$ {{ despesas }}</h2>
+=======
+<h2>R$ {{ despesas }}</h2>
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 
 </div>
 </div>
 
 </div>
 
+<<<<<<< HEAD
 <!-- SALDO FUTURO -->
 <div class="mt-4">
 
 <div class="saldo-box 
 {% if saldo_futuro < 0 %}bg-danger
 {% elif saldo_futuro < 100 %}bg-warning
+=======
+
+<!-- SALDO FUTURO PREMIUM -->
+<div class="mt-4">
+
+<div class="saldo-box 
+{% if alerta_tipo == 'danger' %}bg-danger
+{% elif alerta_tipo == 'warning' %}bg-warning text-dark
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 {% else %}bg-success
 {% endif %}
 ">
 
+<<<<<<< HEAD
 <div class="d-flex justify-content-between align-items-center flex-wrap">
 
 <!-- ESQUERDA -->
@@ -168,14 +302,37 @@ Filtrar
 </button>
 
 </form>
+=======
+<div class="d-flex justify-content-between">
+
+<h5>Saldo Futuro</h5>
+
+<span>
+{% if alerta_tipo == 'danger' %}
+⚠️
+{% elif alerta_tipo == 'warning' %}
+⚠️
+{% else %}
+✔️
+{% endif %}
+{{ alerta }}
+</span>
+
+</div>
+
+<h2>R$ {{ saldo_futuro }}</h2>
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 
 </div>
 
 </div>
 
+<<<<<<< HEAD
 </div>
 
 </div>
+=======
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 
 <!-- GRÁFICO -->
 <div class="card mt-4">
@@ -187,25 +344,78 @@ Filtrar
 </div>
 </div>
 
+<<<<<<< HEAD
 </div>
+=======
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 
+<<<<<<< HEAD
 const ctx = document.getElementById('grafico');
 
 new Chart(ctx, {
 type: 'bar',
+=======
+const tipoGrafico = "{{ request.GET.tipo|default:'bar' }}";
+
+const ctx = document.getElementById('grafico');
+
+new Chart(ctx, {
+type: tipoGrafico,
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 data: {
 labels: ['Receitas', 'Despesas'],
 datasets: [{
 data: [{{ receitas }}, {{ despesas }}],
+<<<<<<< HEAD
 backgroundColor: ['#396afc','#ff4b2b']
+=======
+backgroundColor: ['#396afc', '#ff4b2b']
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 }]
 }
 });
 
 </script>
 
+<<<<<<< HEAD
+=======
+<script>
+
+const contadores = document.querySelectorAll(".contador");
+
+contadores.forEach(contador => {
+
+    const valorFinal = parseFloat(contador.dataset.valor);
+    let valorAtual = 0;
+
+    const incremento = valorFinal / 50;
+
+    function atualizar(){
+
+        valorAtual += incremento;
+
+        if(valorAtual < valorFinal){
+
+            contador.innerText = "R$ " + valorAtual.toFixed(2);
+            requestAnimationFrame(atualizar);
+
+        }else{
+
+            contador.innerText = "R$ " + valorFinal.toFixed(2);
+
+        }
+
+    }
+
+    atualizar();
+
+});
+
+</script>
+
+>>>>>>> 41671f439d7288a09add963222182e842cab175e
 {% endblock %}
