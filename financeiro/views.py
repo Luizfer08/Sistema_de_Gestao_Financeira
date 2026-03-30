@@ -296,6 +296,9 @@ def api_cadastro(request):
 
         return JsonResponse({'success': True})
     
+def cadastro_view(request):
+    return render(request, 'financeiro/autenticacao/cadastro.html')
+    
 @require_POST
 def logout_view(request):
     logout(request)
