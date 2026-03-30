@@ -1,18 +1,26 @@
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
-# BASE DO PROJETO
+
+# BASE
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import os
+from dotenv import load_dotenv
 
-#  SEGURANÇA
-SECRET_KEY = 'django-insecure-sua-chave-aqui'
+load_dotenv()
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
 
-#  APPS
+# APPS
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -21,21 +29,23 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # seu app
+    # apps do projeto
+    'usuarios',
     'financeiro',
 ]
 
 
-#  MIDDLEWARE
+# MIDDLEWARE
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
 
-    # CSRF importante para login funcionar
     'django.middleware.csrf.CsrfViewMiddleware',
 
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -45,12 +55,13 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'gestao_financeira.urls'
 
 
-#  TEMPLATES (CORRIGIDO)
+# TEMPLATES
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
 
-        # CAMINHO CERTO DOS HTML
+        
         'DIRS': [BASE_DIR / 'templates'],
 
         'APP_DIRS': True,
@@ -69,8 +80,8 @@ TEMPLATES = [
 #  WSGI
 WSGI_APPLICATION = 'gestao_financeira.wsgi.application'
 
+# DATABASE
 
-#  BANCO (DESENVOLVIMENTO)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -79,7 +90,8 @@ DATABASES = {
 }
 
 
-#  VALIDAÇÃO DE SENHA
+# PASSWORD
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -96,6 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
 LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Sao_Paulo'
@@ -104,20 +117,35 @@ USE_I18N = True
 USE_TZ = True
 
 
-#  STATIC (CSS / JS)
+# STATIC FILES
 STATIC_URL = '/static/'
 
-#  CAMINHO DOS ARQUIVOS STATIC
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+    BASE_DIR / 'static'
 ]
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-#  LOGIN / LOGOUT
+
+# AUTH REDIRECT
+
 LOGIN_URL = 'financeiro:login'
 LOGIN_REDIRECT_URL = 'financeiro:dashboard'
 LOGOUT_REDIRECT_URL = 'financeiro:login'
 
+# SEGURANÇA 
+X_FRAME_OPTIONS = 'DENY'
 
-#  DEFAULT
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# DESATIVA EM DESENVOLVIMENTO (senão quebra login)
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
+
+# EMAIL (OPCIONAL)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
