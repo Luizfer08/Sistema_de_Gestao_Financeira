@@ -1,1 +1,9 @@
+# Python
+__pycache__/
+*.pyc
+
+# Banco de dados
+db.sqlite3
+
+# Ambiente
 .env
