@@ -6,6 +6,7 @@ from financeiro import views  # importa suas views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.login_view, name='home'),
     path('', include('financeiro.urls'))
 ]
 
@@ -32,4 +33,6 @@ path('resetar/concluido/',
          template_name='senha_concluida.html'
      ),
      name='password_reset_complete'),
+
+
 
