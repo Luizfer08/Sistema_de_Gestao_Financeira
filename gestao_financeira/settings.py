@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-fallback')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
@@ -40,12 +40,15 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 
     'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+#  URL PRINCIPAL
 ROOT_URLCONF = 'gestao_financeira.urls'
 
 
@@ -70,10 +73,11 @@ TEMPLATES = [
     },
 ]
 
+
+#  WSGI
 WSGI_APPLICATION = 'gestao_financeira.wsgi.application'
 
 # DATABASE
-
 
 DATABASES = {
     'default': {
