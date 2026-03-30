@@ -1,0 +1,17 @@
+body {
+    background: #f4f6f9;
+}
+
+/* PADRÃO BOTÃO PREMIUM */
+.btn-premium {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    padding: 5px 10px;
+}
+
+.btn-premium:hover {
+    background: white;
+    color: black;
+}
