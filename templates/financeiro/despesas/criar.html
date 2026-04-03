@@ -1,79 +1,98 @@
 {% extends 'financeiro/base.html' %}
-<!-- herda layout principal -->
 
 {% block content %}
 
+<div class="container mt-4">
+
 <h2>Nova Despesa</h2>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
 
 <form method="POST">
 {% csrf_token %}
-<!-- proteção contra ataque -->
 
 <div class="mb-3">
-
-<label>Descrição</label>
-<input type="text" name="descricao" class="form-control" required>
-<!-- descrição da despesa -->
-
+    <label>Descrição</label>
+    <input 
+        type="text" 
+        name="descricao" 
+        class="form-control" 
+        required
+    >
 </div>
-
 
 <div class="mb-3">
-
-<label>Valor</label>
-<input type="number" step="0.01" name="valor" class="form-control" required>
-<!-- valor -->
-
+    <label>Valor</label>
+    <input 
+        type="number" 
+        step="0.01" 
+        name="valor" 
+        class="form-control" 
+        required
+    >
 </div>
 
+<!-- DATA -->
+<div class="mb-3">
+    <label>Data</label>
+    <input 
+        type="date" 
+        name="data" 
+        class="form-control" 
+        required
+    >
+</div>
 
 <div class="mb-3">
+    <label>Categoria</label>
+    <select 
+        name="categoria" 
+        class="form-control"
+        required
+    >
+        <option value="">Selecione uma categoria</option>
 
-<label>Data</label>
-<input type="date" name="data" class="form-control" required>
-<!-- data -->
-
+        {% for categoria in categorias %}
+            <option value="{{ categoria.id }}">
+                {{ categoria.nome }}
+            </option>
+        {% endfor %}
+    </select>
 </div>
 
-
-<div class="mb-3">
-
-<label>Categoria</label>
-<select name="categoria" class="form-control">
-
-{% for categoria in categorias %}
-
-<option value="{{ categoria.id }}">{{ categoria.nome }}</option>
-
-{% endfor %}
-
-</select>
-
-</div>
-
-
-<!-- RECORRÊNCIA -->
 <div class="form-check mb-3">
-
-<input type="checkbox" name="recorrente" class="form-check-input">
-<label class="form-check-label">Despesa recorrente</label>
-<!-- ex: aluguel, Netflix -->
-
+    <input 
+        type="checkbox" 
+        name="recorrente" 
+        class="form-check-input"
+    >
+    <label class="form-check-label">
+        Despesa recorrente
+    </label>
 </div>
-
 
 <div class="mb-3">
-
-<label>Data fim (opcional)</label>
-<input type="date" name="data_fim" class="form-control">
-<!-- até quando essa despesa vai repetir -->
-
+    <label>Data fim (opcional)</label>
+    <input 
+        type="date" 
+        name="data_fim" 
+        class="form-control"
+    >
 </div>
 
+<!-- BOTÃO -->
 <button type="submit" class="btn btn-danger">
-Salvar
+    Salvar
 </button>
 
 </form>
+
+</div>
 
 {% endblock %}

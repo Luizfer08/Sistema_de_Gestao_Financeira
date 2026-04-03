@@ -1,41 +1,20 @@
-{% extends 'financeiro/base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
 
-{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro - Sistema Financeiro</title>
 
-<style>
-.modal-termos {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    width: 100%;
-    height: 100%;
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'financeiro/css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'financeiro/css/termos.css' %}">
+</head>
 
-    background: rgba(0,0,0,0.6);
-    z-index: 9999;
-
-    overflow-y: auto; /* 🔥 permite scroll na tela */
-}
-
-/* CAIXA */
-.modal-content {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-
-    width: 90%;
-    max-width: 500px;
-
-    margin: 5% auto;
-
-    max-height: 80vh; /* 🔥 limita altura */
-    overflow-y: auto; /* 🔥 scroll interno */
-
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-</style>
+<body class="auth-body">
 
 <div class="auth-container">
 
@@ -43,10 +22,11 @@
 
         <h3 class="text-center mb-4">Criar Conta</h3>
 
+        <!-- ERRO -->
         <div id="mensagem"></div>
 
+        <!-- FORM -->
         <form id="formCadastro">
-
             {% csrf_token %}
 
             <input type="text" name="username" class="form-control mb-2" placeholder="Usuário" required>
@@ -55,15 +35,12 @@
 
             <input type="password" name="password" class="form-control mb-2" placeholder="Senha" required>
 
-            <input type="password" id="confirmarSenha" class="form-control mb-2" placeholder="Confirmar senha" required>
+            <input type="password" name="confirmar" class="form-control mb-2" placeholder="Confirmar senha" required>
 
-            <!-- VIA CEP -->
+            <!-- CEP -->
             <input type="text" id="cep" class="form-control mb-2" placeholder="CEP">
-
             <input type="text" id="endereco" class="form-control mb-2" placeholder="Endereço">
-
             <input type="text" id="cidade" class="form-control mb-2" placeholder="Cidade">
-
             <input type="text" id="estado" class="form-control mb-2" placeholder="Estado">
 
             <!-- LGPD -->
@@ -71,16 +48,13 @@
                 <input class="form-check-input" type="checkbox" id="termos">
                 <label class="form-check-label">
                     Eu aceito os 
-                    <a href="javascript:void(0);" onclick="abrirTermos()" style="text-decoration: underline;">
-                        Termos de uso
-                    </a>
+                    <a href="#" id="abrirTermos">Termos de uso</a>
                 </label>
             </div>
 
-            <button class="btn btn-success w-100">
+            <button type="submit" class="btn btn-success w-100">
                 Cadastrar
             </button>
-
         </form>
 
         <p class="text-center mt-3">
@@ -92,179 +66,63 @@
 
 </div>
 
-<!-- MODAL -->
+<!-- MODAL TERMOS -->
 <div id="modalTermos" class="modal-termos">
     <div class="modal-content">
-        <h5>Termos de Uso</h5>
+
+        <h5>Termos de Uso e Política de Privacidade</h5>
+
         <p>
-            Este sistema de Gestão Financeira tem como objetivo auxiliar o usuário no controle de suas receitas, despesas e planejamento financeiro pessoal.
+            Este sistema de Gestão Financeira tem como objetivo auxiliar o usuário no controle de suas receitas, despesas e organização financeira pessoal.
+        </p>
 
-            Ao se cadastrar e utilizar a plataforma, o usuário concorda com os seguintes termos:
+        <hr>
 
-            <br><br>
+        <h6>1. Coleta de Dados</h6>
+        <p>
+            Coletamos dados fornecidos diretamente pelo usuário, como nome de usuário, e-mail e informações financeiras inseridas no sistema.
+        </p>
 
-            <strong>1. Coleta de dados</strong><br>
-            Coletamos informações fornecidas pelo próprio usuário, como nome de usuário, e-mail e dados financeiros inseridos no sistema (receitas, despesas e categorias).
+        <h6>2. Finalidade do Uso</h6>
+        <p>
+            Os dados coletados são utilizados exclusivamente para funcionamento da aplicação, permitindo o acesso, armazenamento e organização das informações financeiras do usuário.
+        </p>
 
-            <br><br>
+        <h6>3. Armazenamento e Segurança</h6>
+        <p>
+            Os dados são armazenados de forma segura, sendo adotadas medidas técnicas e administrativas para proteção contra acessos não autorizados, perda ou alteração indevida.
+        </p>
 
-            <strong>2. Finalidade do uso</strong><br>
-            Os dados coletados são utilizados exclusivamente para o funcionamento do sistema, permitindo o controle financeiro e a personalização da experiência do usuário.
+        <h6>4. Compartilhamento de Dados</h6>
+        <p>
+            Não realizamos o compartilhamento dos dados pessoais com terceiros, exceto quando necessário para cumprimento de obrigações legais.
+        </p>
 
-            <br><br>
+        <h6>5. Direitos do Usuário</h6>
+        <p>
+            Nos termos da Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018), o usuário pode solicitar a qualquer momento:
+        </p>
+        <ul>
+            <li>Acesso aos seus dados;</li>
+            <li>Correção de informações incorretas;</li>
+            <li>Exclusão dos dados pessoais;</li>
+            <li>Revogação do consentimento.</li>
+        </ul>
 
-            <strong>3. Armazenamento e segurança</strong><br>
-            As informações são armazenadas em ambiente seguro, sendo adotadas medidas técnicas para proteger os dados contra acessos não autorizados.
+        <h6>6. Consentimento</h6>
+        <p>
+            Ao utilizar este sistema, o usuário declara estar ciente e de acordo com a coleta e uso de seus dados conforme descrito neste termo.
+        </p>
 
-            <br><br>
+        <button class="btn btn-secondary mt-3" id="fecharTermos">
+            Fechar
+        </button>
 
-            <strong>4. Compartilhamento de dados</strong><br>
-            Os dados não serão compartilhados com terceiros, exceto quando exigido por obrigação legal.
-
-            <br><br>
-
-            <strong>5. Responsabilidade do usuário</strong><br>
-            O usuário é responsável pelas informações inseridas no sistema e pela segurança de suas credenciais de acesso.
-
-            <br><br>
-
-            <strong>6. Direitos do titular</strong><br>
-            Nos termos da LGPD, o usuário pode solicitar a exclusão ou alteração de seus dados a qualquer momento.
-
-            <br><br>
-
-            <strong>7. Consentimento</strong><br>
-            Ao aceitar estes termos, o usuário concorda com a coleta e uso dos dados conforme descrito acima.
-
-            </p>
-            <p class="mt-3 text-muted">
-                Última atualização: Março de 2026
-            </p>
-        <button class="btn btn-secondary" onclick="fecharTermos()">Fechar</button>
     </div>
 </div>
 
-<style>
-body {
-    background: linear-gradient(135deg, #5f7cff, #4a63f0);
-}
+<!-- JS -->
+<script src="{% static 'financeiro/js/cadastro.js' %}"></script>
 
-.auth-container {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.auth-card {
-    background: white;
-    padding: 40px;
-    border-radius: 15px;
-    width: 350px;
-}
-
-.modal-termos {
-    display: none;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-}
-
-.modal-content {
-    background: white;
-    padding: 20px;
-    margin: 10% auto;
-    width: 400px;
-}
-</style>
-
-<script>
-
-function abrirTermos() {
-    document.getElementById('modalTermos').style.display = 'block';
-}
-
-function fecharTermos() {
-    document.getElementById('modalTermos').style.display = 'none';
-}
-
-// VIA CEP
-document.getElementById('cep').addEventListener('blur', function(){
-
-    const cep = this.value;
-
-    fetch(`https://viacep.com.br/ws/${cep}/json/`)
-    .then(res => res.json())
-    .then(data => {
-
-        document.getElementById('endereco').value = data.logradouro || "";
-        document.getElementById('cidade').value = data.localidade || "";
-        document.getElementById('estado').value = data.uf || "";
-
-    });
-
-});
-
-// CADASTRO
-const form = document.getElementById('formCadastro');
-
-form.addEventListener('submit', function(e){
-
-    e.preventDefault();
-
-    const senha = document.querySelector('[name=password]').value;
-    const confirmar = document.getElementById('confirmarSenha').value;
-    const termos = document.getElementById('termos').checked;
-
-    const mensagem = document.getElementById('mensagem');
-
-    if (senha !== confirmar) {
-        mensagem.innerHTML = `<div class="alert alert-danger">As senhas não coincidem</div>`;
-        return;
-    }
-
-    if (!termos) {
-        mensagem.innerHTML = `<div class="alert alert-danger">Aceite os termos</div>`;
-        return;
-    }
-
-    const formData = new FormData(form);
-    formData.append("aceitou", true);
-
-    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-    fetch("{% url 'financeiro:api_cadastro' %}", {
-        method: "POST",
-        body: formData,
-        headers: {
-            "X-CSRFToken": csrfToken
-        },
-        credentials: "same-origin"
-    })
-    .then(res => res.json())
-    .then(data => {
-
-        if (data.success) {
-            window.location.href = "{% url 'financeiro:dashboard' %}";
-        } else {
-            mensagem.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
-        }
-
-    });
-
-});
-</script>
-
-<script>
-function abrirTermos() {
-    console.log("clicou"); // DEBUG
-    document.getElementById("modalTermos").style.display = "block";
-}
-
-function fecharTermos() {
-    document.getElementById("modalTermos").style.display = "none";
-}
-</script>
-
-{% endblock %}
+</body>
+</html>

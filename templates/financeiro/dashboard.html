@@ -117,7 +117,18 @@
 
 <!-- PASSA DADOS DO DJANGO PARA JS -->
 <script>
-    const dadosGrafico = [{{ receitas }}, {{ despesas }}];
+const ctx = document.getElementById('grafico').getContext('2d');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Receitas', 'Despesas'],
+        datasets: [{
+            label: 'Resumo Financeiro',
+            data: [{{ receitas_filtro|default:0 }}, {{ despesas_filtro|default:0 }}]
+        }]
+    }
+});
 </script>
 
 <!-- JS DO DASHBOARD -->

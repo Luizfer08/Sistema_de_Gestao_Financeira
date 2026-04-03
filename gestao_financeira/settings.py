@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-
+from django.core.management.utils import get_random_secret_key
 
 # BASE
 
@@ -12,7 +12,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
+if not SECRET_KEY:
+    print(" SECRET_KEY não encontrada, gerando chave temporária...")
+    SECRET_KEY = get_random_secret_key()
 
 DEBUG = True
 
