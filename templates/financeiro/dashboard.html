@@ -3,7 +3,6 @@
 
 {% block content %}
 
-<!-- CSS DO DASHBOARD -->
 <link rel="stylesheet" href="{% static 'financeiro/css/dashboard.css' %}">
 
 <h2 class="mb-4">Dashboard Financeiro</h2>
@@ -21,15 +20,12 @@
     <!-- RECEITAS -->
     <div class="col-md-4 mb-3">
         <div class="card card-premium bg-receita">
-
             <div class="d-flex justify-content-between">
                 <h6>Receitas</h6>
-
                 <a href="{% url 'financeiro:listar_receitas' %}" class="btn btn-sm btn-premium">
                     Visualizar
                 </a>
             </div>
-
             <h2>R$ {{ receitas }}</h2>
         </div>
     </div>
@@ -37,15 +33,12 @@
     <!-- DESPESAS -->
     <div class="col-md-4 mb-3">
         <div class="card card-premium bg-despesa">
-
             <div class="d-flex justify-content-between">
                 <h6>Despesas</h6>
-
                 <a href="{% url 'financeiro:listar_despesas' %}" class="btn btn-sm btn-premium">
                     Visualizar
                 </a>
             </div>
-
             <h2>R$ {{ despesas }}</h2>
         </div>
     </div>
@@ -55,7 +48,8 @@
 <!-- SALDO FUTURO -->
 <div class="mt-4">
 
-<div class="saldo-box 
+<div id="saldoBox"
+    class="saldo-box 
     {% if saldo_futuro < 0 %}bg-danger
     {% elif saldo_futuro < 100 %}bg-warning text-dark
     {% else %}bg-success
@@ -66,12 +60,12 @@
 
     <div>
         <h5>Saldo Futuro</h5>
-        <h2>R$ {{ saldo_futuro }}</h2>
-        <small>Até {{ data_filtro|date:"d/m/Y" }}</small>
+        <h2 id="saldoFuturo">R$ {{ saldo_futuro }}</h2>
+        <small id="dataFiltro">Até {{ data_filtro|date:"d/m/Y" }}</small>
     </div>
 
     <!-- FILTRO -->
-    <form method="GET" class="d-flex align-items-center gap-2">
+    <form id="filtroForm" class="d-flex align-items-center gap-2">
 
         <input
             type="date"
@@ -89,17 +83,6 @@
 
 </div>
 
-<!-- ALERTA -->
-<div class="mt-2">
-    {% if saldo_futuro < 0 %}
-        
-    {% elif saldo_futuro < 100 %}
-        
-    {% else %}
-      
-    {% endif %}
-</div>
-
 </div>
 
 </div>
@@ -115,23 +98,84 @@
 <!-- CHART JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- PASSA DADOS DO DJANGO PARA JS -->
 <script>
-const ctx = document.getElementById('grafico').getContext('2d');
+const graficoCanvas = document.getElementById('grafico');
+let grafico;
 
-new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Receitas', 'Despesas'],
-        datasets: [{
-            label: 'Resumo Financeiro',
-            data: [{{ receitas_filtro|default:0 }}, {{ despesas_filtro|default:0 }}]
-        }]
+
+function criarGrafico(receitas, despesas) {
+
+    if (grafico) {
+        grafico.destroy(); 
     }
+
+    grafico = new Chart(graficoCanvas, {
+        type: 'bar',
+        data: {
+            labels: ['Receitas', 'Despesas'],
+            datasets: [{
+                label: 'Resumo Financeiro',
+                data: [receitas, despesas],
+                backgroundColor: [
+                    '#28a745',
+                    '#dc3545'  
+                ],
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            animation: {
+                duration: 800 
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+criarGrafico(
+    Number("{{ receitas_filtro|default:'0' }}"),
+    Number("{{ despesas_filtro|default:'0' }}")
+);
+
+document.getElementById('filtroForm').addEventListener('submit', function(e) {
+
+    e.preventDefault();
+
+    const data = this.querySelector('input[name="data"]').value;
+
+    fetch(`/dashboard/dados/?data=${data}`)
+        .then(res => res.json())
+        .then(response => {
+
+            // Atualiza gráfico
+            criarGrafico(response.receitas, response.despesas);
+
+            // Atualiza saldo
+            const saldoEl = document.getElementById('saldoFuturo');
+            saldoEl.innerText = `R$ ${response.saldo.toFixed(2)}`;
+
+            // Atualiza data
+            document.getElementById('dataFiltro').innerText = `Até ${response.data}`;
+
+            // Atualiza cor do saldo
+            const box = document.getElementById('saldoBox');
+
+            box.classList.remove('bg-success', 'bg-warning', 'bg-danger', 'text-dark');
+
+            if (response.saldo < 0) {
+                box.classList.add('bg-danger');
+            } else if (response.saldo < 100) {
+                box.classList.add('bg-warning', 'text-dark');
+            } else {
+                box.classList.add('bg-success');
+            }
+        });
 });
 </script>
-
-<!-- JS DO DASHBOARD -->
-<script src="{% static 'financeiro/js/dashboard.js' %}"></script>
 
 {% endblock %}
