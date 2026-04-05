@@ -3,31 +3,61 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
-# LOGIN API
+
 def api_login(request):
 
     if request.method == 'POST':
-        username = request.POST.get('username')
+
+        email = request.POST.get('email')
         password = request.POST.get('password')
 
-        user = authenticate(request, username=username, password=password)
+        if not email or not password:
+            return JsonResponse({
+                'success': False,
+                'error': 'Preencha email e senha'
+            })
+
+        try:
+            user_obj = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Email ou senha inválidos'
+            })
+
+        user = authenticate(request, username=user_obj.username, password=password)
 
         if user:
             login(request, user)
             return JsonResponse({'success': True})
         else:
-            return JsonResponse({'success': False})
+            return JsonResponse({
+                'success': False,
+                'error': 'Email ou senha inválidos'
+            })
+
+    return JsonResponse({
+        'success': False,
+        'error': 'Método inválido'
+    })
 
 
-# CADASTRO API
 def api_cadastro(request):
 
     if request.method == 'POST':
-        username = request.POST.get('username')
+
+        username = request.POST.get('username')  # 👈 nome do usuário
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirmar = request.POST.get('confirmar')
         aceitou = request.POST.get('aceitou')
+
+
+        if not username or not email or not password:
+            return JsonResponse({
+                'success': False,
+                'error': 'Preencha todos os campos'
+            })
 
         if password != confirmar:
             return JsonResponse({
@@ -35,48 +65,62 @@ def api_cadastro(request):
                 'error': 'As senhas não coincidem'
             })
 
-        if User.objects.filter(username=username).exists():
+        if len(password) < 6:
             return JsonResponse({
                 'success': False,
-                'error': 'Usuário já existe'
+                'error': 'A senha deve ter pelo menos 6 caracteres'
             })
 
-        if not aceitou:
+        if aceitou != "true":
             return JsonResponse({
                 'success': False,
                 'error': 'Aceite os termos'
             })
 
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({
+                'success': False,
+                'error': 'Email já cadastrado'
+            })
+
         user = User.objects.create_user(
-            username=username,
+            username=username,  
             email=email,
             password=password
         )
 
+        # LOGIN AUTOMÁTICO
         login(request, user)
 
         return JsonResponse({'success': True})
 
+    return JsonResponse({
+        'success': False,
+        'error': 'Método inválido'
+    })
 
-# PÁGINAS
 def login_view(request):
+
     if request.user.is_authenticated:
         return redirect('financeiro:dashboard')
+
     return render(request, 'financeiro/autenticacao/login.html')
 
-
 def cadastro_view(request):
+
     if request.user.is_authenticated:
         return redirect('financeiro:dashboard')
+
     return render(request, 'financeiro/autenticacao/cadastro.html')
 
-
 def logout_view(request):
+
     logout(request)
     return redirect('financeiro:login')
 
-
 def home_view(request):
+
     if request.user.is_authenticated:
         return redirect('financeiro:dashboard')
+
     return redirect('financeiro:login')

@@ -22,7 +22,7 @@
 
         <h3 class="text-center mb-4">Criar Conta</h3>
 
-        <!-- ERRO -->
+        <!-- MENSAGEM -->
         <div id="mensagem"></div>
 
         <!-- FORM -->
@@ -33,9 +33,9 @@
 
             <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
 
-            <input type="password" name="password" class="form-control mb-2" placeholder="Senha" required>
+            <input type="password" id="senha" name="password" class="form-control mb-2" placeholder="Senha" required>
 
-            <input type="password" name="confirmar" class="form-control mb-2" placeholder="Confirmar senha" required>
+            <input type="password" id="confirmar_senha" name="confirmar" class="form-control mb-2" placeholder="Confirmar senha" required>
 
             <!-- CEP -->
             <input type="text" id="cep" class="form-control mb-2" placeholder="CEP">
@@ -85,33 +85,30 @@
 
         <h6>2. Finalidade do Uso</h6>
         <p>
-            Os dados coletados são utilizados exclusivamente para funcionamento da aplicação, permitindo o acesso, armazenamento e organização das informações financeiras do usuário.
+            Os dados coletados são utilizados exclusivamente para funcionamento da aplicação.
         </p>
 
         <h6>3. Armazenamento e Segurança</h6>
         <p>
-            Os dados são armazenados de forma segura, sendo adotadas medidas técnicas e administrativas para proteção contra acessos não autorizados, perda ou alteração indevida.
+            Os dados são armazenados de forma segura, com medidas de proteção contra acessos não autorizados.
         </p>
 
         <h6>4. Compartilhamento de Dados</h6>
         <p>
-            Não realizamos o compartilhamento dos dados pessoais com terceiros, exceto quando necessário para cumprimento de obrigações legais.
+            Não realizamos compartilhamento de dados com terceiros.
         </p>
 
         <h6>5. Direitos do Usuário</h6>
-        <p>
-            Nos termos da Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018), o usuário pode solicitar a qualquer momento:
-        </p>
         <ul>
-            <li>Acesso aos seus dados;</li>
-            <li>Correção de informações incorretas;</li>
-            <li>Exclusão dos dados pessoais;</li>
+            <li>Acesso aos dados;</li>
+            <li>Correção;</li>
+            <li>Exclusão;</li>
             <li>Revogação do consentimento.</li>
         </ul>
 
         <h6>6. Consentimento</h6>
         <p>
-            Ao utilizar este sistema, o usuário declara estar ciente e de acordo com a coleta e uso de seus dados conforme descrito neste termo.
+            Ao utilizar o sistema, o usuário concorda com os termos.
         </p>
 
         <button class="btn btn-secondary mt-3" id="fecharTermos">
