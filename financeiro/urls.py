@@ -1,6 +1,6 @@
 from django.urls import path
 
-from financeiro.views.auth_view import (
+from financeiro.controllers.auth_controller import (
     login_view,
     api_login,
     logout_view,
@@ -9,16 +9,16 @@ from financeiro.views.auth_view import (
 )
 
 # HOME
-from financeiro.views.auth_view import home_view
+from financeiro.controllers.auth_controller import home_view
 
 # DASHBOARD
-from financeiro.views.dashboard_view import (
+from financeiro.controllers.dashboard_controller import (
     dashboard,
     dashboard_dados
 )
 
 # RECEITAS
-from financeiro.views.receita_view import (
+from financeiro.controllers.receitas_controller import (
     listar_receitas_view,
     criar_receita_view,
     editar_receita_view,
@@ -26,7 +26,7 @@ from financeiro.views.receita_view import (
 )
 
 # DESPESAS
-from financeiro.views.despesas_view import (
+from financeiro.controllers.despesas_controller import (
     listar_despesas_view,
     criar_despesa_view,
     editar_despesa_view,
@@ -34,7 +34,7 @@ from financeiro.views.despesas_view import (
 )
 
 # CATEGORIAS
-from financeiro.views.categorias_view import (
+from financeiro.controllers.categorias_controller import (
     listar_categorias_view,
     criar_categoria_view,
     editar_categoria_view,

@@ -5,7 +5,20 @@
 
 <link rel="stylesheet" href="{% static 'financeiro/css/dashboard.css' %}">
 
-<h2 class="mb-4">Dashboard Financeiro</h2>
+<h2 class="mb-2">Dashboard Financeiro</h2>
+
+<!--  ALERTAS GERAIS (TOPO) -->
+{% if alertas_gerais %}
+<div id="alertasGerais" class="alert alert-warning mb-3">
+    <ul class="mb-0">
+        {% for alerta in alertas_gerais %}
+            <li>{{ alerta }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+<div id="alertasGerais"></div>
+{% endif %}
 
 <div class="row">
 
@@ -13,169 +26,100 @@
     <div class="col-md-4 mb-3">
         <div class="card card-premium bg-saldo">
             <h6>Saldo Atual</h6>
-            <h2>R$ {{ saldo }}</h2>
+            <h1 id="saldoAtual">R$ {{ saldo_atual|default:0 }}</h1>
         </div>
     </div>
 
     <!-- RECEITAS -->
     <div class="col-md-4 mb-3">
         <div class="card card-premium bg-receita">
-            <div class="d-flex justify-content-between">
-                <h6>Receitas</h6>
-                <a href="{% url 'financeiro:listar_receitas' %}" class="btn btn-sm btn-premium">
-                    Visualizar
-                </a>
-            </div>
-            <h2>R$ {{ receitas }}</h2>
+            <h6>Receitas</h6>
+            <h2 id="receitas">R$ {{ receitas|default:0 }}</h2>
         </div>
     </div>
 
     <!-- DESPESAS -->
     <div class="col-md-4 mb-3">
         <div class="card card-premium bg-despesa">
-            <div class="d-flex justify-content-between">
-                <h6>Despesas</h6>
-                <a href="{% url 'financeiro:listar_despesas' %}" class="btn btn-sm btn-premium">
-                    Visualizar
-                </a>
-            </div>
-            <h2>R$ {{ despesas }}</h2>
+            <h6>Despesas</h6>
+            <h2 id="despesas">R$ {{ despesas|default:0 }}</h2>
         </div>
     </div>
 
 </div>
 
-<!-- SALDO FUTURO -->
-<div class="mt-4">
+<!--  SALDO PREVISTO -->
+<div id="cardPrevisto"
+     class="card card-premium mt-3 p-3
+     {% if saldo_previsto < 0 %}bg-despesa
+     {% elif saldo_previsto < 100 %}bg-warning text-dark
+     {% else %}bg-saldo
+     {% endif %}">
 
-<div id="saldoBox"
-    class="saldo-box 
-    {% if saldo_futuro < 0 %}bg-danger
-    {% elif saldo_futuro < 100 %}bg-warning text-dark
-    {% else %}bg-success
-    {% endif %}
-">
+    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
 
-<div class="d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Saldo Previsto</h6>
 
-    <div>
-        <h5>Saldo Futuro</h5>
-        <h2 id="saldoFuturo">R$ {{ saldo_futuro }}</h2>
-        <small id="dataFiltro">Até {{ data_filtro|date:"d/m/Y" }}</small>
+        <div class="d-flex gap-2">
+            <select id="mes" class="form-select form-select-sm">
+
+            {% for i in "123456789012"|slice:":12" %}
+            <option value="{{ forloop.counter }}"
+                {% if mes == forloop.counter %}selected{% endif %}>
+                {{ forloop.counter }}
+            </option>
+            {% endfor %}
+
+            </select>
+
+            <input type="number" id="ano"
+                   class="form-control form-control-sm"
+                   value="{{ ano }}"
+                   style="width:90px;">
+        </div>
+
     </div>
 
-    <!-- FILTRO -->
-    <form id="filtroForm" class="d-flex align-items-center gap-2">
+    <h2 id="saldoPrevisto">R$ {{ saldo_previsto|default:0 }}</h2>
 
-        <input
-            type="date"
-            name="data"
-            value="{{ data_filtro|date:'Y-m-d' }}"
-            class="form-control form-control-sm"
-            style="width: 150px;"
-        >
-
-        <button class="btn btn-sm btn-premium">
-            Filtrar
-        </button>
-
-    </form>
+    <!--  ALERTA DENTRO DO CARD -->
+    {% if alerta_previsto %}
+        <small id="alertaPrevisto" class="fw-bold d-block mt-1">
+            {{ alerta_previsto }}
+        </small>
+    {% else %}
+        <small id="alertaPrevisto"></small>
+    {% endif %}
 
 </div>
 
-</div>
-
+<!-- LOADING -->
+<div id="loading" style="display:none; text-align:center; padding:20px;">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-2">Atualizando dados...</p>
 </div>
 
 <!-- GRÁFICO -->
-<div class="card mt-4">
+<div class="card mt-4" style="max-width: 1000px; margin:auto;">
     <div class="card-body">
-        <h5>Resumo Financeiro</h5>
-        <canvas id="grafico"></canvas>
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5>Receitas vs Despesas</h5>
+
+            <select id="tipoGrafico" class="form-select form-select-sm" style="width:150px;">
+                <option value="bar">Barras</option>
+                <option value="line">Linha</option>
+                <option value="doughnut">Pizza</option>
+            </select>
+        </div>
+
+        <canvas id="grafico" height="200"></canvas>
+
     </div>
 </div>
 
-<!-- CHART JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
-const graficoCanvas = document.getElementById('grafico');
-let grafico;
-
-
-function criarGrafico(receitas, despesas) {
-
-    if (grafico) {
-        grafico.destroy(); 
-    }
-
-    grafico = new Chart(graficoCanvas, {
-        type: 'bar',
-        data: {
-            labels: ['Receitas', 'Despesas'],
-            datasets: [{
-                label: 'Resumo Financeiro',
-                data: [receitas, despesas],
-                backgroundColor: [
-                    '#28a745',
-                    '#dc3545'  
-                ],
-                borderRadius: 8
-            }]
-        },
-        options: {
-            responsive: true,
-            animation: {
-                duration: 800 
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-}
-
-criarGrafico(
-    Number("{{ receitas_filtro|default:'0' }}"),
-    Number("{{ despesas_filtro|default:'0' }}")
-);
-
-document.getElementById('filtroForm').addEventListener('submit', function(e) {
-
-    e.preventDefault();
-
-    const data = this.querySelector('input[name="data"]').value;
-
-    fetch(`/dashboard/dados/?data=${data}`)
-        .then(res => res.json())
-        .then(response => {
-
-            // Atualiza gráfico
-            criarGrafico(response.receitas, response.despesas);
-
-            // Atualiza saldo
-            const saldoEl = document.getElementById('saldoFuturo');
-            saldoEl.innerText = `R$ ${response.saldo.toFixed(2)}`;
-
-            // Atualiza data
-            document.getElementById('dataFiltro').innerText = `Até ${response.data}`;
-
-            // Atualiza cor do saldo
-            const box = document.getElementById('saldoBox');
-
-            box.classList.remove('bg-success', 'bg-warning', 'bg-danger', 'text-dark');
-
-            if (response.saldo < 0) {
-                box.classList.add('bg-danger');
-            } else if (response.saldo < 100) {
-                box.classList.add('bg-warning', 'text-dark');
-            } else {
-                box.classList.add('bg-success');
-            }
-        });
-});
-</script>
+<script src="{% static 'financeiro/js/dashboard.js' %}" defer></script>
 
 {% endblock %}

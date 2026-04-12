@@ -104,3 +104,60 @@ body {
 .btn-logout:hover {
     background: #f5f3f3ef;
 }
+
+.card {
+    border-radius: 12px;
+    border: none;
+}
+
+h3 {
+    font-weight: 600;
+}
+
+.fade {
+    transition: all 0.3s ease;
+    transform: scale(1.05);
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.fade-out {
+    animation: fadeOut 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* FORM ANIMADO */
+#formCategoria {
+    transition: all 0.3s ease;
+}
+
+/* LINHAS DA TABELA */
+#tabelaCategorias tr {
+    transition: all 0.2s ease;
+}
+
+/* HOVER MAIS SUAVE */
+#tabelaCategorias tr:hover {
+    background-color: #f8f9fa;
+}

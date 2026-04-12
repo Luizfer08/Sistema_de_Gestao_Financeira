@@ -8,7 +8,7 @@ class Despesa(models.Model):
     usuario = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='despesas'  # facilita consultas (user.despesas.all())
+        related_name='despesas'
     )
 
     descricao = models.CharField(max_length=255)
@@ -37,13 +37,19 @@ class Despesa(models.Model):
 
     def is_ativa_em(self, data):
         """
-        Verifica se a despesa é válida para uma data específica
-        (usado para recorrência no futuro)
+        Verifica se a despesa deve ser considerada em uma data específica
         """
+
+        # NÃO RECORRENTE → só no dia exato
         if not self.recorrente:
-            return self.data <= data
+            return self.data == data
 
-        if self.data_fim:
-            return self.data <= data <= self.data_fim
+        # RECORRENTE → ainda não começou
+        if data < self.data:
+            return False
 
-        return self.data <= data
+        # RECORRENTE COM FIM
+        if self.data_fim and data > self.data_fim:
+            return False
+
+        return True

@@ -32,11 +32,26 @@ class Receita(models.Model):
 
     criado_em = models.DateTimeField(auto_now_add=True)
 
+    data_fim = models.DateField(null=True, blank=True)
+
     def __str__(self):
         return f"{self.descricao} - R$ {self.valor}"
 
     def is_ativa_em(self, data):
         """
-        Verifica se a receita deve ser considerada até uma data
+        Verifica se a receita deve ser considerada em uma data específica
         """
-        return self.data <= data
+
+        # Se não é recorrente 
+        if not self.recorrente:
+            return self.data == data
+
+        # Se é recorrente
+        if data < self.data:
+            return False
+
+        # Se tem data fim 
+        if self.data_fim and data > self.data_fim:
+            return False
+
+        return True
