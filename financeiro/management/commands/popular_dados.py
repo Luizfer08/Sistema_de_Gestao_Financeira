@@ -10,7 +10,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        # ===== USUÁRIO =====
         user, _ = User.objects.get_or_create(
             username='teste',
             defaults={'email': 'teste@email.com'}
@@ -18,7 +17,6 @@ class Command(BaseCommand):
         user.set_password('123456')
         user.save()
 
-        # ===== CATEGORIAS =====
         nomes_categorias = [
             'Alimentação', 'Transporte', 'Moradia',
             'Lazer', 'Saúde', 'Educação',
@@ -32,13 +30,12 @@ class Command(BaseCommand):
                 usuario=user
             )
             categorias.append(cat)
-        # ===== FUNÇÃO DATA ALEATÓRIA =====
+
         def data_aleatoria():
             hoje = date.today()
             dias = random.randint(0, 365)
             return hoje - timedelta(days=dias)
 
-        # ===== RECEITAS =====
         for _ in range(1000):
             Receita.objects.create(
                 usuario=user,
@@ -49,7 +46,6 @@ class Command(BaseCommand):
                 recorrente=random.choice([True, False])
             )
 
-        # ===== DESPESAS =====
         for _ in range(1000):
             Despesa.objects.create(
                 usuario=user,
