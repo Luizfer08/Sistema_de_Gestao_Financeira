@@ -9,13 +9,14 @@ function getCSRFToken(){
     return document.querySelector('[name=csrfmiddlewaretoken]').value;
 }
 
-//  CRIA
+// CRIAR
 document.getElementById("formReceita").addEventListener("submit", function(e){
     e.preventDefault();
 
     const formData = new FormData(this);
+    const tabela = document.getElementById("tabelaReceitas");
 
-    fetch("{% url 'financeiro:criar_receita' %}", {
+    fetch("/receitas/criar/", {
         method: "POST",
         headers: {"X-CSRFToken": getCSRFToken()},
         body: formData
@@ -23,9 +24,32 @@ document.getElementById("formReceita").addEventListener("submit", function(e){
     .then(res => res.json())
     .then(data => {
 
-        if(data.success){
+    if(data.success){
 
-            location.reload(); // simples e seguro (evita inconsistência)
+        const novaLinha = document.createElement("tr");
+        novaLinha.id = `linha-${data.id}`;
+        novaLinha.classList.add("fade-in");
+
+        novaLinha.innerHTML = `
+            <td id="desc-${data.id}">${data.descricao}</td>
+            <td id="valor-${data.id}">R$ ${parseFloat(data.valor).toFixed(2)}</td>
+            <td>${data.categoria}</td>
+            <td>${data.data}</td>
+            <td>
+                ${data.recorrente 
+                    ? '<span class="badge bg-success">Sim</span>' 
+                    : '<span class="badge bg-secondary">Não</span>'}
+            </td>
+            <td>
+                <button onclick="editarReceita(${data.id})" class="btn btn-warning btn-sm">Editar</button>
+                <button onclick="excluirReceita(${data.id})" class="btn btn-danger btn-sm">Excluir</button>
+            </td>
+        `;
+
+        tabela.appendChild(novaLinha);
+
+        document.getElementById("formReceita").reset();
+        toggleFormReceita();
 
         } else {
             alert(data.error);
@@ -34,7 +58,8 @@ document.getElementById("formReceita").addEventListener("submit", function(e){
     });
 });
 
-// EDITAR 
+
+// EDITAR
 function editarReceita(id){
 
     const desc = document.getElementById(`desc-${id}`);
@@ -44,15 +69,16 @@ function editarReceita(id){
     const valorOriginal = valor.innerText;
 
     desc.innerHTML = `<input id="input-desc-${id}" value="${descOriginal}" class="form-control">`;
+
     const valorLimpo = valorOriginal
-    .replace('R$', '')
-    .replace(/\./g, '')     
-    .replace(',', '.')      // troca vírgula por ponto
-    .trim();
+        .replace('R$', '')
+        .replace(/\./g, '')
+        .replace(',', '.')
+        .trim();
 
-valor.innerHTML = `<input id="input-valor-${id}" value="${valorLimpo}" class="form-control">`;
+    valor.innerHTML = `<input id="input-valor-${id}" value="${valorLimpo}" class="form-control">`;
 
-    const tdAcoes = desc.parentElement.querySelector("td:last-child");
+    const tdAcoes = document.getElementById(`linha-${id}`).querySelector("td:last-child");
 
     tdAcoes.innerHTML = `
         <button onclick="salvarReceita(${id})" class="btn btn-success btn-sm">Salvar</button>
@@ -62,19 +88,29 @@ valor.innerHTML = `<input id="input-valor-${id}" value="${valorLimpo}" class="fo
     `;
 }
 
-// CANCELAR 
+
+// CANCELAR
 function cancelarEdicaoReceita(id, descOriginal, valorOriginal){
 
     document.getElementById(`desc-${id}`).innerText = descOriginal;
     document.getElementById(`valor-${id}`).innerText = valorOriginal;
 
-    const tdAcoes = document.getElementById(`linha-${id}`).querySelector("td:last-child");
+    restaurarBotoesReceita(id);
+}
+
+
+// RESTAURAR BOTÕES
+function restaurarBotoesReceita(id){
+
+    const linha = document.getElementById(`linha-${id}`);
+    const tdAcoes = linha.querySelector("td:last-child");
 
     tdAcoes.innerHTML = `
         <button onclick="editarReceita(${id})" class="btn btn-warning btn-sm">Editar</button>
         <button onclick="excluirReceita(${id})" class="btn btn-danger btn-sm">Excluir</button>
     `;
 }
+
 
 // SALVAR
 function salvarReceita(id){
@@ -95,13 +131,21 @@ function salvarReceita(id){
     .then(data => {
 
         if(data.success){
-            location.reload();
+
+            const valorFormatado = `R$ ${parseFloat(data.valor).toFixed(2)}`;
+
+            document.getElementById(`desc-${id}`).innerText = data.descricao;
+            document.getElementById(`valor-${id}`).innerText = valorFormatado;
+
+            cancelarEdicaoReceita(id, data.descricao, valorFormatado);
+
         } else {
             alert(data.error);
         }
 
     });
 }
+
 
 // EXCLUIR
 function excluirReceita(id){
@@ -116,10 +160,12 @@ function excluirReceita(id){
     .then(data => {
 
         if(data.success){
+
             const linha = document.getElementById(`linha-${id}`);
             linha.classList.add("fade-out");
 
             setTimeout(() => linha.remove(), 200);
+
         } else {
             alert(data.error);
         }
