@@ -1,17 +1,49 @@
 {% extends 'financeiro/base.html' %}
 
+{% load static %}
+
 {% block content %}
 
-<div class="container mt-4">
+<div class="container">
 
-    <h2>Categorias</h2>
+    <!-- TOPO -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Categorias</h3>
 
-    <!-- BOTÃO NOVA -->
-    <a href="{% url 'financeiro:criar_categoria' %}" class="btn btn-success mb-3">
-        Nova Categoria
-    </a>
+        <button class="btn btn-success" onclick="toggleForm()">
+            + Nova Categoria
+        </button>
+    </div>
 
-    <!-- SE EXISTEM CATEGORIAS -->
+    <!-- FORM INLINE -->
+    <div id="containerFormCategoria" class="card p-3 mb-3 shadow-sm" style="display: none;">
+
+        <form id="formCategoria">
+            {% csrf_token %}
+
+            <div class="row align-items-end">
+
+                <div class="col-md-6">
+                    <label class="form-label">Nome da categoria</label>
+                    <input type="text" name="nome" id="nomeCategoria" class="form-control" required>
+                </div>
+
+                <div class="col-md-6 d-flex gap-2 mt-2">
+                    <button type="submit" class="btn btn-success">
+                        Salvar
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" onclick="toggleForm()">
+                        Cancelar
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+
+    <!-- LISTA -->
     {% if categorias %}
 
     <table class="table table-striped">
@@ -19,36 +51,33 @@
         <thead>
             <tr>
                 <th>Nome</th>
-                <th>Ações</th>
+                <th style="width: 180px;">Ações</th>
             </tr>
         </thead>
 
-        <tbody>
+        <tbody id="tabelaCategorias">
 
-            {% for c in categorias %}
-            <tr>
+        {% for c in categorias %}
+        <tr id="linha-{{ c.id }}">
 
-                <td>{{ c.nome }}</td>
+            <td id="nome-{{ c.id }}">
+                {{ c.nome }}
+            </td>
 
-                <td>
+            <td>
 
-                    <!-- EDITAR -->
-                    <a href="{% url 'financeiro:editar_categoria' c.id %}" class="btn btn-warning btn-sm">
-                        Editar
-                    </a>
+                <button class="btn btn-warning btn-sm" onclick="editarInline({{ c.id }})">
+                    Editar
+                </button>
 
-                    <!-- EXCLUIR -->
-                    <form action="{% url 'financeiro:excluir_categoria' c.id %}" method="POST" style="display:inline;">
-                        {% csrf_token %}
-                        <button class="btn btn-danger btn-sm">
-                            Excluir
-                        </button>
-                    </form>
+                <button class="btn btn-danger btn-sm" onclick="excluirCategoria({{ c.id }})">
+                    Excluir
+                </button>
 
-                </td>
+            </td>
 
-            </tr>
-            {% endfor %}
+        </tr>
+        {% endfor %}
 
         </tbody>
 
@@ -56,7 +85,6 @@
 
     {% else %}
 
-    <!-- MENSAGEM -->
     <div class="alert alert-info text-center">
         Nenhuma categoria cadastrada
     </div>
@@ -64,5 +92,9 @@
     {% endif %}
 
 </div>
+
+<!-- JS -->
+<script src="{% static 'financeiro/js/categoria.js' %}"></script>
+
 
 {% endblock %}

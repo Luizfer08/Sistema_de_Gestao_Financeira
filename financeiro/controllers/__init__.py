@@ -1,4 +1,4 @@
-from .auth_view import (
+from .auth_controller import (
     home_view,
     login_view,
     logout_view,
@@ -7,26 +7,26 @@ from .auth_view import (
     api_cadastro,
 )
 
-from .dashboard_view import (
+from .dashboard_controller import (
     dashboard,
     dashboard_dados,
 )
 
-from .receita_view import (
+from .receitas_controller import (
     listar_receitas_view,
     criar_receita_view,
     editar_receita_view,
     excluir_receita_view,
 )
 
-from .despesas_view import (
+from .despesas_controller import (
     listar_despesas_view,
     criar_despesa_view,
     editar_despesa_view,
     excluir_despesa_view,
 )
 
-from .categorias_view import (
+from .categorias_controller import (
     listar_categorias_view,
     criar_categoria_view,
     editar_categoria_view,

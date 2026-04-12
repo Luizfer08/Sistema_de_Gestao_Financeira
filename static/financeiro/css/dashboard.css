@@ -1,31 +1,173 @@
+/*  CARDS  */
 .card-premium {
+    border-radius: 16px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transition: all 0.2s ease-in-out;
+}
+
+.card-premium:hover {
+    transform: translateY(-3px);
+}
+
+/*  CORES (PADRÃO FINTECH)  */
+
+/* SALDO ATUAL */
+.bg-saldo {
+    background: linear-gradient(135deg, #00c853, #00b248);
+}
+
+/* RECEITAS */
+.bg-receita {
+    background: linear-gradient(135deg, #2979ff, #1c54b2);
+}
+
+/* DESPESAS */
+.bg-despesa {
+    background: linear-gradient(135deg, #ff5252, #c62828);
+}
+
+/*  SALDO PREVISTO DINÂMICO  */
+
+/* POSITIVO */
+.bg-success {
+    background: linear-gradient(135deg, #00c853, #00b248) !important;
+}
+
+/* ATENÇÃO */
+.bg-warning {
+    background: linear-gradient(135deg, #ffb300, #ff8f00) !important;
+    color: #000 !important;
+}
+
+/* NEGATIVO */
+.bg-danger {
+    background: linear-gradient(135deg, #ff5252, #c62828) !important;
+}
+
+/*  TEXTO  */
+.card-premium small {
+    opacity: 0.85;
+    font-size: 13px;
+}
+
+.card-premium h1,
+.card-premium h2 {
+    margin-top: 5px;
+    font-weight: 700;
+}
+
+/*  BOTÃO PREMIUM  */
+.btn-premium {
+    background: #6f42c1;
+    color: white;
     border: none;
-    border-radius: 15px;
-    padding: 15px;
+    border-radius: 8px;
+    transition: 0.2s;
+    padding: 5px 12px;
+}
+
+.btn-premium:hover {
+    background: #5a32a3;
+    color: white;
+}
+
+/*  CARD PADRÃO  */
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+/*  SALDO BOX (PERÍODO)  */
+.saldo-box {
+    border-radius: 16px;
+    padding: 20px;
     color: white;
     transition: 0.3s;
 }
 
+/* VARIAÇÕES SALDO PERÍODO */
+.saldo-box.bg-success {
+    background: linear-gradient(135deg, #00c853, #00b248);
+}
+
+.saldo-box.bg-warning {
+    background: linear-gradient(135deg, #ffb300, #ff8f00);
+    color: #000;
+}
+
+.saldo-box.bg-danger {
+    background: linear-gradient(135deg, #ff5252, #c62828);
+}
+
+/*  GRÁFICO  */
+canvas {
+    max-height: 250px;
+}
+
+.card canvas {
+    margin-top: 10px;
+}
+
+/*  ALERTAS  */
+.alert {
+    border-radius: 12px;
+    font-size: 14px;
+    animation: fadeIn 0.3s ease-in-out;
+    border-left: 5px solid #ffc107;
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/*  LOADING  */
+#loading {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/*  ANIMAÇÕES  */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/*  RESPONSIVO  */
+@media (max-width: 768px) {
+
+    .card-premium {
+        text-align: center;
+    }
+
+    canvas {
+        max-height: 180px;
+    }
+
+    .saldo-box {
+        text-align: center;
+    }
+}
+
+/*  MELHORIA VISUAL EXTRA  */
+
+/* destaque do saldo previsto */
+#saldoPrevisto {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* espaçamento melhor */
+h2, h1 {
+    letter-spacing: 0.5px;
+}
+
+/* hover suave nos cards */
 .card-premium:hover {
-    transform: translateY(-4px);
-}
-
-/* CORES */
-.bg-saldo {
-    background: linear-gradient(135deg, #11998e, #38ef7d);
-}
-
-.bg-receita {
-    background: linear-gradient(135deg, #396afc, #2948ff);
-}
-
-.bg-despesa {
-    background: linear-gradient(135deg, #ff416c, #ff4b2b);
-}
-
-/* SALDO FUTURO */
-.saldo-box {
-    border-radius: 15px;
-    padding: 20px;
-    color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
