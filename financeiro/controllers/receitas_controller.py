@@ -1,7 +1,6 @@
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 
 from financeiro.services.categoria_service import listar_categorias
 from financeiro.services.receita_service import (
@@ -11,9 +10,8 @@ from financeiro.services.receita_service import (
     excluir_receita
 )
 
-from financeiro.models import Categoria
 
-
+# LISTAR
 @login_required
 def listar_receitas_view(request):
 
@@ -25,55 +23,73 @@ def listar_receitas_view(request):
         'categorias': categorias
     })
 
+
+# CRIAR
 @login_required
 def criar_receita_view(request):
 
-    if request.method == 'POST':
-        try:
-            receita = criar_receita(request.user, request.POST)
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método inválido'})
 
-            return JsonResponse({
-                'success': True,
-                'id': receita.id,
-                'descricao': receita.descricao,
-                'valor': float(receita.valor),
-                'data': receita.data.strftime('%d/%m/%Y')
-            })
+    try:
+        receita = criar_receita(request.user, request.POST)
 
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({
+            'success': True,
+            'id': receita.id,
+            'descricao': receita.descricao,
+            'valor': float(receita.valor),
+            'data': receita.data.strftime('%d/%m/%Y'),
+            'categoria': receita.categoria.nome if receita.categoria else "Sem categoria",
+            'recorrente': receita.recorrente
+        })
 
-    return JsonResponse({'success': False})
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
 
+
+# EDITAR
 @login_required
 def editar_receita_view(request, id):
 
-    if request.method == 'POST':
-        try:
-            receita = editar_receita(id, request.user, request.POST)
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método inválido'})
 
-            return JsonResponse({
-                'success': True,
-                'descricao': receita.descricao,
-                'valor': float(receita.valor)
-            })
+    try:
+        receita = editar_receita(id, request.user, request.POST)
 
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({
+            'success': True,
+            'descricao': receita.descricao,
+            'valor': float(receita.valor)
+        })
 
-    return JsonResponse({'success': False})
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
 
 
+# EXCLUIR
 @login_required
 def excluir_receita_view(request, id):
 
-    if request.method == 'POST':
-        try:
-            excluir_receita(id, request.user)
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método inválido'})
 
-            return JsonResponse({'success': True})
+    try:
+        excluir_receita(id, request.user)
 
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({
+            'success': True
+        })
 
-    return JsonResponse({'success': False})
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })

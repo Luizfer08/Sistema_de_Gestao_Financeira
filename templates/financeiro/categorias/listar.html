@@ -43,9 +43,7 @@
 
     </div>
 
-    <!-- LISTA -->
-    {% if categorias %}
-
+    <!-- LISTA (SEMPRE EXISTE) -->
     <table class="table table-striped">
 
         <thead>
@@ -57,43 +55,45 @@
 
         <tbody id="tabelaCategorias">
 
-        {% for c in categorias %}
-        <tr id="linha-{{ c.id }}">
+            {% for c in categorias %}
+            <tr id="linha-{{ c.id }}">
 
-            <td id="nome-{{ c.id }}">
-                {{ c.nome }}
-            </td>
+                <td id="nome-{{ c.id }}">
+                    {{ c.nome }}
+                </td>
 
-            <td>
+                <td>
 
-                <button class="btn btn-warning btn-sm" onclick="editarInline({{ c.id }})">
-                    Editar
-                </button>
+                    <button class="btn btn-warning btn-sm" onclick="editarInline({{ c.id }})">
+                        Editar
+                    </button>
 
-                <button class="btn btn-danger btn-sm" onclick="excluirCategoria({{ c.id }})">
-                    Excluir
-                </button>
+                    <button class="btn btn-danger btn-sm" onclick="excluirCategoria({{ c.id }})">
+                        Excluir
+                    </button>
 
-            </td>
+                </td>
 
-        </tr>
-        {% endfor %}
+            </tr>
+
+            {% empty %}
+
+
+            <tr id="semCategorias">
+                <td colspan="2" class="text-center text-muted">
+                    Nenhuma categoria cadastrada
+                </td>
+            </tr>
+
+            {% endfor %}
 
         </tbody>
 
     </table>
 
-    {% else %}
-
-    <div class="alert alert-info text-center">
-        Nenhuma categoria cadastrada
-    </div>
-
-    {% endif %}
-
 </div>
 
-<!--  URL DO DJANGO PARA O JS -->
+<!-- URL PARA JS -->
 <script>
     const URL_CRIAR_CATEGORIA = "{% url 'financeiro:criar_categoria' %}";
 </script>

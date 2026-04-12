@@ -1,36 +1,68 @@
+//  TOGGLE FORM 
 function toggleFormDespesa(){
     const form = document.getElementById("formDespesaContainer");
     form.style.display = form.style.display === "none" ? "block" : "none";
 }
 
+//  CSRF 
 function getCSRFToken(){
     return document.querySelector('[name=csrfmiddlewaretoken]').value;
 }
 
-// CRIAR
+//  CRIAR 
 document.getElementById("formDespesa").addEventListener("submit", function(e){
     e.preventDefault();
 
     const formData = new FormData(this);
+    const tabela = document.getElementById("tabelaDespesas");
 
-    fetch("{% url 'financeiro:criar_despesa' %}", {
+    fetch("/despesas/criar/", {
         method: "POST",
         headers: {"X-CSRFToken": getCSRFToken()},
         body: formData
     })
-    .then(res => res.json())
+    .then(res => res.json()) 
     .then(data => {
 
         if(data.success){
-            location.reload();
+
+            const novaLinha = document.createElement("tr");
+            novaLinha.id = `linha-${data.id}`;
+            novaLinha.classList.add("fade-in");
+
+            novaLinha.innerHTML = `
+                <td id="desc-${data.id}">${data.descricao}</td>
+                <td id="valor-${data.id}">R$ ${parseFloat(data.valor).toFixed(2)}</td>
+                <td>${data.categoria}</td>
+                <td>${data.data}</td>
+                <td>
+                    ${data.recorrente 
+                        ? '<span class="badge bg-danger">Sim</span>' 
+                        : '<span class="badge bg-secondary">Não</span>'}
+                </td>
+                <td>
+                    <button onclick="editarDespesa(${data.id})" class="btn btn-warning btn-sm">Editar</button>
+                    <button onclick="excluirDespesa(${data.id})" class="btn btn-danger btn-sm">Excluir</button>
+                </td>
+            `;
+
+            tabela.appendChild(novaLinha);
+
+            document.getElementById("formDespesa").reset();
+            toggleFormDespesa();
+
         } else {
             alert(data.error);
         }
 
+    })
+    .catch(() => {
+        alert("Erro ao salvar despesa");
     });
 });
 
-// EDITAR
+
+//  EDITAR 
 function editarDespesa(id){
 
     const desc = document.getElementById(`desc-${id}`);
@@ -40,15 +72,16 @@ function editarDespesa(id){
     const valorOriginal = valor.innerText;
 
     desc.innerHTML = `<input id="input-desc-${id}" value="${descOriginal}" class="form-control">`;
+
     const valorLimpo = valorOriginal
-    .replace('R$', '')
-    .replace(/\./g, '')
-    .replace(',', '.')      // troca vírgula por ponto
-    .trim();
+        .replace('R$', '')
+        .replace(/\./g, '')
+        .replace(',', '.')
+        .trim();
 
-valor.innerHTML = `<input id="input-valor-${id}" value="${valorLimpo}" class="form-control">`;
+    valor.innerHTML = `<input id="input-valor-${id}" value="${valorLimpo}" class="form-control">`;
 
-    const tdAcoes = desc.parentElement.querySelector("td:last-child");
+    const tdAcoes = document.getElementById(`linha-${id}`).querySelector("td:last-child");
 
     tdAcoes.innerHTML = `
         <button onclick="salvarDespesa(${id})" class="btn btn-success btn-sm">Salvar</button>
@@ -58,7 +91,8 @@ valor.innerHTML = `<input id="input-valor-${id}" value="${valorLimpo}" class="fo
     `;
 }
 
-// CANCELAR 
+
+//  CANCELAR 
 function cancelarEdicaoDespesa(id, descOriginal, valorOriginal){
 
     document.getElementById(`desc-${id}`).innerText = descOriginal;
@@ -72,11 +106,13 @@ function cancelarEdicaoDespesa(id, descOriginal, valorOriginal){
     `;
 }
 
-// SALVAR
+
+//  SALVAR 
 function salvarDespesa(id){
 
     const descricao = document.getElementById(`input-desc-${id}`).value;
     let valor = document.getElementById(`input-valor-${id}`).value;
+
     valor = valor.replace(',', '.');
 
     fetch(`/despesas/editar/${id}/`, {
@@ -91,7 +127,14 @@ function salvarDespesa(id){
     .then(data => {
 
         if(data.success){
-            location.reload();
+
+            const valorFormatado = `R$ ${parseFloat(data.valor).toFixed(2)}`;
+
+            document.getElementById(`desc-${id}`).innerText = data.descricao;
+            document.getElementById(`valor-${id}`).innerText = valorFormatado;
+
+            cancelarEdicaoDespesa(id, data.descricao, valorFormatado);
+
         } else {
             alert(data.error);
         }
@@ -99,7 +142,8 @@ function salvarDespesa(id){
     });
 }
 
-// EXCLUIR
+
+//  EXCLUIR 
 function excluirDespesa(id){
 
     if(!confirm("Deseja excluir esta despesa?")) return;
@@ -112,10 +156,12 @@ function excluirDespesa(id){
     .then(data => {
 
         if(data.success){
+
             const linha = document.getElementById(`linha-${id}`);
             linha.classList.add("fade-out");
 
             setTimeout(() => linha.remove(), 200);
+
         } else {
             alert(data.error);
         }

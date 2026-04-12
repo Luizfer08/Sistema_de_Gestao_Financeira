@@ -1,5 +1,7 @@
 {% extends 'financeiro/base.html' %}
 
+{% load static %}
+
 {% block content %}
 
 <div class="container" style="max-width:600px;">
@@ -14,23 +16,32 @@
 
     <div class="card p-4 shadow-sm">
 
-        <form method="POST">
+        <form id="formCategoria">
 
             {% csrf_token %}
 
             <div class="mb-3">
                 <label class="form-label">Nome da categoria</label>
-                <input type="text" name="nome" class="form-control" placeholder="Ex: Alimentação" required>
+                <input 
+                    type="text" 
+                    id="nomeCategoria"
+                    name="nome" 
+                    class="form-control" 
+                    placeholder="Ex: Alimentação" 
+                    required
+                >
             </div>
 
             <div class="d-flex justify-content-end gap-2">
+
                 <a href="{% url 'financeiro:listar_categorias' %}" class="btn btn-outline-secondary">
                     Cancelar
                 </a>
 
-                <button class="btn btn-success">
+                <button type="submit" class="btn btn-success" id="btnSalvar">
                     Salvar
                 </button>
+
             </div>
 
         </form>
@@ -38,5 +49,12 @@
     </div>
 
 </div>
+
+<script>
+    const URL_CRIAR_CATEGORIA = "{% url 'financeiro:criar_categoria' %}";
+</script>
+
+<!-- JS -->
+<script src="{% static 'financeiro/js/categoria.js' %}"></script>
 
 {% endblock %}

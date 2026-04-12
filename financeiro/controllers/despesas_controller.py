@@ -12,6 +12,7 @@ from financeiro.services.despesa_service import (
 from financeiro.services.categoria_service import listar_categorias
 
 
+# LISTAR
 @login_required
 def listar_despesas_view(request):
 
@@ -24,52 +25,72 @@ def listar_despesas_view(request):
     })
 
 
+# CRIAR 
 @login_required
 def criar_despesa_view(request):
 
-    if request.method == 'POST':
-        try:
-            despesa = criar_despesa(request.user, request.POST)
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método inválido'})
 
-            return JsonResponse({
-                'success': True,
-                'id': despesa.id
-            })
+    try:
+        despesa = criar_despesa(request.user, request.POST)
 
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({
+            'success': True,
+            'id': despesa.id,
+            'descricao': despesa.descricao,
+            'valor': float(despesa.valor),
+            'data': despesa.data.strftime('%d/%m/%Y'),
+            'categoria': despesa.categoria.nome if despesa.categoria else "Sem categoria",
+            'recorrente': despesa.recorrente
+        })
 
-    return JsonResponse({'success': False})
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
 
 
+# EDITAR 
 @login_required
 def editar_despesa_view(request, id):
 
-    if request.method == 'POST':
-        try:
-            despesa = editar_despesa(id, request.user, request.POST)
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método inválido'})
 
-            return JsonResponse({
-                'success': True,
-                'descricao': despesa.descricao,
-                'valor': float(despesa.valor)
-            })
+    try:
+        despesa = editar_despesa(id, request.user, request.POST)
 
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({
+            'success': True,
+            'descricao': despesa.descricao,
+            'valor': float(despesa.valor)
+        })
 
-    return JsonResponse({'success': False})
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
 
 
+# EXCLUIR 
 @login_required
 def excluir_despesa_view(request, id):
 
-    if request.method == 'POST':
-        try:
-            excluir_despesa(id, request.user)
-            return JsonResponse({'success': True})
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método inválido'})
 
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+    try:
+        excluir_despesa(id, request.user)
 
-    return JsonResponse({'success': False})
+        return JsonResponse({
+            'success': True
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
