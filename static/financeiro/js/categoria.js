@@ -1,4 +1,4 @@
-// TOGGLE 
+// TOGGLE
 function toggleForm() {
     const form = document.getElementById('containerFormCategoria');
 
@@ -27,7 +27,7 @@ document.getElementById('formCategoria').addEventListener('submit', function(e) 
     const nome = document.getElementById('nomeCategoria').value;
     const tabela = document.getElementById('tabelaCategorias');
 
-    fetch("{% url 'financeiro:criar_categoria' %}", {
+    fetch(URL_CRIAR_CATEGORIA, {   // 🔥 CORRIGIDO AQUI
         method: "POST",
         headers: {
             "X-CSRFToken": getCSRFToken(),
@@ -144,13 +144,14 @@ function restaurarBotoes(id){
         <button class="btn btn-warning btn-sm" onclick="editarInline(${id})">
             Editar
         </button>
-        <button class="btn btn-danger btn-sm" onclick="excluirCategoria(${id})"">
+        <button class="btn btn-danger btn-sm" onclick="excluirCategoria(${id})">
             Excluir
         </button>
     `;
 }
 
-// EXCLUIR 
+
+// EXCLUIR
 function excluirCategoria(id){
 
     if(!confirm("Deseja realmente excluir esta categoria?")){
@@ -170,7 +171,6 @@ function excluirCategoria(id){
 
             const linha = document.getElementById(`linha-${id}`);
 
-            // ANIMAÇÃO DE SAÍDA
             linha.classList.add('fade-out');
 
             setTimeout(() => {

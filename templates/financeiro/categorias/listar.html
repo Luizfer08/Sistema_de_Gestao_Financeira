@@ -93,8 +93,12 @@
 
 </div>
 
+<!--  URL DO DJANGO PARA O JS -->
+<script>
+    const URL_CRIAR_CATEGORIA = "{% url 'financeiro:criar_categoria' %}";
+</script>
+
 <!-- JS -->
 <script src="{% static 'financeiro/js/categoria.js' %}"></script>
-
 
 {% endblock %}
