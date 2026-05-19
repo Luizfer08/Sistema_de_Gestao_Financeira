@@ -1,0 +1,2141 @@
+.receitas-page,
+.receitas-page *,
+.despesas-page,
+.despesas-page *
+.categorias-page,
+.categorias-page * {
+    font-family: 'Inter', sans-serif;
+}
+
+.receitas-total strong,
+.despesa-total strong,
+#totalReceitasMes,
+#totalDespesasMes,
+.receita-row span:last-child,
+.despesa-row span:last-child {
+    font-weight: 400;
+}
+
+.receitas-table-head,
+.despesas-table-head {
+    letter-spacing: .3px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.categoria-name {
+    font-weight: 400;
+}
+
+.categorias-total {
+    font-weight: 400;
+}
+
+.categoria-panel-header h2 {
+    font-weight: 400;
+    letter-spacing: .3px;
+}
+
+.categoria-add-btn,
+.categoria-save-btn {
+    font-weight: 400;
+}
+
+body {
+    background: #f4f6f9;
+    font-family: "Cabin", Arial, sans-serif;
+}
+
+.app-content {
+    padding: 0 8px 18px;
+    width: 100%;
+}
+
+.btn-premium {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    padding: 5px 10px;
+}
+
+.btn-premium:hover {
+    background: white;
+    color: black;
+}
+
+.navbar-custom {
+    background: #edf2f8;
+    min-height: 66px;
+    display: flex;
+    align-items: center;
+    border-bottom: 0;
+    width: 100%;
+}
+
+
+.navbar-custom .container-fluid {
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    padding-right: 12px;
+}
+
+
+.navbar-brand {
+    color: #111827;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.app-user-brand {
+    border-right: 1px solid #777777;
+    gap: 10px;
+    min-height: 52px;
+    min-width: 130px;
+    padding-right: 18px;
+    text-transform: uppercase;
+}
+
+.app-user-brand img {
+    height: 48px;
+    object-fit: contain;
+    width: 48px;
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+}
+
+
+.nav-item-custom {
+    align-items: center;
+    border-radius: 14px;
+    color: #8d8d8d !important;
+    display: flex;
+    flex-direction: column;
+    font-size: 10px;
+    gap: 2px;
+    height: 52px;
+    justify-content: center;
+    padding: 8px 12px 6px;
+    transition:
+        background 0.22s ease,
+        transform 0.22s ease,
+        color 0.22s ease;
+}
+
+
+.nav-item-custom:hover {
+    background: rgba(7, 23, 57, 0.06);
+    color: #111827 !important;
+    transform: translateY(-2px);
+}
+
+
+.nav-item-custom.active {
+    background: rgba(7, 23, 57, 0.05);
+    color: #111827 !important;
+    font-weight: 600;
+    position: relative;
+}
+
+.nav-item-custom:active {
+    transform: scale(0.96);
+}
+
+.nav-item-custom.active::after {
+    content: none;
+}
+
+.nav-label {
+    font-size: 9px;
+}
+
+.nav-icon-img {
+    display: block;
+    height: 21px;
+    margin-top: 5px;
+    object-fit: contain;
+    opacity: 0.72;
+    transition:
+        transform 0.22s ease,
+        opacity 0.22s ease;
+    width: 21px;
+}
+
+.nav-item-custom.active .nav-icon-img,
+.nav-item-custom:hover .nav-icon-img {
+    opacity: 1;
+
+    transform: scale(1.08);
+}
+
+
+.user-name {
+    font-size: 20px;
+    font-weight: 500;
+    color: #111827;
+    display: flex;
+    align-items: center;
+}
+
+
+.btn-logout {
+    height: 32px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    border: 0;
+    color: #111827;
+    padding: 0 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    background: transparent;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+    background: #ffffff;
+}
+
+.btn-icon-img {
+    height: 14px;
+    object-fit: contain;
+    width: 14px;
+}
+
+.card {
+    border-radius: 12px;
+    border: none;
+}
+
+h3 {
+    font-weight: 600;
+}
+
+.fade {
+    transition: all 0.3s ease;
+    transform: scale(1.05);
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.fade-out {
+    animation: fadeOut 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* FORM ANIMADO */
+#formCategoria {
+    transition: all 0.3s ease;
+}
+
+/* LINHAS DA TABELA */
+#tabelaCategorias tr {
+    transition: all 0.2s ease;
+}
+
+/* HOVER MAIS SUAVE */
+#tabelaCategorias tr:hover {
+    background-color: #f8f9fa;
+}
+
+.categorias-page {
+    color: #111827;
+    padding: 18px 0 64px;
+}
+
+.categorias-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 36px;
+}
+
+.categorias-header h1 {
+    border-left: 2px solid #111827;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1;
+    margin: 0;
+    padding-left: 6px;
+    text-transform: uppercase;
+}
+
+.categorias-total {
+    background: #fffaf7;
+    font-size: 15px;
+    line-height: 1;
+    padding: 8px 12px;
+    text-transform: uppercase;
+}
+
+.categorias-grid {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.categoria-panel {
+    background: #ffffff;
+    min-height: 378px;
+}
+
+.categoria-panel-header {
+    align-items: center;
+    border-bottom: 1px solid #c8c8c8;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    min-height: 47px;
+    padding: 10px 12px;
+}
+
+.categoria-panel-header h2 {
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.categoria-add-btn {
+    align-items: center;
+    background: #d8f5c4;
+    border: 0;
+    color: #111827;
+    display: flex;
+    font-size: 12px;
+    gap: 3px;
+    height: 18px;
+    line-height: 18px;
+    padding: 0 4px;
+    text-transform: uppercase;
+}
+
+.categoria-add-btn img {
+    filter: brightness(0) saturate(100%);
+    height: 11px;
+    object-fit: contain;
+    width: 11px;
+}
+
+.categoria-add-btn:hover {
+    background: #c9efad;
+}
+
+.categoria-list {
+    min-height: 330px;
+}
+
+.categoria-row {
+    align-items: center;
+    border-bottom: 1px solid #c8c8c8;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 10px minmax(0, 1fr) auto auto;
+    min-height: 37px;
+    padding: 0 14px 0 12px;
+}
+
+.categoria-dot {
+    border-radius: 50%;
+    display: block;
+    height: 8px;
+    width: 8px;
+}
+
+.categoria-name {
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.categoria-icon-btn {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: #1f2937;
+    display: flex;
+    height: 20px;
+    justify-content: center;
+    font-size: 10px;
+    min-width: 18px;
+    padding: 2px;
+}
+
+.categoria-icon-btn:hover {
+    background: #f4f6f9;
+}
+
+.categoria-icon-btn img {
+    filter: brightness(0) saturate(100%);
+    height: 13px;
+    object-fit: contain;
+    width: 13px;
+}
+
+.categoria-empty {
+    color: #6b7280;
+    font-size: 12px;
+    margin: 0;
+    padding: 14px 12px;
+}
+
+.categoria-modal-backdrop {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.14);
+    display: none;
+    inset: 0;
+    justify-content: center;
+    padding: 18px;
+    position: fixed;
+    z-index: 1050;
+}
+
+.categoria-modal-backdrop.is-open {
+    display: flex;
+}
+
+.categoria-modal {
+    background: #fff9fb;
+    border-radius: 22px;
+    max-width: 444px;
+    min-height: 251px;
+    padding: 18px 31px 10px;
+    position: relative;
+    width: min(100%, 444px);
+}
+
+.categoria-modal-close {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: #222222;
+    display: flex;
+    font-size: 14px;
+    font-weight: 700;
+    height: 20px;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+    position: absolute;
+    right: 33px;
+    top: 20px;
+    width: 20px;
+}
+
+.categoria-modal-close img {
+    filter: brightness(0) saturate(100%);
+    height: 16px;
+    object-fit: contain;
+    width: 16px;
+}
+
+.categoria-modal-title {
+    align-items: center;
+    color: #00a000;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.categoria-modal-title h2 {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: .3px;
+}
+
+.categoria-title-icon {
+    display: block;
+    filter: brightness(0) saturate(100%);
+    height: 18px;
+    object-fit: contain;
+    width: 18px;
+}
+
+.categoria-modal label,
+.categoria-color-field legend {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.categoria-input {
+    background: #dedede;
+    border: 0;
+    border-radius: 10px;
+    height: 38px;
+    font-size: 16px;
+    margin-bottom: 29px;
+    padding: 6px 12px;
+    width: 100%;
+}
+
+.categoria-input:focus {
+    box-shadow: 0 0 0 2px #a7efb5;
+    outline: 0;
+}
+
+.categoria-color-field {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.categoria-colors {
+    display: grid;
+    gap: 10px 14px;
+    grid-template-columns: repeat(11, 1fr);
+    max-width: 380px;
+}
+
+.categoria-color {
+    border: 2px solid transparent;
+    border-radius: 50%;
+    height: 19px;
+    padding: 0;
+    width: 19px;
+}
+
+.categoria-color.is-selected {
+    border-color: #111111;
+}
+
+.categoria-save-btn {
+    align-items: center;
+    background: #a7efb5;
+    border: 0;
+    border-radius: 22px;
+    color: #111111;
+    display: flex;
+    font-size: 16px;
+    font-weight: 500;
+    gap: 6px;
+    height: 38px;
+    justify-content: center;
+    margin: 18px auto 0;
+    min-width: 110px;
+    padding: 0 20px;
+}
+
+.categoria-save-btn img {
+    filter: brightness(0) saturate(100%);
+    height: 12px;
+    object-fit: contain;
+    width: 12px;
+}
+
+@media (max-width: 768px) {
+    .categorias-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .categorias-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .categoria-panel {
+        min-height: 260px;
+    }
+
+    .categoria-colors {
+        grid-template-columns: repeat(6, 1fr);
+        max-width: 230px;
+    }
+}
+
+.receitas-page {
+    color: #111827;
+    padding: 18px 0 64px;
+}
+
+.receitas-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.receitas-header h1 {
+    border-left: 2px solid #111827;
+    color: #12bd5a;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1;
+    margin: 0;
+    padding-left: 7px;
+    text-transform: uppercase;
+}
+
+.receitas-alerta {
+    align-items: center;
+    background: #bdf4c4;
+    border-radius: 10px;
+    display: flex;
+    font-size: 11px;
+    gap: 4px;
+    height: 18px;
+    padding: 0 8px;
+}
+
+.receitas-alerta.is-queda {
+    background: #f4b9b9;
+}
+
+.receitas-alerta img {
+    filter: brightness(0) saturate(100%);
+    height: 12px;
+    object-fit: contain;
+    width: 12px;
+}
+
+.receitas-panel {
+    background: #ffffff;
+    min-height: 309px;
+}
+
+.receitas-month {
+    align-items: center;
+    display: flex;
+    gap: 14px;
+    height: 34px;
+    justify-content: center;
+}
+
+.receitas-month strong {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.receitas-month img,
+.despesas-month img {
+    filter: brightness(0) saturate(100%);
+    height: 18px;
+    object-fit: contain;
+    width: 18px;
+    opacity: 0.82;
+    transition: opacity 0.2s ease;
+}
+
+.receitas-table {
+    min-height: 241px;
+}
+
+.receitas-table-head,
+.receita-row {
+    display: grid;
+    align-items: center;
+    grid-template-columns:
+        18px
+        minmax(64px, 0.45fr)
+        minmax(170px, 1.35fr)
+        minmax(130px, 1fr)
+        minmax(120px, 0.8fr)
+        minmax(140px, 0.95fr)
+        minmax(80px, 0.55fr)
+        minmax(118px, 0.85fr)
+        minmax(74px, 0.45fr);
+    column-gap: 16px;
+    width: 100%;
+}
+
+.receita-col-fixa,
+.receita-col-parcelada,
+.receita-col-parcelas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.despesa-col-fixa,
+.despesa-col-parcelada {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.receita-col-valor {
+    font-weight: 400;
+}
+
+
+.receitas-table-head {
+    background: #f0f0f0;
+    font-size: 12px;
+    min-height: 25px;
+    padding: 5px 10px;
+}
+
+.receita-row {
+    align-items: center;
+    background: #ecffc4;
+    border-bottom: 1px solid #ffffff;
+    font-size: 11px;
+    min-height: 26px;
+    padding: 0 10px;
+}
+
+.receita-dot {
+    border-radius: 50%;
+    display: block;
+    height: 8px;
+    justify-self: center;
+    width: 8px;
+}
+
+.receita-actions {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.receita-actions button {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    display: flex;
+    font-size: 10px;
+    height: 18px;
+    justify-content: center;
+    padding: 2px;
+}
+
+.receita-actions button:hover {
+    background: #ffffff;
+}
+
+.receita-actions img {
+    filter: brightness(0) saturate(100%);
+    height: 12px;
+    object-fit: contain;
+    width: 12px;
+}
+
+.receitas-empty {
+    color: #6b7280;
+    font-size: 12px;
+    margin: 0;
+    padding: 16px;
+    text-align: center;
+}
+
+.receitas-footer {
+    align-items: center;
+    background: #efffc0;
+    display: flex;
+    justify-content: space-between;
+    min-height: 34px;
+    padding: 0 12px;
+}
+
+.receitas-add-btn {
+    align-items: center;
+    background: #cdf9cf;
+    border: 0;
+    border-radius: 12px;
+    display: flex;
+    font-size: 10px;
+    gap: 4px;
+    height: 18px;
+    padding: 0 10px;
+}
+
+.receitas-add-btn img {
+    filter: brightness(0) saturate(100%);
+    height: 10px;
+    object-fit: contain;
+    width: 10px;
+}
+
+.receitas-total {
+    font-size: 11px;
+}
+
+.receitas-total strong {
+    color: #12bd5a;
+    font-weight: 400;
+    margin-left: 4px;
+}
+
+.receita-modal-backdrop {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.18);
+    display: none;
+    inset: 0;
+    justify-content: center;
+    padding: 18px;
+    position: fixed;
+    z-index: 1050;
+}
+
+.receita-modal-backdrop.is-open {
+    display: flex;
+}
+
+.receita-modal {
+    background: #fff9fb;
+    border-radius: 22px;
+    max-width: 394px;
+    min-height: 331px;
+    overflow: hidden;
+    position: relative;
+    width: min(100%, 394px);
+}
+
+.receita-modal-close {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    display: flex;
+    height: 22px;
+    justify-content: center;
+    padding: 0;
+    position: absolute;
+    right: 30px;
+    top: 13px;
+    width: 22px;
+    z-index: 1;
+}
+
+.receita-modal-close img,
+.receita-modal-title img,
+.receita-input-icon img,
+.receita-select-icon img,
+.receita-check img,
+.receita-save-btn img {
+    filter: brightness(0) saturate(100%);
+    object-fit: contain;
+}
+
+.receita-modal-close img {
+    height: 16px;
+    width: 16px;
+}
+
+.receita-modal-title {
+    align-items: center;
+    color: #00a000;
+    display: flex;
+    gap: 7px;
+    height: 49px;
+    padding: 0 27px;
+}
+
+.receita-modal-title img {
+    height: 18px;
+    width: 18px;
+}
+
+.receita-modal-title h2 {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.receita-value-banner {
+    align-items: center;
+    background: #74ad63;
+    color: #ffffff;
+    display: grid;
+    grid-template-columns: 1fr 160px;
+    height: 55px;
+    padding: 0 25px;
+}
+
+.receita-value-banner label {
+    font-size: 25px;
+}
+
+.receita-value-banner input {
+    background: transparent;
+    border: 0;
+    color: #ffffff;
+    font-size: 28px;
+    min-width: 0;
+    text-align: right;
+}
+
+.receita-value-banner input::placeholder {
+    color: #ffffff;
+    opacity: 1;
+}
+
+.receita-value-banner input:focus {
+    outline: 0;
+}
+
+.receita-form-grid {
+    display: grid;
+    gap: 11px 61px;
+    grid-template-columns: 1fr 1fr;
+    padding: 13px 33px 0 26px;
+}
+
+.receita-field,
+.receita-check {
+    color: #111111;
+    font-size: 14px;
+}
+
+.receita-field-full {
+    grid-column: 1 / -1;
+}
+
+.receita-field input,
+.receita-field select {
+    background: #dedede;
+    border: 0;
+    border-radius: 7px;
+    height: 23px;
+    padding: 2px 8px;
+    width: 100%;
+}
+
+.receita-field input:focus,
+.receita-field select:focus {
+    box-shadow: 0 0 0 2px #a7efb5;
+    outline: 0;
+}
+
+.receita-input-icon,
+.receita-select-icon {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 31px;
+}
+
+.receita-input-icon input,
+.receita-select-icon select {
+    border-radius: 7px 0 0 7px;
+}
+
+.receita-input-icon img,
+.receita-select-icon img {
+    align-self: stretch;
+    background: #dedede;
+    border-left: 2px solid #7c7c7c;
+    border-radius: 0 7px 7px 0;
+    height: 23px;
+    padding: 4px 7px;
+    width: 31px;
+}
+
+.receita-select-icon select {
+    appearance: none;
+}
+
+.receita-check {
+    align-items: center;
+    display: flex;
+    gap: 3px;
+    min-height: 23px;
+}
+
+.receita-check input {
+    accent-color: #74ad63;
+    height: 12px;
+    margin: 0;
+    width: 12px;
+}
+
+.receita-check img {
+    height: 14px;
+    width: 14px;
+}
+
+.receita-check small {
+    display: block;
+    font-size: 10px;
+    line-height: 1;
+}
+
+.receita-save-btn {
+    align-items: center;
+    background: #a7efb5;
+    border: 0;
+    border-radius: 18px;
+    display: flex;
+    font-size: 14px;
+    gap: 4px;
+    height: 28px;
+    justify-content: center;
+    margin: 12px auto 8px;
+    min-width: 74px;
+    padding: 0 14px;
+}
+
+.receita-save-btn img {
+    height: 12px;
+    width: 12px;
+}
+
+.receita-inline-input {
+    background: #fff9fb;
+    border: 1px solid #9fcf9b;
+    border-radius: 4px;
+    font-size: 11px;
+    height: 20px;
+    max-width: 100%;
+    padding: 1px 5px;
+}
+
+@media (max-width: 768px) {
+    .receitas-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .receitas-table-head,
+    .receita-row {
+        grid-template-columns: 14px 48px 1fr 90px 78px 44px;
+    }
+
+    .receitas-table-head,
+    .receita-row {
+        font-size: 10px;
+    }
+
+    .receitas-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px 12px;
+    }
+
+    .receita-form-grid {
+        gap: 8px;
+        grid-template-columns: 1fr;
+    }
+
+    .receita-value-banner {
+        grid-template-columns: 1fr;
+        height: auto;
+        padding: 12px 25px;
+    }
+
+    .receita-value-banner input {
+        text-align: left;
+    }
+}
+
+.despesas-page {
+    color: #111827;
+    padding: 18px 0 64px;
+}
+
+.despesas-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.despesas-header h1 {
+    border-left: 2px solid #111827;
+    color: #ff3535;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1;
+    margin: 0;
+    padding-left: 7px;
+    text-transform: uppercase;
+}
+
+.despesas-alerta {
+    align-items: center;
+    background: #f4b9b9;
+    border-radius: 10px;
+    display: flex;
+    font-size: 11px;
+    gap: 4px;
+    height: 18px;
+    padding: 0 8px;
+}
+
+.despesas-alerta img {
+    filter: brightness(0) saturate(100%);
+    height: 12px;
+    object-fit: contain;
+    width: 12px;
+}
+
+.despesas-panel {
+    background: #ffffff;
+    min-height: 309px;
+}
+
+.despesas-month {
+    align-items: center;
+    display: flex;
+    gap: 14px;
+    height: 34px;
+    justify-content: center;
+}
+
+.despesas-month strong {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.despesas-month img {
+    filter: brightness(0) saturate(100%);
+    height: 18px;
+    object-fit: contain;
+    width: 18px;
+}
+
+.despesas-table {
+    min-height: 241px;
+}
+
+.despesas-table-head {
+    background: #f0f0f0;
+    font-size: 12px;
+    min-height: 25px;
+    padding: 5px 10px;
+}
+
+.despesa-row {
+    align-items: center;
+    background: #ffefca;
+    border-bottom: 1px solid #ffffff;
+    font-size: 11px;
+    min-height: 26px;
+    padding: 0 10px;
+}
+
+.despesa-dot {
+    border-radius: 50%;
+    display: block;
+    height: 8px;
+    justify-self: center;
+    width: 8px;
+}
+
+.despesa-actions {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.despesa-actions button {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    display: flex;
+    font-size: 10px;
+    height: 18px;
+    justify-content: center;
+    padding: 2px;
+}
+
+.despesa-actions button:hover {
+    background: #ffffff;
+}
+
+.despesa-actions img {
+    filter: brightness(0) saturate(100%);
+    height: 12px;
+    object-fit: contain;
+    width: 12px;
+}
+
+.despesas-empty {
+    color: #6b7280;
+    font-size: 12px;
+    margin: 0;
+    padding: 16px;
+    text-align: center;
+}
+
+.despesas-footer {
+    align-items: center;
+    background: #ffe8b2;
+    display: flex;
+    justify-content: space-between;
+    min-height: 34px;
+    padding: 0 12px;
+}
+
+.despesas-add-btn {
+    align-items: center;
+    background: #ffc2d4;
+    border: 0;
+    border-radius: 12px;
+    display: flex;
+    font-size: 10px;
+    gap: 4px;
+    height: 18px;
+    padding: 0 10px;
+}
+
+.despesas-add-btn img {
+    filter: brightness(0) saturate(100%);
+    height: 10px;
+    object-fit: contain;
+    width: 10px;
+}
+
+.despesas-total {
+    font-size: 11px;
+}
+
+.despesas-total strong {
+    color: #ff3535;
+    font-weight: 400;
+    margin-left: 4px;
+}
+
+.despesa-modal-backdrop {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.18);
+    display: none;
+    inset: 0;
+    justify-content: center;
+    padding: 18px;
+    position: fixed;
+    z-index: 1050;
+}
+
+.despesa-modal-backdrop.is-open {
+    display: flex;
+}
+
+.despesa-modal {
+    background: #fff9fb;
+    border-radius: 22px;
+    max-width: 394px;
+    min-height: 331px;
+    overflow: hidden;
+    position: relative;
+    width: min(100%, 394px);
+}
+
+.despesa-modal-close {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    display: flex;
+    height: 22px;
+    justify-content: center;
+    padding: 0;
+    position: absolute;
+    right: 30px;
+    top: 13px;
+    width: 22px;
+    z-index: 1;
+}
+
+.despesa-modal-close img,
+.despesa-modal-title img,
+.despesa-input-icon img,
+.despesa-select-icon img,
+.despesa-check img,
+.despesa-save-btn img {
+    filter: brightness(0) saturate(100%);
+    object-fit: contain;
+}
+
+.despesa-modal-close img {
+    height: 16px;
+    width: 16px;
+}
+
+.despesa-modal-title {
+    align-items: center;
+    color: #ff5f62;
+    display: flex;
+    gap: 7px;
+    height: 39px;
+    padding: 0 25px;
+}
+
+.despesa-modal-title img {
+    height: 18px;
+    width: 18px;
+}
+
+.despesa-modal-title h2 {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.despesa-value-banner {
+    align-items: center;
+    background: #b56467;
+    color: #ffffff;
+    display: grid;
+    grid-template-columns: 1fr 160px;
+    height: 65px;
+    padding: 0 25px;
+}
+
+.despesa-value-banner label {
+    font-size: 25px;
+}
+
+.despesa-value-banner input {
+    background: transparent;
+    border: 0;
+    color: #ffffff;
+    font-size: 28px;
+    min-width: 0;
+    text-align: right;
+}
+
+.despesa-value-banner input::placeholder {
+    color: #ffffff;
+    opacity: 1;
+}
+
+.despesa-value-banner input:focus {
+    outline: 0;
+}
+
+.despesa-form-grid {
+    display: grid;
+    gap: 10px 26px;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px 32px 0 23px;
+}
+
+.despesa-field,
+.despesa-check {
+    color: #111111;
+    font-size: 14px;
+}
+
+.despesa-field-full {
+    grid-column: 1 / -1;
+}
+
+.despesa-field input,
+.despesa-field select {
+    background: #dedede;
+    border: 0;
+    border-radius: 7px;
+    height: 23px;
+    padding: 2px 8px;
+    width: 100%;
+}
+
+.despesa-field input:focus,
+.despesa-field select:focus {
+    box-shadow: 0 0 0 2px #f2b3b5;
+    outline: 0;
+}
+
+.despesa-input-icon,
+.despesa-select-icon {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 31px;
+}
+
+.despesa-input-icon input,
+.despesa-select-icon select {
+    border-radius: 7px 0 0 7px;
+}
+
+.despesa-input-icon img,
+.despesa-select-icon img {
+    align-self: stretch;
+    background: #dedede;
+    border-left: 2px solid #7c7c7c;
+    border-radius: 0 7px 7px 0;
+    height: 23px;
+    padding: 4px 7px;
+    width: 31px;
+}
+
+.despesa-select-icon select {
+    appearance: none;
+}
+
+.despesa-check {
+    align-items: center;
+    display: flex;
+    gap: 3px;
+    min-height: 23px;
+}
+
+.despesa-check input {
+    accent-color: #b56467;
+    height: 12px;
+    margin: 0;
+    width: 12px;
+}
+
+.despesa-check img {
+    height: 14px;
+    width: 14px;
+}
+
+.despesa-check small {
+    display: block;
+    font-size: 10px;
+    line-height: 1;
+}
+
+.despesa-save-btn {
+    align-items: center;
+    background: #a7efb5;
+    border: 0;
+    border-radius: 18px;
+    display: flex;
+    font-size: 14px;
+    gap: 4px;
+    height: 28px;
+    justify-content: center;
+    margin: 14px auto 8px;
+    min-width: 74px;
+    padding: 0 14px;
+}
+
+.despesa-save-btn img {
+    height: 12px;
+    width: 12px;
+}
+
+.despesa-inline-input {
+    background: #fff9fb;
+    border: 1px solid #d0a2a3;
+    border-radius: 4px;
+    font-size: 11px;
+    height: 20px;
+    max-width: 100%;
+    padding: 1px 5px;
+}
+
+/* Refinamento dos popups de receitas e despesas */
+.receita-modal,
+.despesa-modal {
+    border-radius: 24px;
+    max-width: 560px;
+    min-height: 410px;
+    width: min(100%, 560px);
+}
+
+.receita-modal-title,
+.despesa-modal-title {
+    height: 58px;
+    gap: 10px;
+    padding: 0 32px;
+}
+
+.receita-modal-title h2,
+.despesa-modal-title h2 {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.receita-modal-title img,
+.despesa-modal-title img {
+    height: 20px;
+    width: 20px;
+}
+
+.receita-modal-close,
+.despesa-modal-close {
+    right: 32px;
+    top: 18px;
+}
+
+.receita-value-banner,
+.despesa-value-banner {
+    height: 74px;
+    grid-template-columns: 1fr 210px;
+    padding: 0 34px;
+}
+
+.receita-value-banner label,
+.despesa-value-banner label {
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.receita-value-banner input,
+.despesa-value-banner input {
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.receita-form-grid,
+.despesa-form-grid {
+    gap: 18px 34px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding: 18px 34px 0;
+}
+
+.receita-field,
+.despesa-field,
+.receita-check,
+.despesa-check {
+    font-size: 16px;
+}
+
+.receita-field input,
+.receita-field select,
+.despesa-field input,
+.despesa-field select {
+    appearance: auto;
+    background: #f0f0f0;
+    border: 0;
+    border-radius: 9px;
+    font-size: 15px;
+    height: 32px;
+    padding: 4px 10px;
+}
+
+.receita-input-icon,
+.receita-select-icon,
+.despesa-input-icon,
+.despesa-select-icon {
+    grid-template-columns: minmax(0, 1fr) 38px;
+}
+
+.receita-input-icon input,
+.receita-select-icon select,
+.despesa-input-icon input,
+.despesa-select-icon select {
+    border-radius: 9px 0 0 9px;
+}
+
+.receita-input-icon img,
+.receita-select-icon img,
+.despesa-input-icon img,
+.despesa-select-icon img {
+    background: #f0f0f0;
+    border-left: 1px solid #8b8b8b;
+    border-radius: 0 9px 9px 0;
+    filter: none;
+    height: 32px;
+    padding: 7px 10px;
+    width: 38px;
+}
+
+.receita-modal-close img,
+.receita-modal-title img,
+.receita-check img,
+.receita-save-btn img,
+.despesa-modal-close img,
+.despesa-modal-title img,
+.despesa-check img,
+.despesa-save-btn img {
+    filter: brightness(0) saturate(100%);
+}
+
+.receita-check,
+.despesa-check {
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    white-space: nowrap;
+}
+
+.receita-check input,
+.despesa-check input {
+    flex: 0 0 auto;
+    height: 14px;
+    width: 14px;
+}
+
+.receita-check img,
+.despesa-check img {
+    flex: 0 0 auto;
+    height: 16px;
+    width: 16px;
+}
+
+.receita-check small,
+.despesa-check small {
+    display: inline;
+    font-size: 12px;
+    margin-left: 2px;
+}
+
+.receita-fixa-opcao {
+    grid-column: 1;
+    grid-row: 3;
+}
+
+.receita-parcelada-opcao {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.receita-parcelas-campo {
+    grid-column: 2;
+    grid-row: 4;
+}
+
+.receita-save-btn,
+.despesa-save-btn {
+    font-size: 15px;
+    height: 34px;
+    margin-top: 22px;
+    min-width: 92px;
+}
+
+@media (max-width: 768px) {
+    .despesas-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .despesas-table-head,
+    .despesa-row {
+        grid-template-columns: 14px 48px 1fr 80px 60px 74px 44px;
+    }
+
+    .despesas-table-head,
+    .despesa-row {
+        font-size: 10px;
+    }
+
+    .despesas-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px 12px;
+    }
+
+    .despesa-form-grid {
+        gap: 8px;
+        grid-template-columns: 1fr;
+    }
+
+    .despesa-value-banner {
+        grid-template-columns: 1fr;
+        height: auto;
+        padding: 12px 25px;
+    }
+
+    .despesa-value-banner input {
+        text-align: left;
+    }
+}
+
+@media (max-width: 620px) {
+    .receita-modal,
+    .despesa-modal {
+        max-width: 96vw;
+        min-height: auto;
+    }
+
+    .receita-form-grid,
+    .despesa-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .receita-value-banner,
+    .despesa-value-banner {
+        grid-template-columns: 1fr;
+        height: auto;
+        padding: 14px 28px;
+    }
+
+    .receita-value-banner input,
+    .despesa-value-banner input {
+        text-align: left;
+    }
+}
+
+/* Ajustes globais do novo front */
+.navbar-brand {
+    font-size: 14px;
+}
+
+.app-user-brand {
+    min-height: 60px;
+    min-width: 146px;
+}
+
+.app-user-brand img {
+    height: 56px;
+    width: 56px;
+}
+
+.nav-item-custom {
+    height: 48px;
+    padding: 0 12px;
+}
+
+.nav-label {
+    font-size: 11px;
+}
+
+.nav-icon-img {
+    height: 24px;
+    width: 24px;
+}
+
+.nav-link[aria-label="Dashboard"] .nav-icon-img {
+    height: 30px;
+    width: 30px;
+}
+
+.nav-link[aria-label="Categorias"] .nav-icon-img {
+    height: 28px;
+    width: 28px;
+}
+
+.nav-link[aria-label="Despesas"] .nav-icon-img {
+    height: 26px;
+    width: 26px;
+}
+
+.btn-logout {
+    font-size: 14px;
+    height: 36px;
+}
+
+.btn-icon-img {
+    height: 20px;
+    width: 20px;
+}
+
+.categorias-page,
+.receitas-page,
+.despesas-page {
+    padding: 14px 0 64px;
+}
+
+.categorias-header h1,
+.receitas-header h1,
+.despesas-header h1 {
+    font-size: 30px;
+}
+
+.categorias-total {
+    font-size: 18px;
+}
+
+.categoria-panel-header h2 {
+    font-size: 18px;
+}
+
+.categoria-add-btn,
+.receitas-add-btn,
+.despesas-add-btn {
+    font-size: 13px;
+    height: 24px;
+}
+
+.categoria-row {
+    grid-template-columns: 14px minmax(0, 1fr) auto auto;
+    min-height: 42px;
+}
+
+.categoria-dot,
+.receita-dot,
+.despesa-dot {
+    height: 10px;
+    width: 10px;
+}
+
+.categoria-name {
+    font-size: 13px;
+}
+
+.receitas-alerta,
+.despesas-alerta {
+    font-size: 13px;
+    height: 24px;
+}
+
+.receitas-month,
+.despesas-month {
+    height: 42px;
+}
+
+.receitas-month strong,
+.despesas-month strong {
+    font-size: 28px;
+}
+
+.receitas-table-head,
+.despesas-table-head {
+    font-size: 14px;
+    min-height: 32px;
+}
+
+.receita-row,
+.despesa-row {
+    font-size: 14px;
+    min-height: 34px;
+}
+
+.receitas-footer,
+.despesas-footer {
+    min-height: 44px;
+}
+
+.receitas-total,
+.despesas-total {
+    font-size: 14px;
+}
+
+/*   HOVER BOTÕES ADICIONAR */
+.categoria-add-btn,
+.receitas-add-btn,
+.despesas-add-btn {
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+/* HOVER */
+.categoria-add-btn:hover,
+.receitas-add-btn:hover,
+.despesas-add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    filter: brightness(0.98);
+}
+
+/* EFEITO CLICK */
+.categoria-add-btn:active,
+.receitas-add-btn:active,
+.despesas-add-btn:active {
+    transform: scale(0.97);
+}
+
+.receitas-month a,
+.despesas-month a {
+    align-items: center;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    height: 34px;
+
+    justify-content: center;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+
+    width: 34px;
+}
+
+
+.receitas-month a:hover img,
+.despesas-month a:hover img {
+    opacity: 1;
+}
+
+/* HOVER */
+.receitas-month a:hover,
+.despesas-month a:hover {
+    background: rgba(7, 23, 57, 0.08);
+
+    transform: scale(1.08);
+}
+
+/* CLICK */
+.receitas-month a:active,
+.despesas-month a:active {
+    transform: scale(0.96);
+}
+
+.receitas-table-head,
+.receita-row {
+    grid-template-columns:
+        18px
+        minmax(64px, 0.45fr)
+        minmax(170px, 1.45fr)
+        minmax(130px, 1fr)
+        minmax(70px, 0.55fr)
+        minmax(96px, 0.7fr)
+        minmax(74px, 0.55fr)
+        minmax(118px, 0.85fr)
+        minmax(74px, 0.45fr);
+    width: 100%;
+}
+
+.despesas-table-head,
+.despesa-row {
+    grid-template-columns:
+        18px
+        minmax(64px, 0.42fr)
+        minmax(170px, 1.35fr)
+        minmax(130px, 0.95fr)
+        minmax(100px, 0.72fr)
+        minmax(96px, 0.68fr)
+        minmax(74px, 0.5fr)
+        minmax(70px, 0.48fr)
+        minmax(118px, 0.82fr)
+        minmax(74px, 0.42fr);
+    width: 100%;
+    display: grid;
+}
+
+.receita-row,
+.despesa-row {
+    align-items: center;
+    column-gap: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.receita-row > span,
+.despesa-row > span,
+.receitas-table-head > span,
+.despesas-table-head > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.receita-actions,
+.despesa-actions {
+    gap: 12px;
+    justify-content: flex-end;
+    overflow: visible;
+}
+
+.receita-actions button,
+.despesa-actions button {
+    border-radius: 6px;
+    height: 26px;
+    min-width: 26px;
+    padding: 0;
+    width: 26px;
+}
+
+.receita-actions img,
+.despesa-actions img {
+    height: 17px;
+    width: 17px;
+}
+
+.table-check {
+    accent-color: #111827;
+    height: 15px;
+    pointer-events: none;
+    width: 15px;
+}
+
+.receita-recorrente,
+.receita-parcelada,
+.despesa-recorrente,
+.despesa-parcelada {
+    display: flex;
+    justify-content: center;
+}
+
+.status-badge {
+    align-items: center;
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 12px;
+    height: 22px;
+    justify-content: center;
+    line-height: 1;
+    min-width: 54px;
+    padding: 0 10px;
+}
+
+.status-badge.is-on {
+    background: #c6f6d5;
+    color: #126b35;
+}
+
+.status-badge.is-off {
+    background: #eeeeee;
+    color: #5f6673;
+}
+
+@media (max-width: 1100px) {
+    .receitas-table,
+    .despesas-table {
+        overflow-x: auto;
+    }
+
+    .receitas-table-head,
+    .receita-row {
+        min-width: 940px;
+    }
+
+    .despesas-table-head,
+    .despesa-row {
+        min-width: 1080px;
+    }
+}
+
+.categoria-modal-backdrop,
+.receita-modal-backdrop,
+.despesa-modal-backdrop {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.18);
+
+    display: flex;
+
+    inset: 0;
+    justify-content: center;
+    padding: 18px;
+    position: fixed;
+    z-index: 1050;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition:
+        opacity 0.28s ease,
+        visibility 0.28s ease;
+}
+
+.categoria-modal-backdrop.is-open,
+.categoria-modal-backdrop.is-closing,
+.receita-modal-backdrop.is-open,
+.receita-modal-backdrop.is-closing,
+.despesa-modal-backdrop.is-open,
+.despesa-modal-backdrop.is-closing {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.categoria-modal,
+.receita-modal,
+.despesa-modal {
+    opacity: 0;
+    transform: translateY(-56px);
+    transition:
+        opacity 0.28s ease,
+        transform 0.28s ease;
+}
+
+.categoria-modal-backdrop.is-open .categoria-modal,
+.receita-modal-backdrop.is-open .receita-modal,
+.despesa-modal-backdrop.is-open .despesa-modal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.categoria-modal-backdrop.is-closing .categoria-modal,
+.receita-modal-backdrop.is-closing .receita-modal,
+.despesa-modal-backdrop.is-closing .despesa-modal {
+    opacity: 0;
+    transform: translateY(-56px);
+}
+
+.receitas-table-head,
+.receita-row {
+    align-items: center;
+    column-gap: 14px;
+    display: grid;
+    grid-template-columns:
+        18px
+        minmax(70px, 0.45fr)
+        minmax(180px, 1.25fr)
+        minmax(150px, 1fr)
+        minmax(128px, 0.78fr)
+        minmax(154px, 0.92fr)
+        minmax(82px, 0.5fr)
+        minmax(132px, 0.78fr)
+        minmax(76px, 0.42fr);
+    width: 100%;
+}
+
+.despesas-table-head,
+.despesa-row {
+    align-items: center;
+    column-gap: 14px;
+    display: grid;
+    grid-template-columns:
+        18px
+        minmax(70px, 0.42fr)
+        minmax(180px, 1.15fr)
+        minmax(150px, 0.95fr)
+        minmax(120px, 0.75fr)
+        minmax(164px, 0.98fr)
+        minmax(82px, 0.5fr)
+        minmax(150px, 0.88fr)
+        minmax(132px, 0.78fr)
+        minmax(76px, 0.42fr);
+    width: 100%;
+}
+
+.receitas-table-head > span,
+.despesas-table-head > span {
+    align-self: center;
+}
+
+.receitas-table-head > span:nth-child(5),
+.receitas-table-head > span:nth-child(6),
+.receitas-table-head > span:nth-child(7),
+.despesas-table-head > span:nth-child(6),
+.despesas-table-head > span:nth-child(7),
+.despesas-table-head > span:nth-child(8) {
+    justify-self: center;
+    text-align: center;
+}
+
+.receita-recorrente,
+.receita-parcelada,
+.receita-parcelas,
+.despesa-parcelada,
+.despesa-parcelas,
+.despesa-recorrente {
+    justify-self: center;
+    text-align: center;
+}
+
+.status-badge {
+    min-width: 58px;
+}
+
+@media (max-width: 1100px) {
+    .receitas-table-head,
+    .receita-row {
+        min-width: 980px;
+    }
+
+    .despesas-table-head,
+    .despesa-row {
+        min-width: 1120px;
+    }
+}

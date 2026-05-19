@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro - Sistema Financeiro</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'financeiro/css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'financeiro/css/termos.css' %}">
+</head>
+
+<body class="auth-body">
+
+<div class="auth-container">
+
+    <div class="auth-card">
+
+        <h3 class="text-center mb-4">Criar Conta</h3>
+
+        <!-- MENSAGEM -->
+        <div id="mensagem"></div>
+
+        <!-- FORM -->
+        <form id="formCadastro">
+            {% csrf_token %}
+
+            <input type="text" name="username" class="form-control mb-2" placeholder="Usuário" required>
+
+            <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
+
+            <input type="password" id="senha" name="password" class="form-control mb-2" placeholder="Senha" required>
+
+            <input type="password" id="confirmar_senha" name="confirmar" class="form-control mb-2" placeholder="Confirmar senha" required>
+
+            <!-- CEP -->
+            <input type="text" id="cep" class="form-control mb-2" placeholder="CEP">
+            <input type="text" id="endereco" class="form-control mb-2" placeholder="Endereço">
+            <input type="text" id="cidade" class="form-control mb-2" placeholder="Cidade">
+            <input type="text" id="estado" class="form-control mb-2" placeholder="Estado">
+
+            <!-- LGPD -->
+            <div class="form-check mb-3 text-start">
+                <input class="form-check-input" type="checkbox" id="termos">
+                <label class="form-check-label">
+                    Eu aceito os 
+                    <a href="#" id="abrirTermos">Termos de uso</a>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">
+                Cadastrar
+            </button>
+        </form>
+
+        <p class="text-center mt-3">
+            Já tem conta?
+            <a href="{% url 'financeiro:login' %}">Entrar</a>
+        </p>
+
+    </div>
+
+</div>
+
+<!-- MODAL TERMOS -->
+<div id="modalTermos" class="modal-termos">
+    <div class="modal-content">
+
+        <h5>Termos de Uso e Política de Privacidade</h5>
+
+        <p>
+            Este sistema de Gestão Financeira tem como objetivo auxiliar o usuário no controle de suas receitas, despesas e organização financeira pessoal.
+        </p>
+
+        <hr>
+
+        <h6>1. Coleta de Dados</h6>
+        <p>
+            Coletamos dados fornecidos diretamente pelo usuário, como nome de usuário, e-mail e informações financeiras inseridas no sistema.
+        </p>
+
+        <h6>2. Finalidade do Uso</h6>
+        <p>
+            Os dados coletados são utilizados exclusivamente para funcionamento da aplicação.
+        </p>
+
+        <h6>3. Armazenamento e Segurança</h6>
+        <p>
+            Os dados são armazenados de forma segura, com medidas de proteção contra acessos não autorizados.
+        </p>
+
+        <h6>4. Compartilhamento de Dados</h6>
+        <p>
+            Não realizamos compartilhamento de dados com terceiros.
+        </p>
+
+        <h6>5. Direitos do Usuário</h6>
+        <ul>
+            <li>Acesso aos dados;</li>
+            <li>Correção;</li>
+            <li>Exclusão;</li>
+            <li>Revogação do consentimento.</li>
+        </ul>
+
+        <h6>6. Consentimento</h6>
+        <p>
+            Ao utilizar o sistema, o usuário concorda com os termos.
+        </p>
+
+        <button class="btn btn-secondary mt-3" id="fecharTermos">
+            Fechar
+        </button>
+
+    </div>
+</div>
+
+<!-- JS -->
+<script src="{% static 'financeiro/js/cadastro.js' %}"></script>
+
+</body>
+</html>

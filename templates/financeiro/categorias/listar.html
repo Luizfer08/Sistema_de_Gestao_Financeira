@@ -1,0 +1,377 @@
+{% extends 'financeiro/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<!-- PÁGINA DE CATEGORIAS -->
+<div class="categorias-page">
+
+
+    <!-- CABEÇALHO -->
+    <header class="categorias-header">
+
+        <h1>
+
+            Categorias
+
+        </h1>
+
+
+        <!-- TOTAL -->
+        <div class="categorias-total">
+
+            <span id="totalCategorias">
+
+                {{ total_categorias }}
+
+            </span>
+
+            categorias cadastradas
+
+        </div>
+
+    </header>
+
+
+    <!-- GRID DE CATEGORIAS -->
+    <section class="categorias-grid"
+        aria-label="Categorias cadastradas">
+
+
+        <!-- CATEGORIAS DE RECEITAS -->
+        <article class="categoria-panel">
+
+
+            <!-- CABEÇALHO -->
+            <div class="categoria-panel-header">
+
+                <h2>
+
+                    Receitas
+
+                </h2>
+
+
+                <!-- BOTÃO ADICIONAR -->
+                <button class="categoria-add-btn"
+                    type="button"
+                    onclick="abrirModalCategoria('receita')">
+
+                    <img src="{% static 'financeiro/img/mais.png' %}"
+                        alt="">
+
+                    Adicionar categoria
+
+                </button>
+
+            </div>
+
+
+            <!-- LISTA -->
+            <div class="categoria-list"
+                id="lista-receita">
+
+
+                {% for c in categorias_receita %}
+
+                    <div class="categoria-row"
+                        id="categoria-{{ c.id }}"
+                        data-tipo="{{ c.tipo }}">
+
+
+                        <!-- COR -->
+                        <span class="categoria-dot"
+                            style="background-color: {{ c.cor }};">
+                        </span>
+
+
+                        <!-- NOME -->
+                        <span class="categoria-name"
+                            id="nome-{{ c.id }}">
+
+                            {{ c.nome }}
+
+                        </span>
+
+
+                        <!-- EDITAR -->
+                        <button class="categoria-icon-btn"
+                            type="button"
+                            onclick="editarCategoria({{ c.id }})"
+                            aria-label="Editar {{ c.nome }}">
+
+                            <img src="{% static 'financeiro/img/editar.png' %}"
+                                alt="">
+
+                        </button>
+
+
+                        <!-- EXCLUIR -->
+                        <button class="categoria-icon-btn"
+                            type="button"
+                            onclick="excluirCategoria({{ c.id }})"
+                            aria-label="Excluir {{ c.nome }}">
+
+                            <img src="{% static 'financeiro/img/lixeira.png' %}"
+                                alt="">
+
+                        </button>
+
+                    </div>
+
+                {% empty %}
+
+
+                    <!-- LISTA VAZIA -->
+                    <p class="categoria-empty"
+                        id="empty-receita">
+
+                        Nenhuma categoria cadastrada
+
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </article>
+
+
+        <!-- CATEGORIAS DE DESPESAS -->
+        <article class="categoria-panel">
+
+
+            <!-- CABEÇALHO -->
+            <div class="categoria-panel-header">
+
+                <h2>
+
+                    Despesas
+
+                </h2>
+
+
+                <!-- BOTÃO ADICIONAR -->
+                <button class="categoria-add-btn"
+                    type="button"
+                    onclick="abrirModalCategoria('despesa')">
+
+                    <img src="{% static 'financeiro/img/mais.png' %}"
+                        alt="">
+
+                    Adicionar categoria
+
+                </button>
+
+            </div>
+
+
+            <!-- LISTA -->
+            <div class="categoria-list"
+                id="lista-despesa">
+
+
+                {% for c in categorias_despesa %}
+
+                    <div class="categoria-row"
+                        id="categoria-{{ c.id }}"
+                        data-tipo="{{ c.tipo }}">
+
+
+                        <!-- COR -->
+                        <span class="categoria-dot"
+                            style="background-color: {{ c.cor }};">
+                        </span>
+
+
+                        <!-- NOME -->
+                        <span class="categoria-name"
+                            id="nome-{{ c.id }}">
+
+                            {{ c.nome }}
+
+                        </span>
+
+
+                        <!-- EDITAR -->
+                        <button class="categoria-icon-btn"
+                            type="button"
+                            onclick="editarCategoria({{ c.id }})"
+                            aria-label="Editar {{ c.nome }}">
+
+                            <img src="{% static 'financeiro/img/editar.png' %}"
+                                alt="">
+
+                        </button>
+
+
+                        <!-- EXCLUIR -->
+                        <button class="categoria-icon-btn"
+                            type="button"
+                            onclick="excluirCategoria({{ c.id }})"
+                            aria-label="Excluir {{ c.nome }}">
+
+                            <img src="{% static 'financeiro/img/lixeira.png' %}"
+                                alt="">
+
+                        </button>
+
+                    </div>
+
+                {% empty %}
+
+
+                    <!-- LISTA VAZIA -->
+                    <p class="categoria-empty"
+                        id="empty-despesa">
+
+                        Nenhuma categoria cadastrada
+
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </article>
+
+    </section>
+
+</div>
+
+
+<!-- MODAL -->
+<div class="categoria-modal-backdrop"
+    id="modalCategoria"
+    aria-hidden="true">
+
+
+    <div class="categoria-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalCategoriaTitulo">
+
+
+        <!-- FECHAR -->
+        <button class="categoria-modal-close"
+            type="button"
+            onclick="fecharModalCategoria()"
+            aria-label="Fechar">
+
+            <img src="{% static 'financeiro/img/fechar.png' %}"
+                alt="">
+
+        </button>
+
+
+        <!-- TÍTULO -->
+        <div class="categoria-modal-title">
+
+            <img class="categoria-title-icon"
+                src="{% static 'financeiro/img/lista.png' %}"
+                alt="">
+
+            <h2 id="modalCategoriaTitulo">
+
+                Adicionar categoria
+
+            </h2>
+
+        </div>
+
+
+        <!-- FORMULÁRIO -->
+        <form id="formCategoria">
+
+            {% csrf_token %}
+
+
+            <!-- INPUTS OCULTOS -->
+            <input type="hidden"
+                name="tipo"
+                id="tipoCategoria"
+                value="despesa">
+
+            <input type="hidden"
+                name="cor"
+                id="corCategoria"
+                value="#8FEBDD">
+
+
+            <!-- NOME -->
+            <label for="nomeCategoria">
+
+                Categoria
+
+            </label>
+
+            <input type="text"
+                name="nome"
+                id="nomeCategoria"
+                class="categoria-input"
+                autocomplete="off"
+                required>
+
+
+            <!-- CORES -->
+            <fieldset class="categoria-color-field">
+
+                <legend>
+
+                    Cor da categoria
+
+                </legend>
+
+                <div class="categoria-colors"
+                    id="coresCategoria">
+                </div>
+
+            </fieldset>
+
+
+            <!-- BOTÃO -->
+            <button class="categoria-save-btn"
+                type="submit">
+
+                <img src="{% static 'financeiro/img/check.png' %}"
+                    alt="">
+
+                Salvar
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- CONFIGURAÇÕES JAVASCRIPT -->
+<script>
+
+    const URL_CRIAR_CATEGORIA =
+        "{% url 'financeiro:criar_categoria' %}";
+
+    const TOTAL_CATEGORIAS_INICIAL =
+        {{ total_categorias }};
+
+    const CATEGORIA_ICONS = {
+
+        editar:
+            "{% static 'financeiro/img/editar.png' %}",
+
+        lixeira:
+            "{% static 'financeiro/img/lixeira.png' %}"
+    };
+
+</script>
+
+
+<!-- JAVASCRIPT -->
+<script src="{% static 'financeiro/js/categoria.js' %}?v=5">
+</script>
+
+{% endblock %}

@@ -1,0 +1,587 @@
+{% extends 'financeiro/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<!-- PÁGINA DE DESPESAS -->
+<div class="despesas-page">
+
+
+    <!-- CABEÇALHO -->
+    <header class="despesas-header">
+
+        <h1>
+
+            Despesas
+
+        </h1>
+
+
+        <!-- ALERTA -->
+        {% if percentual_alerta %}
+
+            <div class="despesas-alerta">
+
+                <img src="{% static 'financeiro/img/crescente.png' %}"
+                    alt="">
+
+                A sua despesa aumentou
+                {{ percentual_alerta }}%
+                em relacao ao mes anterior
+
+            </div>
+
+        {% endif %}
+
+    </header>
+
+
+    <!-- PAINEL PRINCIPAL -->
+    <section class="despesas-panel">
+
+
+        <!-- FILTRO DE MÊS -->
+        <div class="despesas-month">
+
+
+            <!-- MÊS ANTERIOR -->
+            <a href="?mes={{ mes_anterior.month }}&ano={{ mes_anterior.year }}"
+                aria-label="Mes anterior">
+
+                <img src="{% static 'financeiro/img/seta_esquerda.png' %}"
+                    alt="">
+
+            </a>
+
+
+            <!-- MÊS ATUAL -->
+            <strong>
+
+                {{ mes_nome }}
+
+            </strong>
+
+
+            <!-- PRÓXIMO MÊS -->
+            <a href="?mes={{ proximo_mes.month }}&ano={{ proximo_mes.year }}"
+                aria-label="Proximo mes">
+
+                <img src="{% static 'financeiro/img/seta_direita.png' %}"
+                    alt="">
+
+            </a>
+
+        </div>
+
+
+        <!-- TABELA -->
+        <div class="despesas-table">
+
+
+            <!-- CABEÇALHO -->
+            <div class="despesas-table-head">
+
+                <span></span>
+
+                <span>Data</span>
+
+                <span>Descricao</span>
+
+                <span>Categoria</span>
+
+                <span>Conta</span>
+
+                <span>Despesa Parcelada</span>
+
+                <span>Parcelas</span>
+
+                <span>Despesa Fixa</span>
+
+                <span>Valor</span>
+
+                <span></span>
+
+            </div>
+
+
+            <!-- LISTA DE DESPESAS -->
+            <div id="tabelaDespesas">
+
+                {% for d in despesas %}
+
+                    <div class="despesa-row"
+                        id="linha-{{ d.id }}"
+
+                        data-id="{{ d.id }}"
+
+                        data-descricao="{{ d.descricao }}"
+
+                        data-valor="{{ d.valor|stringformat:'s' }}"
+
+                        data-data="{{ d.data|date:'Y-m-d' }}"
+
+                        data-categoria-id="{{ d.categoria.id }}"
+
+                        data-categoria="{{ d.categoria.nome }}"
+
+                        data-categoria-cor="{{ d.categoria.cor|default:'#8FEBDD' }}"
+
+                        data-conta="{{ d.conta }}"
+
+                        data-recorrente="{% if d.recorrente %}true{% else %}false{% endif %}"
+
+                        data-parcelada="{% if d.parcelada %}true{% else %}false{% endif %}"
+
+                        data-quantidade-parcelas="{{ d.quantidade_parcelas|default:'' }}">
+
+
+                        <!-- COR DA CATEGORIA -->
+                        <span class="despesa-dot"
+                            style="background-color:
+                            {{ d.categoria.cor|default:'#8FEBDD' }};">
+                        </span>
+
+
+                        <!-- DATA -->
+                        <span class="despesa-data">
+
+                            {{ d.data|date:"d/m" }}
+
+                        </span>
+
+
+                        <!-- DESCRIÇÃO -->
+                        <span id="desc-{{ d.id }}">
+
+                            {{ d.descricao }}
+
+                        </span>
+
+
+                        <!-- CATEGORIA -->
+                        <span class="despesa-categoria">
+
+                            {{ d.categoria.nome }}
+
+                        </span>
+
+
+                        <!-- CONTA -->
+                        <span class="despesa-conta">
+
+                            {{ d.conta|default:"-" }}
+
+                        </span>
+
+
+                        <!-- PARCELADA -->
+                        <span class="despesa-parcelada">
+
+                            <span class="status-badge
+                                {% if d.parcelada %}
+                                    is-on
+                                {% else %}
+                                    is-off
+                                {% endif %}">
+
+                                {% if d.parcelada %}
+                                    Sim
+                                {% else %}
+                                    Nao
+                                {% endif %}
+
+                            </span>
+
+                        </span>
+
+
+                        <!-- QUANTIDADE DE PARCELAS -->
+                        <span class="despesa-parcelas">
+
+                            {{ d.quantidade_parcelas|default:"-" }}
+
+                        </span>
+
+
+                        <!-- RECORRENTE -->
+                        <span class="despesa-recorrente">
+
+                            <span class="status-badge
+                                {% if d.recorrente %}
+                                    is-on
+                                {% else %}
+                                    is-off
+                                {% endif %}">
+
+                                {% if d.recorrente %}
+                                    Sim
+                                {% else %}
+                                    Nao
+                                {% endif %}
+
+                            </span>
+
+                        </span>
+
+
+                        <!-- VALOR -->
+                        <span id="valor-{{ d.id }}">
+
+                            R$ {{ d.valor|floatformat:2 }}
+
+                        </span>
+
+
+                        <!-- AÇÕES -->
+                        <span class="despesa-actions">
+
+
+                            <!-- EDITAR -->
+                            <button type="button"
+                                onclick="editarDespesa({{ d.id }})"
+                                aria-label="Editar {{ d.descricao }}">
+
+                                <img src="{% static 'financeiro/img/editar.png' %}"
+                                    alt="">
+
+                            </button>
+
+
+                            <!-- EXCLUIR -->
+                            <button type="button"
+                                onclick="excluirDespesa({{ d.id }})"
+                                aria-label="Excluir {{ d.descricao }}">
+
+                                <img src="{% static 'financeiro/img/lixeira.png' %}"
+                                    alt="">
+
+                            </button>
+
+                        </span>
+
+                    </div>
+
+                {% empty %}
+
+                    <!-- SEM DESPESAS -->
+                    <p class="despesas-empty"
+                        id="semDespesas">
+
+                        Nenhuma despesa cadastrada neste mes
+
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- RODAPÉ -->
+        <footer class="despesas-footer">
+
+
+            <!-- BOTÃO ADICIONAR -->
+            <button class="despesas-add-btn"
+                type="button"
+                onclick="abrirModalDespesa()">
+
+                <img src="{% static 'financeiro/img/mais.png' %}"
+                    alt="">
+
+                Adicionar nova despesa
+
+            </button>
+
+
+            <!-- TOTAL -->
+            <div class="despesas-total">
+
+                Total despesas do mes:
+
+                <strong id="totalDespesasMes">
+
+                    R$ {{ total_mes|floatformat:2 }}
+
+                </strong>
+
+            </div>
+
+        </footer>
+
+    </section>
+
+</div>
+
+
+<!-- MODAL -->
+<div class="despesa-modal-backdrop"
+    id="modalDespesa"
+    aria-hidden="true">
+
+
+    <div class="despesa-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalDespesaTitulo">
+
+
+        <!-- FECHAR -->
+        <button class="despesa-modal-close"
+            type="button"
+            onclick="fecharModalDespesa()"
+            aria-label="Fechar">
+
+            <img src="{% static 'financeiro/img/fechar.png' %}"
+                alt="">
+
+        </button>
+
+
+        <!-- TÍTULO -->
+        <div class="despesa-modal-title">
+
+            <img src="{% static 'financeiro/img/decrescente.png' %}"
+                alt="">
+
+            <h2 id="modalDespesaTitulo">
+
+                Adicionar Despesa
+
+            </h2>
+
+        </div>
+
+
+        <!-- FORMULÁRIO -->
+        <form id="formDespesa">
+
+            {% csrf_token %}
+
+
+            <!-- VALOR -->
+            <div class="despesa-value-banner">
+
+                <label for="valorDespesa">
+
+                    Valor
+
+                </label>
+
+                <input id="valorDespesa"
+                    name="valor"
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    placeholder="R$ 0,00"
+                    required>
+
+            </div>
+
+
+            <!-- GRID -->
+            <div class="despesa-form-grid">
+
+
+                <!-- DESCRIÇÃO -->
+                <label class="despesa-field despesa-field-full">
+
+                    Nome despesa
+
+                    <input type="text"
+                        name="descricao"
+                        required>
+
+                </label>
+
+
+                <!-- DATA -->
+                <label class="despesa-field">
+
+                    Data
+
+                    <input type="date"
+                        name="data"
+                        required>
+
+                </label>
+
+
+                <!-- CATEGORIA -->
+                <label class="despesa-field">
+
+                    Categoria
+
+                    <select name="categoria"
+                        required>
+
+                        <option value="">
+
+                            Selecione
+
+                        </option>
+
+                        {% for c in categorias %}
+
+                            <option value="{{ c.id }}"
+                                data-cor="{{ c.cor }}">
+
+                                {{ c.nome }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </label>
+
+
+                <!-- PARCELADA -->
+                <label class="despesa-check">
+
+                    <input type="checkbox"
+                        name="parcelada"
+                        id="despesaParcelada">
+
+                    <img src="{% static 'financeiro/img/calendario_mes.png' %}"
+                        alt="">
+
+                    Despesa parcelada
+
+                </label>
+
+
+                <!-- CONTA -->
+                <label class="despesa-field">
+
+                    Conta
+
+                    <select name="conta"
+                        required>
+
+                        <option value="">
+
+                            Selecione
+
+                        </option>
+
+                        <option value="Pix">
+                            Pix
+                        </option>
+
+                        <option value="Debito">
+                            Debito
+                        </option>
+
+                        <option value="Credito">
+                            Credito
+                        </option>
+
+                        <option value="Dinheiro">
+                            Dinheiro
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <!-- QUANTIDADE DE PARCELAS -->
+                <label class="despesa-field">
+
+                    <select name="quantidade_parcelas"
+                        id="quantidadeParcelas"
+                        disabled>
+
+                        <option value="">
+
+                            Qtd. Parcelas
+
+                        </option>
+
+                        <option value="2">2</option>
+
+                        <option value="3">3</option>
+
+                        <option value="4">4</option>
+
+                        <option value="5">5</option>
+
+                        <option value="6">6</option>
+
+                        <option value="12">12</option>
+
+                    </select>
+
+                </label>
+
+
+                <!-- RECORRENTE -->
+                <label class="despesa-check">
+
+                    <input type="checkbox"
+                        name="recorrente">
+
+                    <img src="{% static 'financeiro/img/se_repete.png' %}"
+                        alt="">
+
+                    Despesa fixa
+
+                    <small>(opcional)</small>
+
+                </label>
+
+            </div>
+
+
+            <!-- BOTÃO SALVAR -->
+            <button class="despesa-save-btn"
+                type="submit">
+
+                <img src="{% static 'financeiro/img/check.png' %}"
+                    alt="">
+
+                Salvar
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- CONFIGURAÇÕES JAVASCRIPT -->
+<script>
+
+    const URL_CRIAR_DESPESA =
+        "{% url 'financeiro:criar_despesa' %}";
+
+    const DESPESA_MES_ATUAL =
+        "{{ mes_atual|date:'Y-m' }}";
+
+    const DESPESA_ICONS = {
+
+        editar:
+            "{% static 'financeiro/img/editar.png' %}",
+
+        lixeira:
+            "{% static 'financeiro/img/lixeira.png' %}"
+    };
+
+    const DESPESA_URL_EDITAR_BASE =
+        "/despesas/editar/";
+
+</script>
+
+
+<!-- JAVASCRIPT -->
+<script src="{% static 'financeiro/js/despesas.js' %}?v=12">
+</script>
+
+{% endblock %}

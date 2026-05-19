@@ -1,0 +1,349 @@
+{% extends 'financeiro/base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+
+<!-- CSS DO DASHBOARD -->
+<link rel="stylesheet"
+    href="{% static 'financeiro/css/dashboard.css' %}?v=7">
+
+
+<!-- DADOS DOS GRÁFICOS -->
+{{ grafico_financeiro|json_script:"graficoFinanceiroData" }}
+
+{{ categorias|json_script:"categoriasData" }}
+
+
+<!-- DASHBOARD -->
+<div class="dashboard-page">
+
+
+    <!-- FILTRO DE MÊS -->
+    <div class="dashboard-month-filter">
+
+        <img src="{% static 'financeiro/img/calendario.png' %}"
+            alt="">
+
+        <!-- MÊS ANTERIOR -->
+        <a href="?mes={{ mes_anterior.month }}&ano={{ mes_anterior.year }}"
+            aria-label="Mes anterior">
+
+            <img src="{% static 'financeiro/img/seta_esquerda.png' %}"
+                alt="">
+
+        </a>
+
+        <!-- MÊS ATUAL -->
+        <strong>
+            {{ mes_nome }}
+        </strong>
+
+        <!-- PRÓXIMO MÊS -->
+        <a href="?mes={{ proximo_mes.month }}&ano={{ proximo_mes.year }}"
+            aria-label="Proximo mes">
+
+            <img src="{% static 'financeiro/img/seta_direita.png' %}"
+                alt="">
+
+        </a>
+
+    </div>
+
+
+    <!-- RESUMO FINANCEIRO -->
+    <section class="dashboard-summary-grid">
+
+
+        <!-- SALDO ATUAL -->
+        <article class="dashboard-card dashboard-card-large">
+
+            <span>Saldo atual</span>
+
+            <strong>
+                R$ {{ resumo.saldo_atual|floatformat:2 }}
+            </strong>
+
+            <small class="dashboard-variation
+                is-{{ resumo.variacoes.saldo_atual.direcao }}">
+
+                {% if resumo.variacoes.saldo_atual.direcao == 'down' %}
+                    ▼
+                {% else %}
+                    ▲
+                {% endif %}
+
+                {{ resumo.variacoes.saldo_atual.percentual }}%
+
+            </small>
+
+        </article>
+
+
+        <!-- SALDO FUTURO -->
+        <article class="dashboard-card dashboard-card-large">
+
+            <span>Saldo futuro</span>
+
+            <strong class="
+                {% if resumo.saldo_futuro >= 0 %}
+                    dashboard-positive
+                {% else %}
+                    dashboard-negative
+                {% endif %}
+            ">
+
+                R$ {{ resumo.saldo_futuro|floatformat:2 }}
+
+            </strong>
+
+            <small class="dashboard-variation
+                is-{{ resumo.variacoes.saldo_futuro.direcao }}">
+
+                {% if resumo.variacoes.saldo_futuro.direcao == 'down' %}
+                    ▼
+                {% else %}
+                    ▲
+                {% endif %}
+
+                {{ resumo.variacoes.saldo_futuro.percentual }}%
+
+            </small>
+
+        </article>
+
+
+        <!-- RECEITAS -->
+        <article class="dashboard-card dashboard-card-small">
+
+            <span>Receitas</span>
+
+            <strong class="dashboard-income">
+                R$ {{ resumo.receitas|floatformat:2 }}
+            </strong>
+
+            <small class="dashboard-variation
+                is-{{ resumo.variacoes.receitas.direcao }}">
+
+                {% if resumo.variacoes.receitas.direcao == 'down' %}
+                    ▼
+                {% else %}
+                    ▲
+                {% endif %}
+
+                {{ resumo.variacoes.receitas.percentual }}%
+
+            </small>
+
+        </article>
+
+
+        <!-- DESPESAS -->
+        <article class="dashboard-card dashboard-card-small">
+
+            <span>Despesas</span>
+
+            <strong class="dashboard-expense">
+                R$ {{ resumo.despesas|floatformat:2 }}
+            </strong>
+
+            <small class="dashboard-variation
+                is-{{ resumo.variacoes.despesas.direcao }}">
+
+                {% if resumo.variacoes.despesas.direcao == 'down' %}
+                    ▼
+                {% else %}
+                    ▲
+                {% endif %}
+
+                {{ resumo.variacoes.despesas.percentual }}%
+
+            </small>
+
+        </article>
+
+
+        <!-- NOTIFICAÇÕES -->
+        <article class="dashboard-card dashboard-notifications">
+
+            <span>Notificações</span>
+
+            {% for notificacao in notificacoes %}
+
+                <div class="dashboard-notification
+                    is-{{ notificacao.tipo }}">
+
+                    {{ notificacao.texto }}
+
+                </div>
+
+            {% empty %}
+
+                <div class="dashboard-notification is-neutral">
+
+                    Nenhuma alteracao relevante em relacao ao mes anterior.
+
+                </div>
+
+            {% endfor %}
+
+        </article>
+
+    </section>
+
+
+    <!-- GRÁFICOS -->
+    <section class="dashboard-charts-grid">
+
+
+        <!-- GRÁFICO FINANCEIRO -->
+        <article class="dashboard-chart-panel">
+
+            <h2>Resumo financeiro atual</h2>
+
+            <canvas id="graficoFinanceiro"></canvas>
+
+        </article>
+
+
+        <!-- GRÁFICO DE CATEGORIAS -->
+        <article class="dashboard-chart-panel dashboard-category-panel">
+
+            <h2>Gastos por categorias</h2>
+
+            <div class="dashboard-category-content">
+
+                <canvas id="graficoCategorias"></canvas>
+
+                <!-- LISTA DE CATEGORIAS -->
+                <div class="dashboard-category-list">
+
+                    {% for categoria in categorias %}
+
+                        <div>
+
+                            <span class="dashboard-category-dot"
+                                style="background-color: {{ categoria.cor }}">
+                            </span>
+
+                            <span>
+                                {{ categoria.nome }}
+                            </span>
+
+                            <strong>
+                                R$ {{ categoria.total|floatformat:2 }}
+                            </strong>
+
+                        </div>
+
+                    {% empty %}
+
+                        <p>
+                            Nenhuma categoria cadastrada.
+                        </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- ÚLTIMAS TRANSAÇÕES -->
+    <section class="dashboard-transactions">
+
+        <h2>Ultimas transações</h2>
+
+
+        <!-- CABEÇALHO -->
+        <div class="dashboard-transactions-head">
+
+            <span>Descricao</span>
+
+            <span>Categoria</span>
+
+            <span>Data</span>
+
+            <span>Valor</span>
+
+        </div>
+
+
+        <!-- LISTA DE TRANSAÇÕES -->
+        {% for transacao in ultimas_transacoes %}
+
+            <div class="dashboard-transaction-row">
+
+                <!-- DESCRIÇÃO -->
+                <span class="dashboard-transaction-title
+                    is-{{ transacao.tipo }}">
+
+                    {% if transacao.tipo == 'receita' %}
+                        +
+                    {% else %}
+                        -
+                    {% endif %}
+
+                    {{ transacao.descricao }}
+
+                </span>
+
+
+                <!-- CATEGORIA -->
+                <span>
+                    {{ transacao.categoria }}
+                </span>
+
+
+                <!-- DATA -->
+                <span>
+                    {{ transacao.data|date:"d/m/Y" }}
+                </span>
+
+
+                <!-- VALOR -->
+                <strong class="is-{{ transacao.tipo }}">
+
+                    {% if transacao.tipo == 'receita' %}
+                        +
+                    {% else %}
+                        -
+                    {% endif %}
+
+                    R$ {{ transacao.valor|floatformat:2 }}
+
+                </strong>
+
+            </div>
+
+        {% empty %}
+
+            <!-- SEM TRANSAÇÕES -->
+            <p class="dashboard-empty">
+
+                Nenhuma transacao cadastrada.
+
+            </p>
+
+        {% endfor %}
+
+    </section>
+
+</div>
+
+
+<!-- CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<!-- JS DO DASHBOARD -->
+<script src="{% static 'financeiro/js/dashboard.js' %}?v=5"
+    defer>
+</script>
+
+{% endblock %}

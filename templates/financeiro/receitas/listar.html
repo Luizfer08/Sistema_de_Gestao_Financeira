@@ -1,0 +1,542 @@
+{% extends 'financeiro/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<!-- PÁGINA DE RECEITAS -->
+<div class="receitas-page">
+
+
+    <!-- CABEÇALHO -->
+    <header class="receitas-header">
+
+        <h1>
+
+            Receitas
+
+        </h1>
+
+
+        <!-- ALERTA -->
+        {% if alerta_receita %}
+
+            <div class="receitas-alerta
+                {% if alerta_receita.tipo == 'queda' %}
+                    is-queda
+                {% endif %}">
+
+                <img src="{% static alerta_receita.icone %}"
+                    alt="">
+
+                {{ alerta_receita.mensagem }}
+
+            </div>
+
+        {% endif %}
+
+    </header>
+
+
+    <!-- PAINEL PRINCIPAL -->
+    <section class="receitas-panel">
+
+
+        <!-- FILTRO DE MÊS -->
+        <div class="receitas-month">
+
+            <!-- MÊS ANTERIOR -->
+            <a href="?mes={{ mes_anterior.month }}&ano={{ mes_anterior.year }}"
+                aria-label="Mes anterior">
+
+                <img src="{% static 'financeiro/img/seta_esquerda.png' %}"
+                    alt="">
+
+            </a>
+
+
+            <!-- MÊS ATUAL -->
+            <strong>
+
+                {{ mes_nome }}
+
+            </strong>
+
+
+            <!-- PRÓXIMO MÊS -->
+            <a href="?mes={{ proximo_mes.month }}&ano={{ proximo_mes.year }}"
+                aria-label="Proximo mes">
+
+                <img src="{% static 'financeiro/img/seta_direita.png' %}"
+                    alt="">
+
+            </a>
+
+        </div>
+
+
+        <!-- TABELA -->
+        <div class="receitas-table">
+
+
+            <!-- CABEÇALHO -->
+            <div class="receitas-table-head">
+
+                <span></span>
+
+                <span>Data</span>
+
+                <span>Descricao</span>
+
+                <span>Categoria</span>
+
+                <span>Renda Fixa</span>
+
+                <span>Receita Parcelada</span>
+
+                <span>Parcelas</span>
+
+                <span>Valor</span>
+
+                <span></span>
+
+            </div>
+
+
+            <!-- LISTA DE RECEITAS -->
+            <div id="tabelaReceitas">
+
+                {% for r in receitas %}
+
+                    <div class="receita-row"
+                        id="linha-{{ r.id }}"
+
+                        data-id="{{ r.id }}"
+
+                        data-descricao="{{ r.descricao }}"
+
+                        data-valor="{{ r.valor|stringformat:'s' }}"
+
+                        data-data="{{ r.data|date:'Y-m-d' }}"
+
+                        data-categoria-id="{{ r.categoria.id }}"
+
+                        data-categoria="{{ r.categoria.nome }}"
+
+                        data-categoria-cor="{{ r.categoria.cor|default:'#8FEBDD' }}"
+
+                        data-recorrente="{% if r.recorrente %}true{% else %}false{% endif %}"
+
+                        data-parcelada="{% if r.parcelada %}true{% else %}false{% endif %}"
+
+                        data-quantidade-parcelas="{{ r.quantidade_parcelas|default:'' }}">
+
+
+                        <!-- COR DA CATEGORIA -->
+                        <span class="receita-dot"
+                            style="background-color:
+                            {{ r.categoria.cor|default:'#8FEBDD' }};">
+                        </span>
+
+
+                        <!-- DATA -->
+                        <span class="receita-data">
+
+                            {{ r.data|date:"d/m" }}
+
+                        </span>
+
+
+                        <!-- DESCRIÇÃO -->
+                        <span id="desc-{{ r.id }}">
+
+                            {{ r.descricao }}
+
+                        </span>
+
+
+                        <!-- CATEGORIA -->
+                        <span class="receita-categoria">
+
+                            {{ r.categoria.nome }}
+
+                        </span>
+
+
+                        <!-- RECORRENTE -->
+                        <span class="receita-recorrente">
+
+                            <span class="status-badge
+                                {% if r.recorrente %}
+                                    is-on
+                                {% else %}
+                                    is-off
+                                {% endif %}">
+
+                                {% if r.recorrente %}
+                                    Sim
+                                {% else %}
+                                    Nao
+                                {% endif %}
+
+                            </span>
+
+                        </span>
+
+
+                        <!-- PARCELADA -->
+                        <span class="receita-parcelada">
+
+                            <span class="status-badge
+                                {% if r.parcelada %}
+                                    is-on
+                                {% else %}
+                                    is-off
+                                {% endif %}">
+
+                                {% if r.parcelada %}
+                                    Sim
+                                {% else %}
+                                    Nao
+                                {% endif %}
+
+                            </span>
+
+                        </span>
+
+
+                        <!-- QUANTIDADE DE PARCELAS -->
+                        <span class="receita-parcelas">
+
+                            {{ r.quantidade_parcelas|default:"-" }}
+
+                        </span>
+
+
+                        <!-- VALOR -->
+                        <span id="valor-{{ r.id }}">
+
+                            R$ {{ r.valor|floatformat:2 }}
+
+                        </span>
+
+
+                        <!-- AÇÕES -->
+                        <span class="receita-actions">
+
+                            <!-- EDITAR -->
+                            <button type="button"
+                                onclick="editarReceita({{ r.id }})"
+                                aria-label="Editar {{ r.descricao }}">
+
+                                <img src="{% static 'financeiro/img/editar.png' %}"
+                                    alt="">
+
+                            </button>
+
+
+                            <!-- EXCLUIR -->
+                            <button type="button"
+                                onclick="excluirReceita({{ r.id }})"
+                                aria-label="Excluir {{ r.descricao }}">
+
+                                <img src="{% static 'financeiro/img/lixeira.png' %}"
+                                    alt="">
+
+                            </button>
+
+                        </span>
+
+                    </div>
+
+                {% empty %}
+
+                    <!-- SEM RECEITAS -->
+                    <p class="receitas-empty"
+                        id="semReceitas">
+
+                        Nenhuma receita cadastrada neste mes
+
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- RODAPÉ -->
+        <footer class="receitas-footer">
+
+
+            <!-- BOTÃO ADICIONAR -->
+            <button class="receitas-add-btn"
+                type="button"
+                onclick="abrirModalReceita()">
+
+                <img src="{% static 'financeiro/img/mais.png' %}"
+                    alt="">
+
+                Adicionar nova receita
+
+            </button>
+
+
+            <!-- TOTAL -->
+            <div class="receitas-total">
+
+                Total receitas do mes:
+
+                <strong id="totalReceitasMes">
+
+                    R$ {{ total_mes|floatformat:2 }}
+
+                </strong>
+
+            </div>
+
+        </footer>
+
+    </section>
+
+</div>
+
+
+<!-- MODAL -->
+<div class="receita-modal-backdrop"
+    id="modalReceita"
+    aria-hidden="true">
+
+
+    <div class="receita-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalReceitaTitulo">
+
+
+        <!-- FECHAR -->
+        <button class="receita-modal-close"
+            type="button"
+            onclick="fecharModalReceita()"
+            aria-label="Fechar">
+
+            <img src="{% static 'financeiro/img/fechar.png' %}"
+                alt="">
+
+        </button>
+
+
+        <!-- TÍTULO -->
+        <div class="receita-modal-title">
+
+            <img src="{% static 'financeiro/img/crescente.png' %}"
+                alt="">
+
+            <h2 id="modalReceitaTitulo">
+
+                Adicionar Receita
+
+            </h2>
+
+        </div>
+
+
+        <!-- FORMULÁRIO -->
+        <form id="formReceita">
+
+            {% csrf_token %}
+
+
+            <!-- VALOR -->
+            <div class="receita-value-banner">
+
+                <label for="valorReceita">
+
+                    Valor
+
+                </label>
+
+                <input id="valorReceita"
+                    name="valor"
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    placeholder="R$ 0,00"
+                    required>
+
+            </div>
+
+
+            <!-- GRID -->
+            <div class="receita-form-grid">
+
+
+                <!-- DESCRIÇÃO -->
+                <label class="receita-field receita-field-full">
+
+                    Nome receita
+
+                    <input type="text"
+                        name="descricao"
+                        required>
+
+                </label>
+
+
+                <!-- DATA -->
+                <label class="receita-field">
+
+                    Data
+
+                    <input type="date"
+                        name="data"
+                        required>
+
+                </label>
+
+
+                <!-- CATEGORIA -->
+                <label class="receita-field">
+
+                    Categoria
+
+                    <select name="categoria"
+                        required>
+
+                        <option value="">
+
+                            Selecione
+
+                        </option>
+
+                        {% for c in categorias %}
+
+                            <option value="{{ c.id }}"
+                                data-cor="{{ c.cor }}">
+
+                                {{ c.nome }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </label>
+
+
+                <!-- RECORRENTE -->
+                <label class="receita-check receita-fixa-opcao">
+
+                    <input type="checkbox"
+                        name="recorrente">
+
+                    <img src="{% static 'financeiro/img/se_repete.png' %}"
+                        alt="">
+
+                    Renda fixa
+
+                    <small>(opcional)</small>
+
+                </label>
+
+
+                <!-- PARCELADA -->
+                <label class="receita-check receita-parcelada-opcao">
+
+                    <input type="checkbox"
+                        name="parcelada"
+                        id="receitaParcelada">
+
+                    <img src="{% static 'financeiro/img/calendario_mes.png' %}"
+                        alt="">
+
+                    Renda parcelada
+
+                </label>
+
+
+                <!-- QUANTIDADE DE PARCELAS -->
+                <label class="receita-field receita-parcelas-campo">
+
+                    <select name="quantidade_parcelas"
+                        id="quantidadeParcelasReceita"
+                        disabled>
+
+                        <option value="">
+
+                            Qtd. Parcelas
+
+                        </option>
+
+                        <option value="2">2</option>
+
+                        <option value="3">3</option>
+
+                        <option value="4">4</option>
+
+                        <option value="5">5</option>
+
+                        <option value="6">6</option>
+
+                        <option value="12">12</option>
+
+                    </select>
+
+                </label>
+
+            </div>
+
+
+            <!-- BOTÃO SALVAR -->
+            <button class="receita-save-btn"
+                type="submit">
+
+                <img src="{% static 'financeiro/img/check.png' %}"
+                    alt="">
+
+                Salvar
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- CONFIGURAÇÕES JAVASCRIPT -->
+<script>
+
+    const URL_CRIAR_RECEITA =
+        "{% url 'financeiro:criar_receita' %}";
+
+    const RECEITA_MES_ATUAL =
+        "{{ mes_atual|date:'Y-m' }}";
+
+    const RECEITA_ICONS = {
+
+        editar:
+            "{% static 'financeiro/img/editar.png' %}",
+
+        lixeira:
+            "{% static 'financeiro/img/lixeira.png' %}",
+
+        check:
+            "{% static 'financeiro/img/check.png' %}"
+    };
+
+    const RECEITA_URL_EDITAR_BASE =
+        "/receitas/editar/";
+
+</script>
+
+
+<!-- JAVASCRIPT -->
+<script src="{% static 'financeiro/js/receitas.js' %}?v=13">
+</script>
+
+{% endblock %}
