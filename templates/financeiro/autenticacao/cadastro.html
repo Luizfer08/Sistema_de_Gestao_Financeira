@@ -1,125 +1,428 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Cadastro - Sistema Financeiro</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CONFIGURAÇÕES -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- TÍTULO -->
+    <title>Criar conta - Sistema Financeiro</title>
+
+    <!-- FONTES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'financeiro/css/auth.css' %}">
-    <link rel="stylesheet" href="{% static 'financeiro/css/termos.css' %}">
+    <link rel="stylesheet"
+        href="{% static 'financeiro/css/auth.css' %}?v=9">
+
+    <link rel="stylesheet"
+        href="{% static 'financeiro/css/termos.css' %}">
+
 </head>
 
-<body class="auth-body">
+<body class="auth-login-body">
 
-<div class="auth-container">
+    <!-- CONTAINER PRINCIPAL -->
+    <main class="login-shell cadastro-shell">
 
-    <div class="auth-card">
+        <!-- CARD DE CADASTRO -->
+        <section class="login-card cadastro-card"
+            aria-labelledby="cadastroTitulo">
 
-        <h3 class="text-center mb-4">Criar Conta</h3>
+            <!-- LOGO -->
+            <div class="login-brand">
 
-        <!-- MENSAGEM -->
-        <div id="mensagem"></div>
+                <img src="{% static 'financeiro/img/icone.png' %}"
+                    alt="">
 
-        <!-- FORM -->
-        <form id="formCadastro">
-            {% csrf_token %}
+                <strong>
+                    Sistema Gestão Financeira
+                </strong>
 
-            <input type="text" name="username" class="form-control mb-2" placeholder="Usuário" required>
-
-            <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
-
-            <input type="password" id="senha" name="password" class="form-control mb-2" placeholder="Senha" required>
-
-            <input type="password" id="confirmar_senha" name="confirmar" class="form-control mb-2" placeholder="Confirmar senha" required>
-
-            <!-- CEP -->
-            <input type="text" id="cep" class="form-control mb-2" placeholder="CEP">
-            <input type="text" id="endereco" class="form-control mb-2" placeholder="Endereço">
-            <input type="text" id="cidade" class="form-control mb-2" placeholder="Cidade">
-            <input type="text" id="estado" class="form-control mb-2" placeholder="Estado">
-
-            <!-- LGPD -->
-            <div class="form-check mb-3 text-start">
-                <input class="form-check-input" type="checkbox" id="termos">
-                <label class="form-check-label">
-                    Eu aceito os 
-                    <a href="#" id="abrirTermos">Termos de uso</a>
-                </label>
             </div>
 
-            <button type="submit" class="btn btn-success w-100">
-                Cadastrar
+            <!-- TÍTULO -->
+            <div class="login-heading cadastro-heading">
+
+                <h1 id="cadastroTitulo">
+                    Crie sua conta para organizar suas finanças
+                </h1>
+
+            </div>
+
+            <!-- MENSAGEM -->
+            <div id="mensagem"
+                class="cadastro-message">
+            </div>
+
+            <!-- FORMULÁRIO -->
+            <form id="formCadastro"
+                class="login-form cadastro-form">
+
+                {% csrf_token %}
+
+                <!-- USUÁRIO -->
+                <label>
+
+                    Usuário
+
+                    <span class="login-input-wrap">
+
+                        <input type="text"
+                            name="username"
+                            placeholder="Digite seu usuário"
+                            autocomplete="username"
+                            required>
+
+                    </span>
+
+                </label>
+
+                <!-- EMAIL -->
+                <label>
+
+                    Email
+
+                    <span class="login-input-wrap">
+
+                        <input type="email"
+                            name="email"
+                            placeholder="Digite seu email"
+                            autocomplete="email"
+                            required>
+
+                    </span>
+
+                </label>
+
+                <!-- SENHA -->
+                <label>
+
+                    Senha
+
+                    <span class="login-input-wrap">
+
+                        <input type="password"
+                            id="senha"
+                            name="password"
+                            placeholder="Digite sua senha"
+                            autocomplete="new-password"
+                            required>
+
+                    </span>
+
+                </label>
+
+                <!-- CONFIRMAR SENHA -->
+                <label>
+
+                    Confirmar senha
+
+                    <span class="login-input-wrap">
+
+                        <input type="password"
+                            id="confirmar_senha"
+                            name="confirmar"
+                            placeholder="Confirme sua senha"
+                            autocomplete="new-password"
+                            required>
+
+                    </span>
+
+                </label>
+
+                <!-- GRID ENDEREÇO -->
+                <div class="cadastro-address-grid">
+
+                    <!-- CEP -->
+                    <label>
+
+                        CEP
+
+                        <span class="login-input-wrap">
+
+                            <input type="text"
+                                id="cep"
+                                placeholder="00000-000">
+
+                        </span>
+
+                    </label>
+
+                    <!-- ESTADO -->
+                    <label>
+
+                        Estado
+
+                        <span class="login-input-wrap">
+
+                            <input type="text"
+                                id="estado"
+                                placeholder="UF">
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+                <!-- ENDEREÇO -->
+                <label>
+
+                    Endereço
+
+                    <span class="login-input-wrap">
+
+                        <input type="text"
+                            id="endereco"
+                            placeholder="Endereço">
+
+                    </span>
+
+                </label>
+
+                <!-- CIDADE -->
+                <label>
+
+                    Cidade
+
+                    <span class="login-input-wrap">
+
+                        <input type="text"
+                            id="cidade"
+                            placeholder="Cidade">
+
+                    </span>
+
+                </label>
+
+                <!-- TERMOS -->
+                <div class="cadastro-terms">
+
+                    <input type="checkbox"
+                        id="termos">
+
+                    <label for="termos">
+
+                        Eu aceito os
+
+                        <a href="#"
+                            id="abrirTermos">
+
+                            Termos de uso
+
+                        </a>
+
+                    </label>
+
+                </div>
+
+                <!-- BOTÃO CADASTRAR -->
+                <button type="submit"
+                    class="login-submit">
+
+                    Cadastrar
+
+                    <img src="{% static 'financeiro/img/seta_direita.png' %}"
+                        alt="">
+
+                </button>
+
+            </form>
+
+            <!-- LINK LOGIN -->
+            <p class="login-register">
+
+                Já tem conta?
+
+                <a href="{% url 'financeiro:login' %}">
+                    Entrar
+                </a>
+
+            </p>
+
+        </section>
+
+    </main>
+
+    <!-- MODAL TERMOS -->
+
+    <div id="modalTermos"
+        class="modal-termos">
+
+        <div class="modal-content">
+
+            <!-- TÍTULO -->
+            <h5>
+                Termos de Uso e Política de Privacidade
+            </h5>
+
+            <!-- INTRODUÇÃO -->
+            <p>
+                O Sistema de Gestão Financeira foi desenvolvido com o objetivo de auxiliar usuários no controle de receitas, despesas, categorias financeiras e organização pessoal, oferecendo recursos de acompanhamento financeiro por meio de dashboards, gráficos e relatórios.
+            </p>
+
+            <!-- COLETA DE DADOS -->
+            <h6>1. Coleta de Dados</h6>
+
+            <p>
+                O sistema poderá coletar informações fornecidas diretamente pelo usuário, incluindo:
+            </p>
+
+            <ul>
+
+                <li>Nome de usuário;</li>
+
+                <li>Endereço de e-mail;</li>
+
+                <li>Informações financeiras cadastradas no sistema;</li>
+
+                <li>Categorias, receitas, despesas e demais registros financeiros.</li>
+
+            </ul>
+
+            <p>
+                Esses dados são utilizados apenas para o funcionamento da plataforma.
+            </p>
+
+            <!-- FINALIDADE -->
+            <h6>2. Finalidade do Uso</h6>
+
+            <p>
+                As informações coletadas possuem as seguintes finalidades:
+            </p>
+
+            <ul>
+
+                <li>Permitir autenticação e acesso seguro ao sistema;</li>
+
+                <li>Organizar receitas, despesas e categorias financeiras;</li>
+
+                <li>Gerar gráficos, resumos e relatórios financeiros;</li>
+
+                <li>Melhorar a experiência de uso da plataforma;</li>
+
+                <li>Garantir o funcionamento correto das funcionalidades do sistema.</li>
+
+            </ul>
+
+            <!-- SEGURANÇA -->
+            <h6>3. Armazenamento e Segurança</h6>
+
+            <p>
+                Os dados são armazenados em ambiente protegido e tratados com medidas de segurança para evitar:
+            </p>
+
+            <ul>
+
+                <li>Acessos não autorizados;</li>
+
+                <li>Alterações indevidas;</li>
+
+                <li>Vazamento de informações;</li>
+
+                <li>Perda de dados.</li>
+
+            </ul>
+
+            <p>
+                As senhas dos usuários são armazenadas de forma criptografada, seguindo os padrões de segurança do framework utilizado pela aplicação.
+            </p>
+
+            <!-- COMPARTILHAMENTO -->
+            <h6>4. Compartilhamento de Dados</h6>
+
+            <p>
+                O sistema não realiza venda, compartilhamento ou divulgação de dados pessoais e financeiros para terceiros.
+            </p>
+
+            <p>
+                As informações cadastradas são utilizadas exclusivamente dentro da aplicação.
+            </p>
+
+            <!-- DIREITOS -->
+            <h6>5. Direitos do Usuário</h6>
+
+            <p>
+                O usuário poderá, a qualquer momento:
+            </p>
+
+            <ul>
+
+                <li>Solicitar acesso aos seus dados;</li>
+
+                <li>Corrigir informações incorretas;</li>
+
+                <li>Solicitar exclusão da conta;</li>
+
+                <li>Revogar o consentimento de uso dos dados;</li>
+
+                <li>Encerrar a utilização da plataforma.</li>
+
+            </ul>
+
+            <!-- RESPONSABILIDADES -->
+            <h6>6. Responsabilidades do Usuário</h6>
+
+            <p>
+                O usuário é responsável por:
+            </p>
+
+            <ul>
+
+                <li>Manter sua senha em sigilo;</li>
+
+                <li>Fornecer informações verdadeiras;</li>
+
+                <li>Utilizar o sistema de forma adequada e segura.</li>
+
+            </ul>
+
+            <p>
+                O uso indevido da plataforma poderá resultar em restrições de acesso.
+            </p>
+
+            <!-- CONSENTIMENTO -->
+            <h6>7. Consentimento</h6>
+
+            <p>
+                Ao criar uma conta e utilizar o Sistema de Gestão Financeira, o usuário declara estar ciente e de acordo com estes Termos de Uso e Política de Privacidade.
+            </p>
+
+            <!-- ATUALIZAÇÕES -->
+            <h6>8. Atualizações dos Termos</h6>
+
+            <p>
+                Os presentes termos poderão ser atualizados futuramente para melhorias da plataforma, segurança e adequação às funcionalidades do sistema.
+            </p>
+
+            <!-- BOTÃO FECHAR -->
+            <button class="login-submit termos-close-btn"
+                id="fecharTermos"
+                type="button">
+
+                Fechar
+
             </button>
-        </form>
 
-        <p class="text-center mt-3">
-            Já tem conta?
-            <a href="{% url 'financeiro:login' %}">Entrar</a>
-        </p>
+        </div>
 
     </div>
 
-</div>
-
-<!-- MODAL TERMOS -->
-<div id="modalTermos" class="modal-termos">
-    <div class="modal-content">
-
-        <h5>Termos de Uso e Política de Privacidade</h5>
-
-        <p>
-            Este sistema de Gestão Financeira tem como objetivo auxiliar o usuário no controle de suas receitas, despesas e organização financeira pessoal.
-        </p>
-
-        <hr>
-
-        <h6>1. Coleta de Dados</h6>
-        <p>
-            Coletamos dados fornecidos diretamente pelo usuário, como nome de usuário, e-mail e informações financeiras inseridas no sistema.
-        </p>
-
-        <h6>2. Finalidade do Uso</h6>
-        <p>
-            Os dados coletados são utilizados exclusivamente para funcionamento da aplicação.
-        </p>
-
-        <h6>3. Armazenamento e Segurança</h6>
-        <p>
-            Os dados são armazenados de forma segura, com medidas de proteção contra acessos não autorizados.
-        </p>
-
-        <h6>4. Compartilhamento de Dados</h6>
-        <p>
-            Não realizamos compartilhamento de dados com terceiros.
-        </p>
-
-        <h6>5. Direitos do Usuário</h6>
-        <ul>
-            <li>Acesso aos dados;</li>
-            <li>Correção;</li>
-            <li>Exclusão;</li>
-            <li>Revogação do consentimento.</li>
-        </ul>
-
-        <h6>6. Consentimento</h6>
-        <p>
-            Ao utilizar o sistema, o usuário concorda com os termos.
-        </p>
-
-        <button class="btn btn-secondary mt-3" id="fecharTermos">
-            Fechar
-        </button>
-
-    </div>
-</div>
-
-<!-- JS -->
-<script src="{% static 'financeiro/js/cadastro.js' %}"></script>
+    <!-- JAVASCRIPT -->
+    <script src="{% static 'financeiro/js/cadastro.js' %}?v=2">
+    </script>
 
 </body>
 </html>

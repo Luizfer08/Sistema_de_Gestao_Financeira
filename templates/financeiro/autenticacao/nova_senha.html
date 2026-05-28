@@ -1,18 +1,122 @@
-{% extends 'financeiro/base.html' %}
+{% load static %}
 
-{% block content %}
+<!DOCTYPE html>
+<html lang="pt-br">
 
-<h3>Definir nova senha</h3>
+<head>
 
-<form method="POST">
-{% csrf_token %}
+    <!-- CONFIGURAÇÕES -->
+    <meta charset="UTF-8">
 
-{{ form.as_p }}
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-<button class="btn btn-success">
-Salvar nova senha
-</button>
+    <!-- TÍTULO -->
+    <title>Nova senha</title>
 
-</form>
+    <!-- CSS -->
+    <link rel="stylesheet"
+        href="{% static 'financeiro/css/auth.css' %}?v=2">
 
-{% endblock %}
+</head>
+
+<body class="auth-login-body">
+
+    <!-- CONTAINER PRINCIPAL -->
+    <main class="auth-simple-shell">
+
+        <!-- CARD -->
+        <section class="auth-simple-card">
+
+            <!-- LOGO -->
+            <img src="{% static 'financeiro/img/icone.png' %}"
+                alt="">
+
+
+            <!-- TÍTULO -->
+            <h1>
+                Criar nova senha
+            </h1>
+
+
+            <!-- LINK VÁLIDO -->
+            {% if validlink %}
+
+                <!-- FORMULÁRIO -->
+                <form method="post"
+                    class="login-form">
+
+                    {% csrf_token %}
+
+                    <!-- NOVA SENHA -->
+                    <label>
+
+                        Nova senha
+
+                        <span class="login-input-wrap">
+
+                            {{ form.new_password1 }}
+
+                        </span>
+
+                    </label>
+
+                    <!-- CONFIRMAR SENHA -->
+                    <label>
+
+                        Confirmar senha
+
+                        <span class="login-input-wrap">
+
+                            {{ form.new_password2 }}
+
+                        </span>
+
+                    </label>
+
+                    <!-- ERRO -->
+                    {% if form.errors %}
+
+                        <div class="login-error">
+
+                            Confira os requisitos da senha e tente novamente.
+
+                        </div>
+
+                    {% endif %}
+
+                    <!-- BOTÃO -->
+                    <button class="login-submit"
+                        type="submit">
+
+                        Salvar nova senha
+
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <!-- LINK INVÁLIDO -->
+                <p>
+
+                    Este link expirou ou é inválido. Solicite uma nova recuperação de senha.
+
+                </p>
+
+                <!-- NOVO LINK -->
+                <a class="login-submit auth-simple-link"
+                    href="{% url 'password_reset' %}">
+
+                    Solicitar novo link
+
+                </a>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</body>
+</html>

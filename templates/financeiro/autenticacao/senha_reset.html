@@ -1,0 +1,78 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <!-- CONFIGURAÇÕES -->
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <!-- TÍTULO -->
+    <title>Recuperar senha</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+        href="{% static 'financeiro/css/auth.css' %}?v=2">
+
+</head>
+
+<body class="auth-login-body">
+    <!-- CONTAINER PRINCIPAL -->
+    <main class="auth-simple-shell">
+        <!-- CARD -->
+        <section class="auth-simple-card">
+            <!-- LOGO -->
+            <img src="{% static 'financeiro/img/icone.png' %}"
+                alt="">
+            <!-- TÍTULO -->
+            <h1>
+                Recuperar senha
+            </h1>
+            <!-- DESCRIÇÃO -->
+            <p>
+                Informe seu email cadastrado para receber o link de redefinição.
+            </p>
+
+            <!-- FORMULÁRIO -->
+            <form method="post"
+                class="login-form">
+                {% csrf_token %}
+                
+                <!-- EMAIL -->
+                <label>
+                    Email
+                    <span class="login-input-wrap">
+                        {{ form.email }}
+                    </span>
+                </label>
+
+                <!-- ERRO -->
+                {% if form.errors %}
+                    <div class="login-error">
+                        Informe um email válido.
+                    </div>
+                {% endif %}
+                <!-- BOTÃO -->
+
+                <button class="login-submit"
+                    type="submit">
+                    Enviar link
+                </button>
+            </form>
+            <!-- VOLTAR LOGIN -->
+
+            <a class="auth-back-link"
+                href="{% url 'financeiro:login' %}">
+                Voltar ao login
+            </a>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

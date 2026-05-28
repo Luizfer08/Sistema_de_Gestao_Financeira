@@ -25,7 +25,8 @@ urlpatterns = [
 
     path('resetar-senha/',
          auth_views.PasswordResetView.as_view(
-             template_name='financeiro/autenticacao/senha_reset.html'
+             template_name='financeiro/autenticacao/senha_reset.html',
+             email_template_name='financeiro/autenticacao/senha_email.txt'
          ),
          name='password_reset'),
 

@@ -149,12 +149,23 @@ X_FRAME_OPTIONS = 'DENY'
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 
-
-# EMAIL (OPCIONAL)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
+# EMAIL USUÁRIO
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+# EMAIL SENHA
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+
+# CONFIGURAÇÃO SMTP
+if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+    # BACKEND EMAIL REAL
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    # SERVIDOR GMAIL
+    EMAIL_HOST = 'smtp.gmail.com'
+    # PORTA TLS
+    EMAIL_PORT = 587
+    # SEGURANÇA TLS
+    EMAIL_USE_TLS = True
+
+# BACKEND CONSOLE
+else:
+    # EMAIL APENAS NO TERMINAL
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

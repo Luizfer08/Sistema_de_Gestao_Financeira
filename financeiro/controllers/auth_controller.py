@@ -43,6 +43,10 @@ def api_login(request):
         if user:
 
             login(request, user)
+            if request.POST.get('remember'):
+                request.session.set_expiry(60 * 60 * 24 * 30)
+            else:
+                request.session.set_expiry(0)
 
             return JsonResponse({
                 'success': True

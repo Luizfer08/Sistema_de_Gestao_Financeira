@@ -7,12 +7,12 @@
 
     <!-- CONFIGURAÇÕES -->
     <meta charset="UTF-8">
-    
+
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
     <!-- TÍTULO -->
-    <title>Email enviado</title>
+    <title>Senha alterada</title>
 
     <!-- CSS -->
     <link rel="stylesheet"
@@ -21,6 +21,7 @@
 </head>
 
 <body class="auth-login-body">
+
     <!-- CONTAINER PRINCIPAL -->
     <main class="auth-simple-shell">
 
@@ -30,21 +31,20 @@
             <!-- LOGO -->
             <img src="{% static 'financeiro/img/icone.png' %}"
                 alt="">
-
             <!-- TÍTULO -->
             <h1>
-                Verifique seu email
+                Senha alterada
             </h1>
 
-            <!-- DESCRIÇÃO -->
+            <!-- MENSAGEM -->
             <p>
-                Se o email informado estiver cadastrado, enviaremos um link para redefinir sua senha.
+                Sua senha foi atualizada com sucesso. Agora você já pode entrar novamente.
             </p>
 
             <!-- BOTÃO -->
             <a class="login-submit auth-simple-link"
                 href="{% url 'financeiro:login' %}">
-                Voltar ao login
+                Entrar
             </a>
 
         </section>
