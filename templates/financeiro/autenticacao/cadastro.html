@@ -24,7 +24,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet"
-        href="{% static 'financeiro/css/auth.css' %}?v=9">
+        href="{% static 'financeiro/css/auth.css' %}?v=10">
 
     <link rel="stylesheet"
         href="{% static 'financeiro/css/termos.css' %}">
@@ -217,8 +217,7 @@
 
                         Eu aceito os
 
-                        <a href="#"
-                            id="abrirTermos">
+                        <a href="{% url 'financeiro:termos' %}">
 
                             Termos de uso
 

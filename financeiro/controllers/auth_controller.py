@@ -162,6 +162,14 @@ def cadastro_view(request):
         'financeiro/autenticacao/cadastro.html'
     )
 
+
+def termos_view(request):
+    return render(
+        request,
+        'financeiro/autenticacao/termos.html'
+    )
+
+
 # REALIZA LOGOUT DO USUÁRIO
 def logout_view(request):
 

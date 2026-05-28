@@ -27,7 +27,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet"
-        href="{% static 'financeiro/css/auth.css' %}?v=9">
+        href="{% static 'financeiro/css/auth.css' %}?v=10">
 
 </head>
 
@@ -160,6 +160,12 @@
                     Cadastre-se
                 </a>
 
+            </p>
+
+            <p class="login-terms-link">
+                <a href="{% url 'financeiro:termos' %}">
+                    Termos de uso e política de privacidade
+                </a>
             </p>
 
         </section>

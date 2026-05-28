@@ -29,7 +29,7 @@
 
     <!-- CSS PRINCIPAL -->
     <link rel="stylesheet"
-        href="{% static 'financeiro/css/style.css' %}?v=6">
+        href="{% static 'financeiro/css/style.css' %}?v=7">
 
 </head>
 
@@ -168,6 +168,31 @@
 
                         <span class="nav-label">
                             Categorias
+                        </span>
+
+                    </a>
+
+                </li>
+
+
+                <!-- TERMOS -->
+                <li class="nav-item">
+
+                    <a class="nav-link nav-item-custom
+                        {% if '/termos' in request.path %}
+                            active
+                        {% endif %}"
+
+                        href="{% url 'financeiro:termos' %}"
+
+                        aria-label="Termos de uso e privacidade">
+
+                        <img class="nav-icon-img"
+                            src="{% static 'financeiro/img/lista.png' %}"
+                            alt="">
+
+                        <span class="nav-label">
+                            Termos
                         </span>
 
                     </a>

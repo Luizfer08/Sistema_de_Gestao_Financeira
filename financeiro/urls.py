@@ -5,7 +5,8 @@ from financeiro.controllers.auth_controller import (
     api_login,
     logout_view,
     cadastro_view,
-    api_cadastro
+    api_cadastro,
+    termos_view
 )
 
 # HOME
@@ -53,6 +54,7 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('cadastro/', cadastro_view, name='cadastro'),
     path('api/cadastro/', api_cadastro, name='api_cadastro'),
+    path('termos/', termos_view, name='termos'),
 
     # DASHBOARD
     path('dashboard/', dashboard, name='dashboard'),

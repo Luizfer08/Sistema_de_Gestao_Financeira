@@ -324,6 +324,23 @@ body {
     text-align: center;
 }
 
+.login-terms-link {
+    font-size: 12px;
+    margin: 12px 0 0;
+    text-align: center;
+}
+
+.login-terms-link a {
+    color: #4b5563;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-terms-link a:hover {
+    color: #12bd5a;
+    text-decoration: underline;
+}
+
 .login-error {
     background: #ffe3e6;
     border: 1px solid #ffb6c0;
