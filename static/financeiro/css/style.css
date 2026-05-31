@@ -27,10 +27,6 @@
     font-weight: 400;
 }
 
-.categorias-total {
-    font-weight: 400;
-}
-
 .categoria-panel-header h2 {
     font-weight: 400;
     letter-spacing: .3px;
@@ -296,6 +292,9 @@ h3 {
     line-height: 1;
     padding: 8px 12px;
     text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 400;
+    border-radius: 8px;
 }
 
 .categorias-grid {
@@ -829,6 +828,7 @@ h3 {
     width: 22px;
     z-index: 1;
 }
+
 
 .receita-modal-close img,
 .receita-modal-title img,
@@ -1444,6 +1444,21 @@ h3 {
     padding: 1px 5px;
 }
 
+.despesa-parcelada-opcao {
+    grid-column: 1;
+    grid-row: 3;
+}
+
+.despesa-fixa-opcao {
+    grid-column: 2;
+    grid-row: 4;
+}
+
+.despesa-parcelas-campo {
+    grid-column: 1;
+    grid-row: 4;
+}
+
 /* Refinamento dos popups de receitas e despesas */
 .receita-modal,
 .despesa-modal {
@@ -1745,10 +1760,6 @@ h3 {
     font-size: 30px;
 }
 
-.categorias-total {
-    font-size: 18px;
-}
-
 .categoria-panel-header h2 {
     font-size: 18px;
 }
@@ -1936,7 +1947,8 @@ h3 {
 }
 
 .receita-actions button,
-.despesa-actions button {
+.despesa-actions button,
+.categoria-icon-btn {
     border-radius: 6px;
     height: 26px;
     min-width: 26px;
@@ -1945,7 +1957,8 @@ h3 {
 }
 
 .receita-actions img,
-.despesa-actions img {
+.despesa-actions img,
+.categoria-icon-btn img {
     height: 17px;
     width: 17px;
 }

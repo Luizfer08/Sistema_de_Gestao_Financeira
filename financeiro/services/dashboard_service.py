@@ -451,64 +451,142 @@ def montar_ultimas_transacoes(usuario, limite=5):
 
 
 # GERA NOTIFICAÇÕES DO DASHBOARD
-def gerar_notificacoes(resumo):
+def gerar_notificacoes(usuario, resumo, data_ref):
 
     notificacoes = []
 
-    # Aumento de receitas
+    # RECEITAS AUMENTARAM
     if resumo['variacoes']['receitas']['direcao'] == 'up':
 
         notificacoes.append({
-
             'tipo': 'receita',
-
             'texto': (
                 f"Receitas aumentaram "
                 f"{resumo['variacoes']['receitas']['percentual']}% "
-                f"em relacao ao mes anterior."
+                f"em relacao ao mês anterior."
             )
         })
 
-    # Aumento de despesas
+    # DESPESAS AUMENTARAM
     if resumo['variacoes']['despesas']['direcao'] == 'up':
 
         notificacoes.append({
-
             'tipo': 'despesa',
-
             'texto': (
                 f"Despesas aumentaram "
                 f"{resumo['variacoes']['despesas']['percentual']}% "
-                f"em relacao ao mes anterior."
+                f"em relacao ao mês anterior."
             )
         })
 
-    # Saldo negativo
+    # GRANDE AUMENTO NAS DESPESAS
+    if resumo['variacoes']['despesas']['percentual'] >= 30:
+
+        notificacoes.append({
+            'tipo': 'despesa',
+            'texto': 'Grande aumento nas despesas neste mês.'
+        })
+
+    # SALDO NEGATIVO
     if resumo['saldo_atual'] < 0:
 
         notificacoes.append({
-
             'tipo': 'despesa',
-
-            'texto': (
-                "Saldo atual esta negativo neste mes."
-            )
+            'texto': 'Saldo atual esta negativo neste mês.'
         })
 
-    # Saldo futuro abaixo do saldo atual
+    # SALDO FUTURO PIOR
     if resumo['saldo_futuro'] < resumo['saldo_atual']:
 
         notificacoes.append({
-
             'tipo': 'despesa',
+            'texto': 'Saldo futuro esta abaixo do saldo atual.'
+        })
 
+    # ÚLTIMOS 3 MESES
+    lucros = []
+    receitas_3_meses = []
+
+    for i in range(3):
+
+        mes = somar_mes(data_ref, -i)
+
+        receitas = total_receitas_periodo(
+            usuario,
+            mes,
+            fim_do_mes(mes)
+        )
+
+        despesas = total_despesas_periodo(
+            usuario,
+            mes,
+            fim_do_mes(mes)
+        )
+
+        lucros.append(receitas - despesas)
+
+        receitas_3_meses.append(receitas)
+
+    # MAIOR LUCRO
+    if len(lucros) == 3 and lucros[0] == max(lucros):
+
+        notificacoes.append({
+            'tipo': 'receita',
+            'texto': 'Maior lucro dos ultimos 3 meses registrado.'
+        })
+
+    # MENOR LUCRO
+    if len(lucros) == 3 and lucros[0] == min(lucros):
+
+        notificacoes.append({
+            'tipo': 'despesa',
+            'texto': 'Menor lucro registrado nos ultimos 3 meses.'
+        })
+
+    # RECEITAS ESTABILIZADAS
+    if (
+        len(receitas_3_meses) == 3
+        and receitas_3_meses[0] == receitas_3_meses[1]
+        and receitas_3_meses[1] == receitas_3_meses[2]
+    ):
+
+        notificacoes.append({
+            'tipo': 'neutral',
             'texto': (
-                "Saldo futuro esta abaixo do saldo atual."
+                'Receitas estabilizadas sem crescimento '
+                'nos ultimos 3 meses.'
             )
         })
 
-    # Limita quantidade de notificações
-    return notificacoes[:3]
+    # PROJEÇÃO PRÓXIMO MÊS
+    proximo_mes = somar_mes(data_ref, 1)
+
+    saldo_proximo = calcular_saldo_previsto(
+        usuario,
+        proximo_mes
+    )
+
+    if resumo['saldo_futuro'] > 0:
+
+        crescimento = round(
+            (
+                (saldo_proximo - resumo['saldo_futuro'])
+                / resumo['saldo_futuro']
+            ) * 100,
+            1
+        )
+
+        if crescimento >= 15:
+
+            notificacoes.append({
+                'tipo': 'receita',
+                'texto': (
+                    f'Projeção indica crescimento de '
+                    f'{crescimento}% para o próximo mês.'
+                )
+            })
+
+    return notificacoes[:5]
 
 
 # MONTA DASHBOARD COMPLETO
@@ -546,7 +624,9 @@ def montar_dashboard(usuario, mes=None, ano=None):
         'resumo': resumo,
 
         'notificacoes': gerar_notificacoes(
-            resumo
+            usuario,
+            resumo,
+            data_ref
         ),
 
         'grafico_financeiro': montar_historico_financeiro(

@@ -260,6 +260,30 @@ function criarGraficoCategorias() {
     });
 }
 
+// MARCAR NOTIFICAÇÃO COMO LIDA
+document.addEventListener("DOMContentLoaded", () => {
+
+    document.querySelectorAll(".notification-read")
+    .forEach(botao => {
+
+        botao.addEventListener("click", function() {
+
+            const notificacao =
+                this.closest(".dashboard-notification");
+
+            notificacao.style.opacity = "0";
+            notificacao.style.transform = "translateX(20px)";
+
+            setTimeout(() => {
+                notificacao.remove();
+            }, 250);
+
+        });
+
+    });
+
+});
+
 
 // FORMATA VALOR MONETÁRIO
 function formatarMoeda(valor) {
