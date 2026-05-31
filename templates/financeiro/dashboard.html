@@ -167,26 +167,44 @@
         <!-- NOTIFICAÇÕES -->
         <article class="dashboard-card dashboard-notifications">
 
-            <span>Notificações</span>
+            <span class="dashboard-card-title">
+                Notificações
+            </span>
 
-            {% for notificacao in notificacoes %}
+            <div class="dashboard-notifications-list">
 
-                <div class="dashboard-notification
-                    is-{{ notificacao.tipo }}">
+                {% for notificacao in notificacoes %}
 
-                    {{ notificacao.texto }}
+                    <div class="dashboard-notification
+                        is-{{ notificacao.tipo }}">
 
-                </div>
+                        <span>
+                            {{ notificacao.texto }}
+                        </span>
 
-            {% empty %}
+                        <button
+                            class="notification-read"
+                            title="Marcar como lida">
 
-                <div class="dashboard-notification is-neutral">
+                            ✓
 
-                    Nenhuma alteracao relevante em relacao ao mes anterior.
+                        </button>
 
-                </div>
+                    </div>
 
-            {% endfor %}
+                {% empty %}
+
+                    <div class="dashboard-notification is-neutral">
+
+                        <span>
+                            Nenhuma alteração relevante em relação ao mês anterior.
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
 
         </article>
 
@@ -263,7 +281,7 @@
         <!-- CABEÇALHO -->
         <div class="dashboard-transactions-head">
 
-            <span>Descricao</span>
+            <span>Descrição</span>
 
             <span>Categoria</span>
 

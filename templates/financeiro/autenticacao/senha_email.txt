@@ -1,6 +1,6 @@
 Olá,
 
-Recebemos uma solicitação para redefinir a senha do Sistema Gestão Financeira.
+Recebemos uma solicitação para redefinir a senha de sua conta no Sistema Gestão Financeira Pessoal.
 
 Acesse o link abaixo para criar uma nova senha:
 {{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}

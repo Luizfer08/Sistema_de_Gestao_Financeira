@@ -2,7 +2,7 @@
 from django.contrib import admin
 
 # Rotas
-from django.urls import path, include
+from django.urls import path, include, reverse_lazy
 
 # Views padrão do Django (reset de senha)
 from django.contrib.auth import views as auth_views
@@ -26,7 +26,9 @@ urlpatterns = [
     path('resetar-senha/',
          auth_views.PasswordResetView.as_view(
              template_name='financeiro/autenticacao/senha_reset.html',
-             email_template_name='financeiro/autenticacao/senha_email.txt'
+             email_template_name='financeiro/autenticacao/senha_email.txt',
+             subject_template_name='financeiro/autenticacao/assunto_email.txt',
+             success_url=reverse_lazy('password_reset_done')
          ),
          name='password_reset'),
 
