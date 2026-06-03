@@ -4,6 +4,18 @@
 <section class="terms-page">
     <article class="terms-card">
         {% include 'financeiro/autenticacao/_termos_conteudo.html' %}
+
+        <div class="terms-back-footer">
+
+            <button class="terms-back-btn"
+                type="button"
+                onclick="if (history.length > 1) { history.back(); } else { window.location.href = '{% if user.is_authenticated %}{% url 'financeiro:dashboard' %}{% else %}{% url 'financeiro:login' %}{% endif %}'; }">
+
+                Voltar
+
+            </button>
+
+        </div>
     </article>
 </section>
 {% endblock %}

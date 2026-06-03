@@ -29,7 +29,7 @@
 
     <!-- CSS PRINCIPAL -->
     <link rel="stylesheet"
-        href="{% static 'financeiro/css/style.css' %}?v=7">
+        href="{% static 'financeiro/css/style.css' %}?v=13">
 
 </head>
 
@@ -44,17 +44,47 @@
     <div class="container-fluid">
 
         <!-- USUÁRIO -->
-        <a class="navbar-brand app-user-brand"
-            href="{% url 'financeiro:dashboard' %}">
+        <div class="navbar-brand app-user-brand app-user-menu">
 
             <img src="{% static 'financeiro/img/icone.png' %}"
                 alt="">
 
-            <span>
-                {{ request.user.username|upper }}
-            </span>
+            <button class="app-user-name-btn"
+                type="button"
+                aria-label="Opcoes do usuario">
 
-        </a>
+                {{ request.user.username|upper }}
+
+            </button>
+
+            <div class="app-user-dropdown">
+
+                <form action="{% url 'financeiro:excluir_usuario' %}"
+                    method="POST"
+                    onsubmit="return confirm('Tem certeza que deseja excluir este usuario? Essa acao nao pode ser desfeita.');">
+
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        Excluir usuario
+                    </button>
+
+                </form>
+
+                <form action="{% url 'financeiro:logout' %}"
+                    method="POST">
+
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        Sair
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
 
 
         <!-- BOTÃO MOBILE -->
@@ -178,6 +208,8 @@
 
 
             <!-- BOTÃO SAIR -->
+            <div class="app-header-actions">
+
             <form action="{% url 'financeiro:logout' %}"
                 method="POST"
                 class="app-logout-form">
@@ -195,6 +227,25 @@
                 </button>
 
             </form>
+
+
+            <!-- BOTÃO GERAR RELATÓRIO -->
+            {% if request.resolver_match.url_name == 'dashboard' %}
+
+                <a class="monthly-report-btn"
+                    href="{% url 'financeiro:relatorio_mensal' %}?mes={{ mes_atual.month }}&ano={{ mes_atual.year }}">
+
+                    <img class="monthly-report-icon"
+                        src="{% static 'financeiro/img/download.png.png' %}"
+                        alt="">
+
+                    Gerar Relatório
+
+                </a>
+
+            {% endif %}
+
+            </div>
 
         </div>
 

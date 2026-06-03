@@ -42,6 +42,33 @@ body {
     font-family: "Cabin", Arial, sans-serif;
 }
 
+.app-toast {
+    background: #b0ffa6;
+    border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(17, 24, 39, 0.16);
+    color: #111827;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    padding: 12px 18px;
+    position: fixed;
+    right: 20px;
+    top: 92px;
+    transform: translateY(-10px);
+    transition: all 0.25s ease;
+    z-index: 4000;
+}
+
+.app-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.receita-check:has(input:disabled),
+.despesa-check:has(input:disabled) {
+    opacity: 0.45;
+}
+
 .app-content {
     padding: 0 8px 18px;
     width: 100%;
@@ -62,10 +89,11 @@ body {
 
 .navbar-custom {
     background: #edf2f8;
-    min-height: 66px;
+    min-height: 78px;
     display: flex;
     align-items: center;
     border-bottom: 0;
+    position: relative;
     width: 100%;
 }
 
@@ -93,6 +121,7 @@ body {
     min-height: 52px;
     min-width: 130px;
     padding-right: 18px;
+    position: relative;
     text-transform: uppercase;
 }
 
@@ -100,6 +129,64 @@ body {
     height: 48px;
     object-fit: contain;
     width: 48px;
+}
+
+.app-user-name-btn {
+    background: transparent;
+    border: 0;
+    color: #111827;
+    font: inherit;
+    padding: 0;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.app-user-name-btn:hover {
+    color: #000000;
+}
+
+.app-user-dropdown {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 12px 28px rgba(17, 24, 39, 0.16);
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    left: 58px;
+    min-width: 150px;
+    padding: 8px;
+    position: absolute;
+    top: 54px;
+    z-index: 20;
+}
+
+.app-user-menu:focus-within .app-user-dropdown,
+.app-user-menu:hover .app-user-dropdown {
+    display: flex;
+}
+
+.app-user-dropdown form {
+    margin: 0;
+}
+
+.app-user-dropdown button {
+    background: transparent;
+    border: 0;
+    border-radius: 9px;
+    color: #111827;
+    font-size: 13px;
+    padding: 9px 10px;
+    text-align: left;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.app-user-dropdown button:hover {
+    background: #f4f6f9;
+}
+
+.app-user-dropdown form:first-child button {
+    color: #f44355;
 }
 
 .navbar-nav {
@@ -198,6 +285,50 @@ body {
 
 .btn-logout:hover {
     background: #ffffff;
+}
+
+.app-header-actions {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 14px;
+    top: 18px;
+}
+
+.monthly-report-btn {
+    align-items: center;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    color: #111827;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 500;
+    gap: 7px;
+    height: 33px;
+    padding: 0 13px;
+    position: absolute;
+    right: 0;
+    text-decoration: none;
+    top: 70px;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    z-index: 30;
+}
+
+.monthly-report-btn:hover {
+    color: #111827;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.monthly-report-icon {
+    filter: brightness(0) saturate(100%);
+    height: 16px;
+    object-fit: contain;
+    width: 16px;
 }
 
 .btn-icon-img {
@@ -2224,6 +2355,28 @@ h3 {
     padding: 42px 52px;
 }
 
+.terms-back-btn {
+    background: #f2fecb;
+    border: 0;
+    border-radius: 12px;
+    color: #111827;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 26px;
+    padding: 10px 18px;
+    transition: all 0.22s ease;
+}
+
+.terms-back-footer {
+    margin-top: 36px;
+}
+
+.terms-back-btn:hover {
+    background: #e8f8ac;
+    transform: translateY(-2px);
+}
+
 .terms-card h1 {
     color: #111827;
     font-size: 36px;
@@ -2265,6 +2418,97 @@ h3 {
 
 .terms-card a:hover {
     text-decoration: underline;
+}
+
+.despesa-modal-icon {
+    align-items: center;
+    color: #ff5f62;
+    display: flex;
+    gap: 10px;
+    height: 58px;
+    padding: 0 32px;
+}
+
+.despesa-modal-icon img {
+    filter: brightness(0) saturate(100%);
+    height: 18px;
+    object-fit: contain;
+    width: 18px;
+}
+
+.despesa-modal-icon h2 {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.categoria-delete-backdrop {
+    align-items: center;
+    background: rgba(17, 24, 39, 0.34);
+    display: none;
+    inset: 0;
+    justify-content: center;
+    padding: 18px;
+    position: fixed;
+    z-index: 2200;
+}
+
+.categoria-delete-backdrop.is-open {
+    display: flex;
+}
+
+.categoria-delete-modal {
+    background: #fff9fb;
+    border-radius: 20px;
+    box-shadow: 0 24px 70px rgba(17, 24, 39, 0.22);
+    max-width: 440px;
+    padding: 28px 30px 24px;
+    width: min(100%, 440px);
+}
+
+.categoria-delete-modal h2 {
+    color: #111827;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 12px;
+}
+
+.categoria-delete-modal p {
+    color: #374151;
+    font-size: 15px;
+    line-height: 1.55;
+    margin: 0 0 24px;
+}
+
+.categoria-delete-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.categoria-delete-actions button {
+    border: 0;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 104px;
+    padding: 10px 16px;
+    transition: all 0.22s ease;
+}
+
+.categoria-delete-cancel {
+    background: #eef2f7;
+    color: #111827;
+}
+
+.categoria-delete-confirm {
+    background: #ffc2d4;
+    color: #111827;
+}
+
+.categoria-delete-actions button:hover {
+    transform: translateY(-2px);
 }
 
 @media (max-width: 720px) {
