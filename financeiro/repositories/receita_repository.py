@@ -75,6 +75,8 @@ def criar(usuario, data):
     )
 
     # Define se receita é parcelada
+    recorrente = True if data.get('recorrente') else False
+
     parcelada = True if data.get('parcelada') else False
 
     # Obtém quantidade de parcelas
@@ -90,6 +92,12 @@ def criar(usuario, data):
         )
 
     # Valida parcelamento
+    if recorrente and parcelada:
+
+        raise ValueError(
+            "Receita fixa nao pode ser parcelada"
+        )
+
     if parcelada and not quantidade_parcelas:
 
         raise ValueError(
@@ -133,7 +141,7 @@ def criar(usuario, data):
         categoria=categoria,
 
         # Configurações financeiras
-        recorrente=True if data.get('recorrente') else False,
+        recorrente=recorrente,
 
         parcelada=parcelada,
 
@@ -231,6 +239,12 @@ def atualizar(receita, data):
 
     # Atualiza parcelamento
     receita.parcelada = True if data.get('parcelada') else False
+
+    if receita.recorrente and receita.parcelada:
+
+        raise ValueError(
+            "Receita fixa nao pode ser parcelada"
+        )
 
     # Atualiza quantidade de parcelas
     receita.quantidade_parcelas = converter_inteiro(

@@ -128,5 +128,10 @@ def excluir_categoria(id, usuario):
             "Categoria nao encontrada"
         )
 
+    # Remove lancamentos vinculados antes da categoria
+    categoria.receitas.all().delete()
+
+    categoria.despesas.all().delete()
+
     # Remove categoria
     repo.deletar(categoria)

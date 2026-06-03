@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from financeiro.models import AceiteTermos
 
 
 # API RESPONSÁVEL PELO LOGIN DO USUÁRIO
@@ -122,6 +125,12 @@ def api_cadastro(request):
         )
 
         # Realiza login automático após cadastro
+        AceiteTermos.objects.create(
+            usuario=user,
+            aceitou=True,
+            versao='2026-05-28'
+        )
+
         login(request, user)
 
         return JsonResponse({
@@ -177,6 +186,19 @@ def logout_view(request):
     logout(request)
 
     # Redireciona para tela de login
+    return redirect('financeiro:login')
+
+
+@login_required
+@require_POST
+def excluir_usuario_view(request):
+
+    usuario = request.user
+
+    logout(request)
+
+    usuario.delete()
+
     return redirect('financeiro:login')
 
 # VIEW INICIAL DO SISTEMA

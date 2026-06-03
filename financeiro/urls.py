@@ -6,6 +6,7 @@ from financeiro.controllers.auth_controller import (
     logout_view,
     cadastro_view,
     api_cadastro,
+    excluir_usuario_view,
     termos_view
 )
 
@@ -15,7 +16,8 @@ from financeiro.controllers.auth_controller import home_view
 # DASHBOARD
 from financeiro.controllers.dashboard_controller import (
     dashboard,
-    dashboard_dados
+    dashboard_dados,
+    relatorio_mensal
 )
 
 # RECEITAS
@@ -52,6 +54,7 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('api/login/', api_login, name='api_login'),
     path('logout/', logout_view, name='logout'),
+    path('usuario/excluir/', excluir_usuario_view, name='excluir_usuario'),
     path('cadastro/', cadastro_view, name='cadastro'),
     path('api/cadastro/', api_cadastro, name='api_cadastro'),
     path('termos/', termos_view, name='termos'),
@@ -59,6 +62,7 @@ urlpatterns = [
     # DASHBOARD
     path('dashboard/', dashboard, name='dashboard'),
     path('dashboard/dados/', dashboard_dados, name='dashboard_dados'),
+    path('dashboard/relatorio/', relatorio_mensal, name='relatorio_mensal'),
 
     # RECEITAS
     path('receitas/', listar_receitas_view, name='listar_receitas'),

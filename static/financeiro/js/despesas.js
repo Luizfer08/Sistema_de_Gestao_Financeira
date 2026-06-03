@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
         "despesaParcelada"
     );
 
+    const recorrente = formDespesa?.elements.recorrente;
+
     const quantidadeParcelas = document.getElementById(
         "quantidadeParcelas"
     );
@@ -42,7 +44,14 @@ document.addEventListener("DOMContentLoaded", function () {
             // Limpa valor caso desmarcado
             if (!this.checked)
                 quantidadeParcelas.value = "";
+
+            atualizarTravamentoDespesa();
         });
+    }
+
+    if (recorrente) {
+
+        recorrente.addEventListener("change", atualizarTravamentoDespesa);
     }
 
 
@@ -57,6 +66,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Dados do formulário
         const formData = new FormData(this);
+
+        const editando = Boolean(despesaEmEdicao);
 
         // Botão de envio
         const btn = formDespesa.querySelector(
@@ -167,6 +178,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Fecha modal
             fecharModalDespesa();
+
+            if (!editando) {
+
+                mostrarMensagemSucesso(
+                    "Despesa adicionada com sucesso!"
+                );
+            }
         })
 
         // Captura erros
@@ -184,6 +202,51 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
+function atualizarTravamentoDespesa() {
+
+    const form = document.getElementById("formDespesa");
+    const parcelada = document.getElementById("despesaParcelada");
+    const quantidadeParcelas = document.getElementById(
+        "quantidadeParcelas"
+    );
+
+    if (!form || !parcelada || !quantidadeParcelas)
+        return;
+
+    const recorrente = form.elements.recorrente;
+
+    if (!recorrente)
+        return;
+
+    if (recorrente.checked) {
+
+        parcelada.checked = false;
+        parcelada.disabled = true;
+        quantidadeParcelas.value = "";
+        quantidadeParcelas.disabled = true;
+        quantidadeParcelas.required = false;
+
+        return;
+    }
+
+    parcelada.disabled = false;
+
+    if (parcelada.checked) {
+
+        recorrente.checked = false;
+        recorrente.disabled = true;
+        quantidadeParcelas.disabled = false;
+        quantidadeParcelas.required = true;
+
+        return;
+    }
+
+    recorrente.disabled = false;
+    quantidadeParcelas.disabled = true;
+    quantidadeParcelas.required = false;
+}
 
 
 // ABRE MODAL DE DESPESA
@@ -263,6 +326,8 @@ function abrirModalDespesa(dados = null) {
         quantidadeParcelas.required = false;
     }
 
+    atualizarTravamentoDespesa();
+
     // Abre modal
     modal.classList.remove("is-closing");
 
@@ -314,6 +379,8 @@ function fecharModalDespesa() {
 
         quantidadeParcelas.required = false;
     }
+
+    atualizarTravamentoDespesa();
 
     modal.setAttribute("aria-hidden", "true");
 
@@ -697,4 +764,29 @@ function escapeHtml(valor) {
         .replace(/"/g, "&quot;")
 
         .replace(/'/g, "&#039;");
+}
+
+
+function mostrarMensagemSucesso(texto) {
+
+    const anterior = document.querySelector(".app-toast");
+
+    if (anterior)
+        anterior.remove();
+
+    const toast = document.createElement("div");
+
+    toast.className = "app-toast";
+    toast.innerText = texto;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add("is-visible");
+    }, 20);
+
+    setTimeout(() => {
+        toast.classList.remove("is-visible");
+        setTimeout(() => toast.remove(), 250);
+    }, 2600);
 }

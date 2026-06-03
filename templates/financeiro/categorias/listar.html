@@ -75,7 +75,8 @@
 
                     <div class="categoria-row"
                         id="categoria-{{ c.id }}"
-                        data-tipo="{{ c.tipo }}">
+                        data-tipo="{{ c.tipo }}"
+                        data-relacionados="{{ c.receitas.count }}">
 
 
                         <!-- COR -->
@@ -171,7 +172,8 @@
 
                     <div class="categoria-row"
                         id="categoria-{{ c.id }}"
-                        data-tipo="{{ c.tipo }}">
+                        data-tipo="{{ c.tipo }}"
+                        data-relacionados="{{ c.despesas.count }}">
 
 
                         <!-- COR -->
@@ -344,6 +346,49 @@
 
 
 <!-- CONFIGURAÇÕES JAVASCRIPT -->
+<!-- MODAL CONFIRMAR EXCLUSAO -->
+<div class="categoria-delete-backdrop"
+    id="modalExcluirCategoria"
+    aria-hidden="true">
+
+    <div class="categoria-delete-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="categoriaDeleteTitulo">
+
+        <h2 id="categoriaDeleteTitulo">
+            Excluir categoria?
+        </h2>
+
+        <p id="categoriaDeleteMensagem">
+            Deseja realmente excluir esta categoria?
+        </p>
+
+        <div class="categoria-delete-actions">
+
+            <button class="categoria-delete-cancel"
+                type="button"
+                id="cancelarExcluirCategoria">
+
+                Cancelar
+
+            </button>
+
+            <button class="categoria-delete-confirm"
+                type="button"
+                id="confirmarExcluirCategoria">
+
+                Excluir
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <script>
 
     const URL_CRIAR_CATEGORIA =
@@ -365,7 +410,7 @@
 
 
 <!-- JAVASCRIPT -->
-<script src="{% static 'financeiro/js/categoria.js' %}?v=5">
+<script src="{% static 'financeiro/js/categoria.js' %}?v=7">
 </script>
 
 {% endblock %}

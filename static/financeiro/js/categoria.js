@@ -1,4 +1,4 @@
-// URL PADRÃO PARA CRIAÇÃO DE CATEGORIAS
+﻿// URL PADRÃO PARA CRIAÇÃO DE CATEGORIAS
 const URL_CRIAR = typeof URL_CRIAR_CATEGORIA !== "undefined"
     ? URL_CRIAR_CATEGORIA
     : "/categorias/criar/";
@@ -16,8 +16,10 @@ const CORES_CATEGORIA = [
 // CONTROLA CATEGORIA EM EDIÇÃO
 let categoriaEmEdicao = null;
 
+let categoriaParaExcluir = null;
 
-// EXECUTA APÓS CARREGAR A PÁGINA
+
+// EXECUTA APOS CARREGAR A PAGINA
 document.addEventListener("DOMContentLoaded", function () {
 
     // Monta paleta de cores
@@ -27,6 +29,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const formCategoria = document.getElementById("formCategoria");
 
     if (!formCategoria) return;
+
+    const cancelarExclusao = document.getElementById(
+        "cancelarExcluirCategoria"
+    );
+
+    const confirmarExclusao = document.getElementById(
+        "confirmarExcluirCategoria"
+    );
+
+    cancelarExclusao?.addEventListener(
+        "click",
+        fecharModalExcluirCategoria
+    );
+
+    confirmarExclusao?.addEventListener(
+        "click",
+        confirmarExclusaoCategoria
+    );
 
 
     // ENVIO DO FORMULÁRIO
@@ -126,6 +146,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 adicionarLinhaCategoria(data);
 
                 atualizarTotal(1);
+
+                mostrarMensagemSucesso(
+                    "Categoria adicionada com sucesso!"
+                );
             }
 
             // Fecha modal
@@ -135,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Captura erros
         .catch(() => alert("Erro ao salvar categoria"))
 
-        // Reativa botão
+        // Reativa botÃ£o
         .finally(() => {
 
             btn.disabled = false;
@@ -210,7 +234,7 @@ function selecionarCor(cor) {
 // ABRE MODAL DE CATEGORIA
 function abrirModalCategoria(tipo, categoria = null) {
 
-    // Define categoria em edição
+    // Define categoria em ediÃ§Ã£o
     categoriaEmEdicao = categoria?.id || null;
 
     // ELEMENTOS DO MODAL
@@ -319,6 +343,8 @@ function adicionarLinhaCategoria(data) {
 
     row.dataset.tipo = data.tipo;
 
+    row.dataset.relacionados = "0";
+
     row.innerHTML = linhaCategoriaHtml(
         data.id,
         data.nome,
@@ -356,7 +382,7 @@ function linhaCategoriaHtml(id, nome, cor) {
     // Protege HTML contra caracteres especiais
     const nomeSeguro = escapeHtml(nome);
 
-    // Ícones padrão
+    // Ãcones padrÃ£o
     const icons = typeof CATEGORIA_ICONS !== "undefined"
         ? CATEGORIA_ICONS
         : {};
@@ -393,7 +419,7 @@ function linhaCategoriaHtml(id, nome, cor) {
 }
 
 
-// ABRE MODAL PARA EDIÇÃO
+// ABRE MODAL DE EDIÇÃO COM DADOS DA CATEGORIA
 function editarCategoria(id) {
 
     const row = document.getElementById(
@@ -424,12 +450,79 @@ function editarCategoria(id) {
 // EXCLUI CATEGORIA
 function excluirCategoria(id) {
 
-    // Confirma exclusão
-    if (!confirm(
-        "Deseja realmente excluir esta categoria?"
-    )) return;
+    const row = document.getElementById(
+        `categoria-${id}`
+    );
 
-    // REQUISIÇÃO DE EXCLUSÃO
+    const tipo = row?.dataset.tipo;
+    const relacionados = Number(
+        row?.dataset.relacionados || 0
+    );
+
+    let mensagem = "Deseja realmente excluir esta categoria?";
+
+    if (relacionados > 0) {
+
+        mensagem = tipo === "receita"
+
+            ? "Ao excluir essa categoria todas as Receitas cadastradas serao excluidas. Deseja continuar?"
+
+            : "Ao excluir essa categoria todas as Despesas cadastradas serao excluidas. Deseja continuar?";
+    }
+
+    categoriaParaExcluir = {
+        id,
+        row,
+        tipo,
+    };
+
+    abrirModalExcluirCategoria(mensagem);
+}
+
+
+function abrirModalExcluirCategoria(mensagem) {
+
+    const modal = document.getElementById(
+        "modalExcluirCategoria"
+    );
+
+    const texto = document.getElementById(
+        "categoriaDeleteMensagem"
+    );
+
+    if (!modal || !texto)
+        return;
+
+    texto.innerText = mensagem;
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+}
+
+
+function fecharModalExcluirCategoria() {
+
+    const modal = document.getElementById(
+        "modalExcluirCategoria"
+    );
+
+    if (!modal)
+        return;
+
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    categoriaParaExcluir = null;
+}
+
+
+function confirmarExclusaoCategoria() {
+
+    if (!categoriaParaExcluir)
+        return;
+
+    const id = categoriaParaExcluir.id;
+    const row = categoriaParaExcluir.row;
+    const tipo = categoriaParaExcluir.tipo;
+
     fetch(`/categorias/excluir/${id}/`, {
 
         method: "POST",
@@ -443,7 +536,6 @@ function excluirCategoria(id) {
 
     .then((data) => {
 
-        // Erro da API
         if (!data.success) {
 
             alert(data.error || "Erro ao excluir");
@@ -451,23 +543,17 @@ function excluirCategoria(id) {
             return;
         }
 
-        // Remove linha da tela
-        const row = document.getElementById(
-            `categoria-${id}`
-        );
-
-        const tipo = row?.dataset.tipo;
-
         row?.remove();
 
         atualizarTotal(-1);
 
         verificarListaVazia(tipo);
+
+        fecharModalExcluirCategoria();
     })
 
     .catch(() => alert("Erro ao excluir categoria"));
 }
-
 
 // VERIFICA LISTA VAZIA
 function verificarListaVazia(tipo) {
@@ -478,7 +564,7 @@ function verificarListaVazia(tipo) {
         `lista-${tipo}`
     );
 
-    // Se ainda existem itens não faz nada
+    // Se ainda existem itens nÃ£o faz nada
     if (!lista || lista.children.length > 0)
         return;
 
@@ -549,3 +635,29 @@ function escapeHtml(valor) {
 
         .replace(/'/g, "&#039;");
 }
+
+
+function mostrarMensagemSucesso(texto) {
+
+    const anterior = document.querySelector(".app-toast");
+
+    if (anterior)
+        anterior.remove();
+
+    const toast = document.createElement("div");
+
+    toast.className = "app-toast";
+    toast.innerText = texto;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add("is-visible");
+    }, 20);
+
+    setTimeout(() => {
+        toast.classList.remove("is-visible");
+        setTimeout(() => toast.remove(), 250);
+    }, 2600);
+}
+

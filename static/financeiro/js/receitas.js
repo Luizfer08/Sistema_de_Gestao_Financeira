@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
         "receitaParcelada"
     );
 
+    const recorrente = formReceita?.elements.recorrente;
+
     const quantidadeParcelas = document.getElementById(
         "quantidadeParcelasReceita"
     );
@@ -42,7 +44,14 @@ document.addEventListener("DOMContentLoaded", function () {
             // Limpa valor caso desmarcado
             if (!this.checked)
                 quantidadeParcelas.value = "";
+
+            atualizarTravamentoReceita();
         });
+    }
+
+    if (recorrente) {
+
+        recorrente.addEventListener("change", atualizarTravamentoReceita);
     }
 
 
@@ -57,6 +66,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Dados do formulário
         const formData = new FormData(this);
+
+        const editando = Boolean(receitaEmEdicao);
 
         // Botão de envio
         const btn = formReceita.querySelector(
@@ -175,6 +186,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Fecha modal
             fecharModalReceita();
+
+            if (!editando) {
+
+                mostrarMensagemSucesso(
+                    "Receita adicionada com sucesso!"
+                );
+            }
         })
 
         // Captura erros
@@ -196,6 +214,51 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
+function atualizarTravamentoReceita() {
+
+    const form = document.getElementById("formReceita");
+    const parcelada = document.getElementById("receitaParcelada");
+    const quantidadeParcelas = document.getElementById(
+        "quantidadeParcelasReceita"
+    );
+
+    if (!form || !parcelada || !quantidadeParcelas)
+        return;
+
+    const recorrente = form.elements.recorrente;
+
+    if (!recorrente)
+        return;
+
+    if (recorrente.checked) {
+
+        parcelada.checked = false;
+        parcelada.disabled = true;
+        quantidadeParcelas.value = "";
+        quantidadeParcelas.disabled = true;
+        quantidadeParcelas.required = false;
+
+        return;
+    }
+
+    parcelada.disabled = false;
+
+    if (parcelada.checked) {
+
+        recorrente.checked = false;
+        recorrente.disabled = true;
+        quantidadeParcelas.disabled = false;
+        quantidadeParcelas.required = true;
+
+        return;
+    }
+
+    recorrente.disabled = false;
+    quantidadeParcelas.disabled = true;
+    quantidadeParcelas.required = false;
+}
 
 
 // ABRE MODAL DE RECEITA
@@ -272,6 +335,8 @@ function abrirModalReceita(dados = null) {
         quantidadeParcelas.required = false;
     }
 
+    atualizarTravamentoReceita();
+
     // Abre modal
     modal.classList.remove("is-closing");
 
@@ -323,6 +388,8 @@ function fecharModalReceita() {
 
         quantidadeParcelas.required = false;
     }
+
+    atualizarTravamentoReceita();
 
     modal.setAttribute("aria-hidden", "true");
 
@@ -697,4 +764,29 @@ function escapeHtml(valor) {
         .replace(/"/g, "&quot;")
 
         .replace(/'/g, "&#039;");
+}
+
+
+function mostrarMensagemSucesso(texto) {
+
+    const anterior = document.querySelector(".app-toast");
+
+    if (anterior)
+        anterior.remove();
+
+    const toast = document.createElement("div");
+
+    toast.className = "app-toast";
+    toast.innerText = texto;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add("is-visible");
+    }, 20);
+
+    setTimeout(() => {
+        toast.classList.remove("is-visible");
+        setTimeout(() => toast.remove(), 250);
+    }, 2600);
 }
