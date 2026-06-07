@@ -1,11 +1,11 @@
-# DATAS E VALORES
+# Date e Decimal sao usados nos calculos de meses e valores financeiros.
 from datetime import date
 from decimal import Decimal
 
-# COMPETÊNCIA FINANCEIRA
+# Funcao central que soma apenas lancamentos validos para a competencia.
 from financeiro.competencia import somar_por_competencia
 
-# MODELS
+# Models consultados para montar os dados do dashboard.
 from financeiro.models import (
     Categoria,
     Despesa,
@@ -13,26 +13,26 @@ from financeiro.models import (
 )
 
 
-# LISTA DOS MESES
+# Nomes dos meses exibidos nas telas e nos filtros.
 MESES = [
     'Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
 ]
 
 
-# SOMA OU SUBTRAI MESES
+# Soma ou subtrai meses mantendo sempre o primeiro dia do mes.
 def somar_mes(data_ref, delta):
 
     mes = data_ref.month + delta
     ano = data_ref.year
 
-    # Ajusta mês anterior
+    # Ajusta quando o calculo volta para o ano anterior.
     while mes < 1:
 
         mes += 12
         ano -= 1
 
-    # Ajusta próximo mês
+    # Ajusta quando o calculo avanca para o proximo ano.
     while mes > 12:
 
         mes -= 12
@@ -41,7 +41,7 @@ def somar_mes(data_ref, delta):
     return date(ano, mes, 1)
 
 
-# RETORNA ÚLTIMO DIA DO MÊS
+# Retorna o ultimo dia do mes recebido.
 def fim_do_mes(data_ref):
 
     proximo_mes = somar_mes(data_ref, 1)
@@ -51,20 +51,20 @@ def fim_do_mes(data_ref):
     )
 
 
-# OBTÉM MÊS DE REFERÊNCIA
+# Define o mes de referencia vindo da URL ou usa o mes atual.
 def obter_mes_referencia(mes=None, ano=None):
 
     hoje = date.today()
 
     try:
 
-        # Define mês e ano recebidos
+        # Converte mes e ano recebidos por query string.
         mes = int(mes or hoje.month)
         ano = int(ano or hoje.year)
 
         return date(ano, mes, 1)
 
-    # Caso valor inválido retorna mês atual
+    # Caso a URL venha invalida, volta para o mes atual.
     except ValueError:
 
         return date(
@@ -74,39 +74,39 @@ def obter_mes_referencia(mes=None, ano=None):
         )
 
 
-# TOTAL DE RECEITAS DO PERÍODO
+# Soma receitas validas para a competencia informada.
 def total_receitas_periodo(usuario, data_inicio, data_fim):
 
-    # Busca receitas até data final
+    # Busca receitas criadas ate o final do mes.
     receitas = Receita.objects.filter(
         usuario=usuario,
         data__lte=data_fim
     )
 
-    # Soma receitas válidas da competência
+    # Aplica regra de receitas fixas, parceladas e comuns.
     return somar_por_competencia(
         receitas,
         data_inicio
     )
 
 
-# TOTAL DE DESPESAS DO PERÍODO
+# Soma despesas validas para a competencia informada.
 def total_despesas_periodo(usuario, data_inicio, data_fim):
 
-    # Busca despesas até data final
+    # Busca despesas criadas ate o final do mes.
     despesas = Despesa.objects.filter(
         usuario=usuario,
         data__lte=data_fim
     )
 
-    # Soma despesas válidas da competência
+    # Aplica regra de despesas fixas, parceladas e comuns.
     return somar_por_competencia(
         despesas,
         data_inicio
     )
 
 
-# CALCULA SALDO PREVISTO
+# Calcula saldo previsto de uma competencia.
 def calcular_saldo_previsto(usuario, data_ref):
 
     return (
@@ -127,13 +127,13 @@ def calcular_saldo_previsto(usuario, data_ref):
     )
 
 
-# CALCULA VARIAÇÃO PERCENTUAL
+# Calcula percentual de aumento, queda ou estabilidade.
 def calcular_variacao(valor_atual, valor_anterior):
 
     valor_atual = Decimal(valor_atual)
     valor_anterior = Decimal(valor_anterior)
 
-    # Caso não exista valor anterior
+    # Sem valor anterior, qualquer valor positivo representa crescimento.
     if valor_anterior == 0:
 
         if valor_atual > 0:
@@ -148,7 +148,7 @@ def calcular_variacao(valor_atual, valor_anterior):
             'direcao': 'same'
         }
 
-    # Calcula diferença
+    # Diferenca entre o valor atual e o valor usado para comparacao.
     diferenca = valor_atual - valor_anterior
 
     percentual = round(
@@ -156,7 +156,7 @@ def calcular_variacao(valor_atual, valor_anterior):
         1
     )
 
-    # Variação positiva
+    # Valor atual maior que o anterior.
     if diferenca > 0:
 
         return {
@@ -164,7 +164,7 @@ def calcular_variacao(valor_atual, valor_anterior):
             'direcao': 'up'
         }
 
-    # Variação negativa
+    # Valor atual menor que o anterior.
     if diferenca < 0:
 
         return {
@@ -172,24 +172,25 @@ def calcular_variacao(valor_atual, valor_anterior):
             'direcao': 'down'
         }
 
-    # Sem alteração
+    # Valores iguais nao geram variacao.
     return {
         'percentual': 0,
         'direcao': 'same'
     }
 
 
-# MONTA RESUMO MENSAL
+# Monta os cards principais do dashboard.
 def montar_resumo_mensal(usuario, data_ref):
 
     inicio = data_ref
     fim = fim_do_mes(data_ref)
 
-    # Define mês anterior
+    # Datas usadas para comparar mes atual, mes anterior e saldo futuro.
     data_anterior = somar_mes(data_ref, -1)
     fim_anterior = fim_do_mes(data_anterior)
+    data_futura = somar_mes(data_ref, 1)
 
-    # Totais do mês atual
+    # Totais da competencia selecionada na tela.
     receitas = total_receitas_periodo(
         usuario,
         inicio,
@@ -206,10 +207,10 @@ def montar_resumo_mensal(usuario, data_ref):
 
     saldo_futuro = calcular_saldo_previsto(
         usuario,
-        data_ref
+        data_futura
     )
 
-    # Totais do mês anterior
+    # Totais da competencia anterior, usados nas porcentagens.
     receitas_anterior = total_receitas_periodo(
         usuario,
         data_anterior,
@@ -226,10 +227,10 @@ def montar_resumo_mensal(usuario, data_ref):
 
     saldo_futuro_anterior = calcular_saldo_previsto(
         usuario,
-        data_anterior
+        data_ref
     )
 
-    # Retorna resumo financeiro
+    # Retorna valores e variacoes usados pelos cards do dashboard.
     return {
 
         'saldo_atual': saldo_atual,
@@ -238,7 +239,7 @@ def montar_resumo_mensal(usuario, data_ref):
         'receitas': receitas,
         'despesas': despesas,
 
-        # Variações percentuais
+        # Percentuais exibidos abaixo dos cards.
         'variacoes': {
 
             'saldo_atual': calcular_variacao(
@@ -262,7 +263,7 @@ def montar_resumo_mensal(usuario, data_ref):
             ),
         },
 
-        # Dados do mês anterior
+        # Dados anteriores mantidos para comparacao e depuracao.
         'anterior': {
 
             'saldo_atual': saldo_anterior,
@@ -274,16 +275,16 @@ def montar_resumo_mensal(usuario, data_ref):
     }
 
 
-# MONTA HISTÓRICO FINANCEIRO
+# Monta o historico usado no grafico financeiro.
 def montar_historico_financeiro(usuario, data_ref, quantidade=5):
 
-    # Define primeiro mês do histórico
+    # Define o primeiro mes que aparecera no grafico.
     inicio = somar_mes(
         data_ref,
         -(quantidade - 1)
     )
 
-    # Lista meses do período
+    # Cria a sequencia de meses exibida no eixo X.
     meses = [
         somar_mes(inicio, index)
         for index in range(quantidade)
@@ -291,13 +292,13 @@ def montar_historico_financeiro(usuario, data_ref, quantidade=5):
 
     return {
 
-        # Labels do gráfico
+        # Labels curtos dos meses.
         'labels': [
             MESES[item.month - 1][:3].upper()
             for item in meses
         ],
 
-        # Valores de receitas
+        # Valores de receitas por competencia.
         'receitas': [
             float(
                 total_receitas_periodo(
@@ -309,7 +310,7 @@ def montar_historico_financeiro(usuario, data_ref, quantidade=5):
             for item in meses
         ],
 
-        # Valores de despesas
+        # Valores de despesas por competencia.
         'despesas': [
             float(
                 total_despesas_periodo(
@@ -321,12 +322,12 @@ def montar_historico_financeiro(usuario, data_ref, quantidade=5):
             for item in meses
         ],
 
-        # Valores do saldo futuro
+        # Saldo futuro considera sempre o mes seguinte de cada item.
         'saldo_futuro': [
             float(
                 calcular_saldo_previsto(
                     usuario,
-                    item
+                    somar_mes(item, 1)
                 )
             )
             for item in meses
@@ -334,13 +335,13 @@ def montar_historico_financeiro(usuario, data_ref, quantidade=5):
     }
 
 
-# MONTA DADOS DAS CATEGORIAS
+# Monta os dados do grafico de categorias.
 def montar_categorias(usuario, data_ref):
 
     inicio = data_ref
     fim = fim_do_mes(data_ref)
 
-    # Busca categorias do usuário
+    # Busca categorias do usuario logado.
     categorias = Categoria.objects.filter(
         usuario=usuario
     ).order_by('nome')
@@ -349,21 +350,21 @@ def montar_categorias(usuario, data_ref):
 
     for categoria in categorias:
 
-        # Busca receitas da categoria
+        # Receitas da categoria criadas ate o final do mes.
         receitas = Receita.objects.filter(
             usuario=usuario,
             categoria=categoria,
             data__lte=fim
         )
 
-        # Busca despesas da categoria
+        # Despesas da categoria criadas ate o final do mes.
         despesas = Despesa.objects.filter(
             usuario=usuario,
             categoria=categoria,
             data__lte=fim
         )
 
-        # Soma movimentações da categoria
+        # Soma receitas e despesas validas para a competencia.
         total = (
 
             somar_por_competencia(receitas, inicio)
@@ -373,7 +374,7 @@ def montar_categorias(usuario, data_ref):
             somar_por_competencia(despesas, inicio)
         )
 
-        # Adiciona categoria aos dados
+        # Envia nome, tipo, cor e total para o frontend.
         dados.append({
 
             'nome': categoria.nome,
@@ -385,22 +386,22 @@ def montar_categorias(usuario, data_ref):
     return dados
 
 
-# MONTA ÚLTIMAS TRANSAÇÕES
+# Monta a lista de ultimas transacoes cadastradas.
 def montar_ultimas_transacoes(usuario, limite=5):
 
-    # Busca últimas receitas
+    # Busca receitas mais recentes.
     receitas = Receita.objects.filter(
         usuario=usuario
     ).select_related('categoria').order_by('-criado_em')[:limite]
 
-    # Busca últimas despesas
+    # Busca despesas mais recentes.
     despesas = Despesa.objects.filter(
         usuario=usuario
     ).select_related('categoria').order_by('-criado_em')[:limite]
 
     transacoes = []
 
-    # Adiciona receitas
+    # Converte receitas para um formato comum de transacao.
     for receita in receitas:
 
         transacoes.append({
@@ -421,7 +422,7 @@ def montar_ultimas_transacoes(usuario, limite=5):
             'criado_em': receita.criado_em,
         })
 
-    # Adiciona despesas
+    # Converte despesas para o mesmo formato das receitas.
     for despesa in despesas:
 
         transacoes.append({
@@ -442,7 +443,7 @@ def montar_ultimas_transacoes(usuario, limite=5):
             'criado_em': despesa.criado_em,
         })
 
-    # Ordena transações pela data de criação
+    # Mistura receitas e despesas e ordena pela criacao.
     return sorted(
         transacoes,
         key=lambda item: item['criado_em'],
@@ -450,12 +451,12 @@ def montar_ultimas_transacoes(usuario, limite=5):
     )[:limite]
 
 
-# GERA NOTIFICAÇÕES DO DASHBOARD
+# Gera notificacoes automaticas com base nas variacoes financeiras.
 def gerar_notificacoes(usuario, resumo, data_ref):
 
     notificacoes = []
 
-    # RECEITAS AUMENTARAM
+    # Notifica crescimento de receitas em relacao ao mes anterior.
     if resumo['variacoes']['receitas']['direcao'] == 'up':
 
         notificacoes.append({
@@ -467,7 +468,7 @@ def gerar_notificacoes(usuario, resumo, data_ref):
             )
         })
 
-    # DESPESAS AUMENTARAM
+    # Notifica aumento de despesas em relacao ao mes anterior.
     if resumo['variacoes']['despesas']['direcao'] == 'up':
 
         notificacoes.append({
@@ -479,15 +480,18 @@ def gerar_notificacoes(usuario, resumo, data_ref):
             )
         })
 
-    # GRANDE AUMENTO NAS DESPESAS
-    if resumo['variacoes']['despesas']['percentual'] >= 30:
+    # Destaca aumentos expressivos de despesa.
+    if (
+        resumo['variacoes']['despesas']['direcao'] == 'up'
+        and resumo['variacoes']['despesas']['percentual'] >= 30
+    ):
 
         notificacoes.append({
             'tipo': 'despesa',
             'texto': 'Grande aumento nas despesas neste mês.'
         })
 
-    # SALDO NEGATIVO
+    # Alerta quando o saldo atual fica negativo.
     if resumo['saldo_atual'] < 0:
 
         notificacoes.append({
@@ -495,7 +499,7 @@ def gerar_notificacoes(usuario, resumo, data_ref):
             'texto': 'Saldo atual esta negativo neste mês.'
         })
 
-    # SALDO FUTURO PIOR
+    # Alerta quando a previsao do proximo mes e menor que o saldo atual.
     if resumo['saldo_futuro'] < resumo['saldo_atual']:
 
         notificacoes.append({
@@ -503,9 +507,10 @@ def gerar_notificacoes(usuario, resumo, data_ref):
             'texto': 'Saldo futuro esta abaixo do saldo atual.'
         })
 
-    # ÚLTIMOS 3 MESES
+    # Analisa os ultimos tres meses para gerar alertas de tendencia.
     lucros = []
     receitas_3_meses = []
+    movimentacoes_3_meses = []
 
     for i in range(3):
 
@@ -527,25 +532,46 @@ def gerar_notificacoes(usuario, resumo, data_ref):
 
         receitas_3_meses.append(receitas)
 
-    # MAIOR LUCRO
-    if len(lucros) == 3 and lucros[0] == max(lucros):
+        movimentacoes_3_meses.append(
+            receitas + despesas
+        )
+
+    tem_movimentacao_3_meses = any(
+        valor > 0
+        for valor in movimentacoes_3_meses
+    )
+
+    # Informa quando o mes atual possui maior lucro recente.
+    if (
+        tem_movimentacao_3_meses
+        and len(lucros) == 3
+        and lucros[0] == max(lucros)
+        and lucros[0] > 0
+    ):
 
         notificacoes.append({
             'tipo': 'receita',
             'texto': 'Maior lucro dos ultimos 3 meses registrado.'
         })
 
-    # MENOR LUCRO
-    if len(lucros) == 3 and lucros[0] == min(lucros):
+    # Informa quando o mes atual possui menor lucro recente.
+    if (
+        tem_movimentacao_3_meses
+        and len(lucros) == 3
+        and lucros[0] == min(lucros)
+        and lucros[0] != 0
+    ):
 
         notificacoes.append({
             'tipo': 'despesa',
             'texto': 'Menor lucro registrado nos ultimos 3 meses.'
         })
 
-    # RECEITAS ESTABILIZADAS
+    # Informa quando receitas ficaram iguais nos ultimos meses.
     if (
         len(receitas_3_meses) == 3
+        and tem_movimentacao_3_meses
+        and receitas_3_meses[0] > 0
         and receitas_3_meses[0] == receitas_3_meses[1]
         and receitas_3_meses[1] == receitas_3_meses[2]
     ):
@@ -558,12 +584,12 @@ def gerar_notificacoes(usuario, resumo, data_ref):
             )
         })
 
-    # PROJEÇÃO PRÓXIMO MÊS
-    proximo_mes = somar_mes(data_ref, 1)
+    # Compara o saldo futuro com o mes seguinte a ele.
+    mes_seguinte = somar_mes(data_ref, 2)
 
     saldo_proximo = calcular_saldo_previsto(
         usuario,
-        proximo_mes
+        mes_seguinte
     )
 
     if resumo['saldo_futuro'] > 0:
@@ -582,29 +608,29 @@ def gerar_notificacoes(usuario, resumo, data_ref):
                 'tipo': 'receita',
                 'texto': (
                     f'Projeção indica crescimento de '
-                    f'{crescimento}% para o próximo mês.'
+                    f'{crescimento}% para o mês seguinte.'
                 )
             })
 
     return notificacoes[:5]
 
 
-# MONTA DASHBOARD COMPLETO
+# Monta todos os blocos usados pela tela do dashboard.
 def montar_dashboard(usuario, mes=None, ano=None):
 
-    # Define mês atual
+    # Define a competencia selecionada pelo usuario.
     data_ref = obter_mes_referencia(
         mes,
         ano
     )
 
-    # Gera resumo financeiro
+    # Gera os valores dos cards principais.
     resumo = montar_resumo_mensal(
         usuario,
         data_ref
     )
 
-    # Retorna todos os dados do dashboard
+    # Retorna os dados consumidos pelo template e pelo JavaScript.
     return {
 
         'mes_atual': data_ref,

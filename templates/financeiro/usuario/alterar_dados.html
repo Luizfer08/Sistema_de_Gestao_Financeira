@@ -1,0 +1,119 @@
+{% extends 'financeiro/base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+
+<!-- TELA DE ALTERACAO DOS DADOS DO USUARIO -->
+<section class="profile-page">
+
+    <div class="profile-card">
+
+        <div class="profile-card-header">
+
+            <img src="{% static 'financeiro/img/perfil.png' %}"
+                alt="">
+
+            <div>
+
+                <h1>
+                    Alterar Dados
+                </h1>
+
+                <p>
+                    Atualize seus dados de acesso ao sistema.
+                </p>
+
+            </div>
+
+        </div>
+
+        {% if messages %}
+
+            <div class="profile-messages">
+
+                {% for message in messages %}
+
+                    <div class="profile-message is-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+        <form class="profile-form"
+            method="POST">
+
+            {% csrf_token %}
+
+            <label>
+
+                Nome de usuario
+
+                <input type="text"
+                    name="username"
+                    value="{{ request.user.username }}"
+                    autocomplete="username"
+                    required>
+
+            </label>
+
+            <label>
+
+                E-mail
+
+                <input type="email"
+                    value="{{ request.user.email }}"
+                    readonly>
+
+            </label>
+
+            <div class="profile-password-grid">
+
+                <label>
+
+                    Nova senha
+
+                    <input type="password"
+                        name="password"
+                        placeholder="Preencha apenas se quiser alterar"
+                        autocomplete="new-password">
+
+                </label>
+
+                <label>
+
+                    Confirmar nova senha
+
+                    <input type="password"
+                        name="confirmar"
+                        placeholder="Confirme a nova senha"
+                        autocomplete="new-password">
+
+                </label>
+
+            </div>
+
+            <div class="profile-actions">
+
+                <a href="{% url 'financeiro:dashboard' %}">
+                    Cancelar
+                </a>
+
+                <button type="submit">
+                    Salvar Alterações
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,106 +1,100 @@
-# MODELS
+# Importa os recursos de modelagem do Django.
 from django.db import models
 
-# USUÁRIO PADRÃO DO DJANGO
+# User representa o usuario autenticado dono dos registros.
 from django.contrib.auth.models import User
 
-# MODEL DE CATEGORIAS
+# Categoria classifica a despesa dentro do controle financeiro.
 from .categoria import Categoria
 
 
-# MODEL RESPONSÁVEL PELAS DESPESAS
+# Model responsavel por armazenar as despesas cadastradas pelo usuario.
 class Despesa(models.Model):
 
-    # Usuário dono da despesa
+    # Usuario dono da despesa. Ao excluir o usuario, suas despesas tambem saem.
     usuario = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='despesas'
     )
 
-    # Descrição da despesa
+    # Texto que identifica o motivo da despesa.
     descricao = models.CharField(
         max_length=255
     )
 
-    # Valor financeiro da despesa
+    # Valor monetario da despesa.
     valor = models.DecimalField(
         max_digits=10,
         decimal_places=2
     )
 
-    # Conta utilizada na despesa
+    # Forma ou conta utilizada no pagamento.
     conta = models.CharField(
         max_length=50,
         blank=True,
         default=''
     )
 
-    # Data principal da despesa
+    # Data inicial da despesa ou da primeira parcela.
     data = models.DateField()
 
-    # Data final para despesas recorrentes
+    # Campo opcional para encerrar uma recorrencia futura, caso seja usado.
     data_fim = models.DateField(
         null=True,
         blank=True
     )
 
-    # Define se a despesa é recorrente
+    # Indica uma despesa fixa, contabilizada nos meses seguintes.
     recorrente = models.BooleanField(
         default=False
     )
 
-    # Define se a despesa é parcelada
+    # Indica uma despesa parcelada, limitada pela quantidade de parcelas.
     parcelada = models.BooleanField(
         default=False
     )
 
-    # Quantidade de parcelas
+    # Quantidade de meses em que a despesa parcelada sera considerada.
     quantidade_parcelas = models.PositiveIntegerField(
         null=True,
         blank=True
     )
 
-    # Categoria vinculada à despesa
+    # Categoria da despesa. Despesas dependem da categoria cadastrada.
     categoria = models.ForeignKey(
         Categoria,
         on_delete=models.CASCADE,
         related_name='despesas'
     )
 
-    # Data de criação do registro
+    # Data em que o registro foi criado no sistema.
     criado_em = models.DateTimeField(
         auto_now_add=True
     )
 
-    # Representação textual da despesa
+    # Texto exibido no admin e em representacoes simples do objeto.
     def __str__(self):
 
         return f"{self.descricao} - R$ {self.valor}"
 
-    # Verifica se a despesa está ativa em determinada data
+    # Verifica se a despesa deve entrar em uma data especifica.
     def is_ativa_em(self, data):
 
-        """
-        Verifica se a despesa deve ser considerada
-        em uma data específica
-        """
-
-        # DESPESA NÃO RECORRENTE
-        # Só é válida na data exata
+        # Despesa comum so aparece na propria data cadastrada.
         if not self.recorrente:
 
             return self.data == data
 
-        # DESPESA RECORRENTE AINDA NÃO INICIADA
+        # Despesa fixa ainda nao iniciada nao entra no calculo.
         if data < self.data:
 
             return False
 
-        # DESPESA RECORRENTE COM DATA FINAL
+        # Despesa fixa com data final deixa de entrar apos o encerramento.
         if self.data_fim and data > self.data_fim:
 
             return False
 
-        # DESPESA ATIVA
+        # Despesa fixa ativa entra no calculo.
         return True

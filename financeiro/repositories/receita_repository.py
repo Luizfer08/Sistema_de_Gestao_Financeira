@@ -1,38 +1,30 @@
-# MODELS
+# Repository responsavel pelo acesso ao banco de dados de receitas.
 from financeiro.models import Receita
 from financeiro.models.categoria import Categoria
 
-# COMPETÊNCIA FINANCEIRA
+# Funcoes de competencia controlam receitas fixas, parceladas e comuns.
 from financeiro.competencia import (
     filtrar_por_competencia,
     somar_por_competencia
 )
 
-# AGREGAÇÃO
+# Sum agrega valores diretamente no banco quando nao ha regra de competencia.
 from django.db.models import Sum
 
-# DATAS
+# Datetime converte datas recebidas dos formularios.
 from datetime import datetime
 
 
-# CONVERTE STRING PARA DATA
+# Converte datas vindas do frontend para objeto date.
 def converter_data(data_str):
-
-    """
-    Converte string para objeto date
-
-    Aceita:
-    - YYYY-MM-DD
-    - DD/MM/YYYY
-    """
 
     if not data_str:
         return None
 
-    # Remove espaços extras
+    # Remove espacos extras antes de tentar converter.
     data_str = str(data_str).strip()
 
-    # Tenta converter utilizando formatos disponíveis
+    # Aceita o formato do input date e tambem o formato brasileiro.
     for formato in ("%Y-%m-%d", "%d/%m/%Y"):
 
         try:
@@ -48,7 +40,7 @@ def converter_data(data_str):
     return None
 
 
-# CONVERTE VALOR PARA INTEIRO
+# Converte valores numericos simples, usados na quantidade de parcelas.
 def converter_inteiro(valor):
 
     if not valor:
@@ -58,7 +50,7 @@ def converter_inteiro(valor):
 
         numero = int(valor)
 
-        # Retorna apenas números positivos
+        # Parcelas precisam ser sempre maiores que zero.
         return numero if numero > 0 else None
 
     except ValueError:
@@ -66,88 +58,77 @@ def converter_inteiro(valor):
         return None
 
 
-# CRIAR RECEITA
+# Cria uma receita a partir dos dados enviados pelo formulario.
 def criar(usuario, data):
 
-    # Converte data de lançamento
+    # Data inicial da receita ou da primeira parcela.
     data_lancamento = converter_data(
         data.get('data')
     )
 
-    # Define se receita é parcelada
+    # Recorrente representa renda fixa; parcelada representa renda dividida.
     recorrente = True if data.get('recorrente') else False
-
     parcelada = True if data.get('parcelada') else False
 
-    # Obtém quantidade de parcelas
+    # Quantidade de competencias em que a receita parcelada sera considerada.
     quantidade_parcelas = converter_inteiro(
         data.get('quantidade_parcelas')
     )
 
-    # Valida data
+    # A data e obrigatoria para calcular o mes da receita.
     if not data_lancamento:
 
         raise ValueError(
             "Data da receita invalida"
         )
 
-    # Valida parcelamento
+    # Uma receita nao pode ser fixa e parcelada ao mesmo tempo.
     if recorrente and parcelada:
 
         raise ValueError(
             "Receita fixa nao pode ser parcelada"
         )
 
+    # Receitas parceladas precisam informar quantas parcelas existem.
     if parcelada and not quantidade_parcelas:
 
         raise ValueError(
             "Informe a quantidade de parcelas da receita"
         )
 
-    # Busca categoria
-    categoria = None
+    # Categoria e obrigatoria para organizar a receita corretamente.
+    if not data.get('categoria'):
 
-    if data.get('categoria'):
+        raise ValueError(
+            "Informe a categoria da receita"
+        )
 
-        try:
+    # Busca somente categorias de receita pertencentes ao usuario logado.
+    try:
 
-            categoria = Categoria.objects.get(
-                id=data.get('categoria'),
-                usuario=usuario,
-                tipo=Categoria.TIPO_RECEITA
-            )
+        categoria = Categoria.objects.get(
+            id=data.get('categoria'),
+            usuario=usuario,
+            tipo=Categoria.TIPO_RECEITA
+        )
 
-        except Categoria.DoesNotExist:
+    except Categoria.DoesNotExist:
 
-            raise ValueError(
-                "Categoria inválida"
-            )
+        raise ValueError(
+            "Categoria invalida"
+        )
 
-    # Cria receita
+    # Salva a receita no banco de dados.
     receita = Receita.objects.create(
 
-        # Usuário dono da receita
         usuario=usuario,
-
-        # Dados principais
         descricao=data.get('descricao'),
-
         valor=float(data.get('valor')),
-
-        # Data principal
         data=data_lancamento,
-
-        # Categoria
         categoria=categoria,
-
-        # Configurações financeiras
         recorrente=recorrente,
-
         parcelada=parcelada,
-
         quantidade_parcelas=quantidade_parcelas,
-
-        # Data final da recorrência
         data_fim=converter_data(
             data.get('data_fim')
         )
@@ -156,7 +137,7 @@ def criar(usuario, data):
     return receita
 
 
-# LISTAR TODAS AS RECEITAS
+# Lista todas as receitas do usuario, da mais recente para a mais antiga.
 def listar_por_usuario(usuario):
 
     return Receita.objects.filter(
@@ -164,23 +145,23 @@ def listar_por_usuario(usuario):
     ).order_by('-data')
 
 
-# LISTAR RECEITAS POR PERÍODO
+# Lista receitas que devem aparecer dentro do periodo selecionado.
 def listar_por_periodo(usuario, data_inicio, data_fim):
 
-    # Busca receitas até data final
+    # Busca receitas criadas ate o final do mes.
     receitas = Receita.objects.filter(
         usuario=usuario,
         data__lte=data_fim
     ).select_related('categoria')
 
-    # Filtra receitas válidas na competência
+    # Aplica a regra de competencia para fixas e parceladas.
     return filtrar_por_competencia(
         receitas,
         data_inicio
     )
 
 
-# BUSCA RECEITA PELO ID
+# Busca uma receita pelo id garantindo que ela pertence ao usuario.
 def obter_por_id(id, usuario):
 
     return Receita.objects.filter(
@@ -189,20 +170,19 @@ def obter_por_id(id, usuario):
     ).first()
 
 
-# ATUALIZAR RECEITA
+# Atualiza uma receita existente.
 def atualizar(receita, data):
 
-    # Atualiza descrição
+    # Campos principais editaveis.
     receita.descricao = data.get('descricao')
 
-    # Atualiza valor
     if data.get('valor'):
 
         receita.valor = float(
             data.get('valor')
         )
 
-    # Atualiza data
+    # Atualiza a data quando informada.
     if data.get('data'):
 
         data_lancamento = converter_data(
@@ -217,65 +197,67 @@ def atualizar(receita, data):
 
         receita.data = data_lancamento
 
-    # Atualiza categoria
-    if data.get('categoria'):
+    # Categoria e obrigatoria tambem na edicao.
+    if not data.get('categoria'):
 
-        try:
+        raise ValueError(
+            "Informe a categoria da receita"
+        )
 
-            receita.categoria = Categoria.objects.get(
-                id=data.get('categoria'),
-                usuario=receita.usuario,
-                tipo=Categoria.TIPO_RECEITA
-            )
+    # Atualiza categoria mantendo a regra de tipo receita.
+    try:
 
-        except Categoria.DoesNotExist:
+        receita.categoria = Categoria.objects.get(
+            id=data.get('categoria'),
+            usuario=receita.usuario,
+            tipo=Categoria.TIPO_RECEITA
+        )
 
-            raise ValueError(
-                "Categoria inválida"
-            )
+    except Categoria.DoesNotExist:
 
-    # Atualiza recorrência
+        raise ValueError(
+            "Categoria invalida"
+        )
+
+    # Atualiza flags de recorrencia e parcelamento.
     receita.recorrente = True if data.get('recorrente') else False
-
-    # Atualiza parcelamento
     receita.parcelada = True if data.get('parcelada') else False
 
+    # Mantem a regra de negocio: fixa e parcelada sao opcoes exclusivas.
     if receita.recorrente and receita.parcelada:
 
         raise ValueError(
             "Receita fixa nao pode ser parcelada"
         )
 
-    # Atualiza quantidade de parcelas
+    # Atualiza e valida a quantidade de parcelas.
     receita.quantidade_parcelas = converter_inteiro(
         data.get('quantidade_parcelas')
     )
 
-    # Valida parcelamento
     if receita.parcelada and not receita.quantidade_parcelas:
 
         raise ValueError(
             "Informe a quantidade de parcelas da receita"
         )
 
-    # Atualiza data final
+    # Mantem campo opcional para encerramento de recorrencia.
     receita.data_fim = converter_data(
         data.get('data_fim')
     )
 
-    # Salva alterações
     receita.save()
 
     return receita
 
 
-# DELETAR RECEITA
+# Remove a receita do banco de dados.
 def deletar(receita):
 
     receita.delete()
 
 
-# SOMA TOTAL DAS RECEITAS
+# Soma todas as receitas cadastradas, sem filtro de competencia.
 def somar_receitas(usuario):
 
     return Receita.objects.filter(
@@ -285,16 +267,14 @@ def somar_receitas(usuario):
     )['total'] or 0
 
 
-# SOMA RECEITAS POR PERÍODO
+# Soma as receitas validas dentro de uma competencia.
 def somar_receitas_por_periodo(usuario, data_inicio, data_fim):
 
-    # Busca receitas até data final
     receitas = Receita.objects.filter(
         usuario=usuario,
         data__lte=data_fim
     )
 
-    # Soma receitas válidas da competência
     return somar_por_competencia(
         receitas,
         data_inicio

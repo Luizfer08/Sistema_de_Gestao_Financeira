@@ -1,34 +1,55 @@
+# BaseCommand permite criar comandos executados pelo manage.py.
 from django.core.management.base import BaseCommand
+
+# User localiza o perfil que recebera os registros.
 from django.contrib.auth.models import User
+
+# Models usados para criar categorias, receitas e despesas.
 from financeiro.models import Receita, Despesa, Categoria
+
+# Decimal mantem precisao nos valores financeiros.
 from decimal import Decimal
+
+# Funcoes usadas para gerar dados aleatorios.
 from random import choice, randint, uniform
+
+# Date e timedelta distribuem os lancamentos ao longo do ano.
 from datetime import date, timedelta
 
 
+# Comando usado para popular um usuario com dados de teste.
 class Command(BaseCommand):
-    help = "Gera 1000 registros aleatórios para o usuário teste1000"
 
+    # Texto exibido na ajuda do manage.py.
+    help = "Gera 1000 registros aleatorios para o usuario teste1000"
+
+    # Metodo executado quando o comando e chamado.
     def handle(self, *args, **kwargs):
+
+        # Usuario criado para a demonstracao com grande volume de dados.
         usuario = User.objects.get(id=16)
 
+        # Categorias de receita criadas automaticamente, se nao existirem.
         categorias_receita_nomes = [
-            ("Salário", "#8FEBDD"),
+            ("Salario", "#8FEBDD"),
             ("Freelance", "#62BFF0"),
             ("Investimentos", "#F5D7B8"),
             ("Vendas", "#99F69D"),
         ]
 
+        # Categorias de despesa criadas automaticamente, se nao existirem.
         categorias_despesa_nomes = [
-            ("Alimentação", "#8FEBDD"),
+            ("Alimentacao", "#8FEBDD"),
             ("Moradia", "#5A4226"),
             ("Transporte", "#62BFF0"),
             ("Lazer", "#FEAB1B"),
-            ("Educação", "#594CF2"),
-            ("Saúde", "#FF073F"),
+            ("Educacao", "#594CF2"),
+            ("Saude", "#FF073F"),
         ]
 
         categorias_receita = []
+
+        # Get_or_create evita duplicar categorias a cada execucao.
         for nome, cor in categorias_receita_nomes:
             categoria, _ = Categoria.objects.get_or_create(
                 usuario=usuario,
@@ -39,6 +60,8 @@ class Command(BaseCommand):
             categorias_receita.append(categoria)
 
         categorias_despesa = []
+
+        # Cria ou reaproveita categorias de despesas.
         for nome, cor in categorias_despesa_nomes:
             categoria, _ = Categoria.objects.get_or_create(
                 usuario=usuario,
@@ -48,14 +71,16 @@ class Command(BaseCommand):
             )
             categorias_despesa.append(categoria)
 
+        # Descricoes usadas nas receitas falsas.
         descricoes_receita = [
-            "Salário mensal",
+            "Salario mensal",
             "Projeto freelance",
             "Venda online",
             "Rendimento investimento",
-            "Bônus"
+            "Bonus"
         ]
 
+        # Descricoes usadas nas despesas falsas.
         descricoes_despesa = [
             "Mercado",
             "Aluguel",
@@ -63,19 +88,27 @@ class Command(BaseCommand):
             "Internet",
             "Cinema",
             "Curso online",
-            "Consulta médica"
+            "Consulta medica"
         ]
 
-        contas = ["Pix", "Débito", "Crédito", "Dinheiro"]
+        # Contas usadas somente nas despesas.
+        contas = ["Pix", "Debito", "Credito", "Dinheiro"]
 
+        # Gera 1000 registros misturando receitas e despesas.
         for i in range(1000):
+
+            # Distribui as datas aleatoriamente no ultimo ano.
             data_aleatoria = date.today() - timedelta(days=randint(0, 365))
+
+            # Gera valores monetarios entre 20 e 3000.
             valor = Decimal(str(round(uniform(20, 3000), 2)))
 
+            # Parcela e fixa sao exclusivas para manter a regra do sistema.
             parcelada = choice([True, False, False])
             fixa = False if parcelada else choice([True, False, False])
             quantidade_parcelas = randint(2, 12) if parcelada else None
 
+            # Sorteia se o registro sera receita ou despesa.
             if randint(0, 1) == 0:
                 Receita.objects.create(
                     usuario=usuario,
@@ -101,5 +134,7 @@ class Command(BaseCommand):
                 )
 
         self.stdout.write(
-            self.style.SUCCESS("1000 registros gerados com categorias, fixos e parcelados.")
+            self.style.SUCCESS(
+                "1000 registros gerados com categorias, fixos e parcelados."
+            )
         )

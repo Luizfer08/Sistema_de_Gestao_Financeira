@@ -1,11 +1,11 @@
-# REPOSITORY
+# Service responsavel pelas regras de negocio de categorias.
 from financeiro.repositories import categoria_repository as repo
 
-# MODELS
+# Categoria fornece os tipos validos: receita e despesa.
 from financeiro.models import Categoria
 
 
-# CORES PERMITIDAS NO SISTEMA
+# Paleta permitida para manter consistencia visual entre telas e graficos.
 CORES_PERMITIDAS = {
     '#8FEBDD', '#62BFF0', '#5A4226', '#FFA0A4', '#399886',
     '#858585', '#C7C7CD', '#08AF4A', '#594CF2', '#A30CE9',
@@ -15,10 +15,9 @@ CORES_PERMITIDAS = {
 }
 
 
-# VALIDA TIPO DA CATEGORIA
+# Garante que a categoria seja de receita ou despesa.
 def normalizar_tipo(tipo):
 
-    # Verifica se o tipo informado é válido
     if tipo not in {
         Categoria.TIPO_RECEITA,
         Categoria.TIPO_DESPESA
@@ -31,13 +30,11 @@ def normalizar_tipo(tipo):
     return tipo
 
 
-# VALIDA COR DA CATEGORIA
+# Garante que a cor enviada esteja dentro da paleta cadastrada.
 def normalizar_cor(cor):
 
-    # Define cor padrão caso não exista
     cor = (cor or '#8FEBDD').upper()
 
-    # Verifica se a cor é permitida
     if cor not in CORES_PERMITIDAS:
 
         raise ValueError(
@@ -47,17 +44,15 @@ def normalizar_cor(cor):
     return cor
 
 
-# CRIAR CATEGORIA
+# Cria uma categoria apos validar nome, tipo e cor.
 def criar_categoria(usuario, nome, tipo, cor):
 
-    # Valida nome obrigatório
     if not nome:
 
         raise ValueError(
             "Nome da categoria e obrigatorio"
         )
 
-    # Cria categoria
     return repo.criar(
         usuario,
         nome,
@@ -66,45 +61,40 @@ def criar_categoria(usuario, nome, tipo, cor):
     )
 
 
-# LISTAR CATEGORIAS
+# Lista categorias do usuario, com filtro opcional por tipo.
 def listar_categorias(usuario, tipo=None):
 
-    # Valida tipo caso informado
     if tipo:
 
         tipo = normalizar_tipo(tipo)
 
-    # Retorna categorias do usuário
     return repo.listar_por_usuario(
         usuario,
         tipo
     )
 
 
-# EDITAR CATEGORIA
+# Edita uma categoria existente.
 def editar_categoria(id, usuario, nome, cor=None):
 
-    # Busca categoria
+    # Garante que o usuario so edite categorias proprias.
     categoria = repo.obter_por_id(
         id,
         usuario
     )
 
-    # Verifica se categoria existe
     if not categoria:
 
         raise ValueError(
             "Categoria nao encontrada"
         )
 
-    # Valida nome obrigatório
     if not nome:
 
         raise ValueError(
             "Nome nao pode ser vazio"
         )
 
-    # Atualiza categoria
     return repo.atualizar(
         categoria,
         nome,
@@ -112,26 +102,23 @@ def editar_categoria(id, usuario, nome, cor=None):
     )
 
 
-# EXCLUIR CATEGORIA
+# Exclui uma categoria e remove os lancamentos vinculados a ela.
 def excluir_categoria(id, usuario):
 
-    # Busca categoria
+    # Garante que o usuario so exclua categorias proprias.
     categoria = repo.obter_por_id(
         id,
         usuario
     )
 
-    # Verifica se categoria existe
     if not categoria:
 
         raise ValueError(
             "Categoria nao encontrada"
         )
 
-    # Remove lancamentos vinculados antes da categoria
+    # Receitas e despesas vinculadas sao removidas antes da categoria.
     categoria.receitas.all().delete()
-
     categoria.despesas.all().delete()
 
-    # Remove categoria
     repo.deletar(categoria)

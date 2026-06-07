@@ -1,13 +1,13 @@
-# SEGURANÇA
+# Login_required protege dashboard e relatorio para usuarios autenticados.
 from django.contrib.auth.decorators import login_required
 
-# JSON
+# HttpResponse devolve o PDF; JsonResponse devolve dados para AJAX.
 from django.http import HttpResponse, JsonResponse
 
-# RENDER
+# Render devolve a pagina HTML do dashboard.
 from django.shortcuts import render
 
-# SERVICES
+# Services montam resumo, graficos e dados financeiros.
 from financeiro.services.dashboard_service import (
     fim_do_mes,
     montar_dashboard
@@ -17,16 +17,19 @@ from financeiro.services.despesa_service import listar_despesas_por_periodo
 from financeiro.services.receita_service import listar_receitas_por_periodo
 
 
+# Formata valores Decimais no padrao monetario brasileiro.
 def formatar_moeda(valor):
 
     return f"R$ {valor:.2f}".replace('.', ',')
 
 
+# Converte booleanos em texto usado no relatorio.
 def sim_nao(valor):
 
     return 'Sim' if valor else 'Nao'
 
 
+# Remove caracteres que podem quebrar a codificacao simples do PDF.
 def limpar_texto_pdf(texto):
 
     texto = str(texto)
@@ -64,6 +67,7 @@ def limpar_texto_pdf(texto):
     return texto
 
 
+# Escapa caracteres especiais antes de escrever no PDF.
 def escapar_pdf(texto):
 
     texto = limpar_texto_pdf(texto)
@@ -76,6 +80,7 @@ def escapar_pdf(texto):
     )
 
 
+# Divide textos longos para caberem dentro da largura da pagina do PDF.
 def quebrar_linha_pdf(texto, limite=94):
 
     palavras = limpar_texto_pdf(texto).split()
@@ -101,8 +106,10 @@ def quebrar_linha_pdf(texto, limite=94):
     return linhas or ['']
 
 
+# Gera um PDF simples em memoria, sem depender de biblioteca externa.
 def gerar_pdf_texto(linhas):
 
+    # Limite de linhas para manter o conteudo dentro da pagina.
     linhas_por_pagina = 42
     paginas = [
         linhas[indice:indice + linhas_por_pagina]
@@ -112,6 +119,7 @@ def gerar_pdf_texto(linhas):
     objetos = []
     paginas_ids = []
 
+    # Objetos iniciais do documento PDF: catalogo, paginas e fonte.
     objetos.append('<< /Type /Catalog /Pages 2 0 R >>')
     objetos.append('')
     objetos.append(
@@ -120,6 +128,7 @@ def gerar_pdf_texto(linhas):
 
     for pagina in paginas:
 
+        # Comandos de texto usados pelo formato PDF.
         conteudo = [
             'BT',
             '/F1 11 Tf',
@@ -133,6 +142,7 @@ def gerar_pdf_texto(linhas):
 
         conteudo.append('ET')
 
+        # Cada pagina recebe um stream de conteudo e um objeto Page.
         stream = '\n'.join(conteudo)
         conteudo_id = len(objetos) + 1
         pagina_id = conteudo_id + 1
@@ -151,6 +161,7 @@ def gerar_pdf_texto(linhas):
 
         paginas_ids.append(pagina_id)
 
+    # Atualiza o objeto de paginas com todos os ids gerados.
     objetos[1] = (
         f"<< /Type /Pages /Kids "
         f"[{' '.join(f'{item} 0 R' for item in paginas_ids)}] "
@@ -161,6 +172,7 @@ def gerar_pdf_texto(linhas):
     pdf.extend(b'%PDF-1.4\n')
     offsets = []
 
+    # Escreve os objetos do PDF e registra suas posicoes.
     for indice, objeto in enumerate(objetos, start=1):
         offsets.append(len(pdf))
         pdf.extend(f'{indice} 0 obj\n'.encode('latin-1'))
@@ -168,6 +180,8 @@ def gerar_pdf_texto(linhas):
         pdf.extend(b'\nendobj\n')
 
     xref_pos = len(pdf)
+
+    # Xref e trailer finalizam a estrutura do arquivo PDF.
     pdf.extend(f'xref\n0 {len(objetos) + 1}\n'.encode('latin-1'))
     pdf.extend(b'0000000000 65535 f \n')
 
@@ -184,18 +198,18 @@ def gerar_pdf_texto(linhas):
     return bytes(pdf)
 
 
-# DASHBOARD PRINCIPAL
+# Renderiza o dashboard principal.
 @login_required
 def dashboard(request):
 
-    # Monta dados do dashboard com base no usuário e período selecionado
+    # Monta dados com base no usuario e no mes selecionado.
     dados = montar_dashboard(
         request.user,
         request.GET.get('mes'),
         request.GET.get('ano')
     )
 
-    # Renderiza página do dashboard
+    # Envia os dados para o template HTML.
     return render(
         request,
         'financeiro/dashboard.html',
@@ -203,39 +217,39 @@ def dashboard(request):
     )
 
 
-# API DE DADOS DO DASHBOARD
+# API que devolve os dados do dashboard em JSON.
 @login_required
 def dashboard_dados(request):
 
-    # Obtém dados atualizados do dashboard
+    # Monta o mesmo conjunto de dados usado pela tela.
     dados = montar_dashboard(
         request.user,
         request.GET.get('mes'),
         request.GET.get('ano')
     )
 
-    # Resumo financeiro
+    # Resumo financeiro usado nos cards.
     resumo = dados['resumo']
 
-    # Retorna dados em formato JSON
+    # Retorna dados convertidos para tipos aceitos em JSON.
     return JsonResponse({
 
-        # Valores financeiros
+        # Valores financeiros dos cards.
         'saldo_atual': float(resumo['saldo_atual']),
         'saldo_futuro': float(resumo['saldo_futuro']),
         'receitas': float(resumo['receitas']),
         'despesas': float(resumo['despesas']),
 
-        # Dados de variação percentual
+        # Variacoes percentuais dos cards.
         'variacoes': resumo['variacoes'],
 
-        # Lista de notificações
+        # Notificacoes do dashboard.
         'notificacoes': dados['notificacoes'],
 
-        # Dados do gráfico financeiro
+        # Dados do grafico financeiro.
         'grafico_financeiro': dados['grafico_financeiro'],
 
-        # Dados das categorias
+        # Dados do grafico de categorias.
         'categorias': [
             {
                 'nome': item['nome'],
@@ -244,28 +258,32 @@ def dashboard_dados(request):
                 'total': float(item['total']),
             }
 
-            # Percorre categorias retornadas pelo service
+            # Converte Decimal para float em cada categoria.
             for item in dados['categorias']
         ],
 
-        # Mês e ano atual selecionado
+        # Mes e ano selecionados na tela.
         'mes': dados['mes_atual'].month,
         'ano': dados['mes_atual'].year,
     })
 
 
+# Gera e baixa o relatorio financeiro mensal em PDF.
 @login_required
 def relatorio_mensal(request):
 
+    # Reaproveita os mesmos dados do dashboard para manter consistencia.
     dados = montar_dashboard(
         request.user,
         request.GET.get('mes'),
         request.GET.get('ano')
     )
 
+    # Define a competencia do relatorio.
     mes_atual = dados['mes_atual']
     fim = fim_do_mes(mes_atual)
 
+    # Lista movimentacoes validas para o mes selecionado.
     receitas = listar_receitas_por_periodo(
         request.user,
         mes_atual,
@@ -280,6 +298,7 @@ def relatorio_mensal(request):
 
     resumo = dados['resumo']
 
+    # Linhas iniciais do relatorio.
     linhas = [
         'RELATORIO FINANCEIRO MENSAL',
         f"Usuario: {request.user.username}",
@@ -295,6 +314,7 @@ def relatorio_mensal(request):
     ]
 
     for receita in receitas:
+        # Cada receita vira uma linha textual no PDF.
         linha = (
             f"{receita.data.strftime('%d/%m/%Y')} | "
             f"{receita.descricao} | "
@@ -315,6 +335,7 @@ def relatorio_mensal(request):
     ])
 
     for despesa in despesas:
+        # Cada despesa vira uma linha textual no PDF.
         linha = (
             f"{despesa.data.strftime('%d/%m/%Y')} | "
             f"{despesa.descricao} | "
@@ -336,6 +357,7 @@ def relatorio_mensal(request):
     ])
 
     for categoria in dados['categorias']:
+        # Categorias mostram totais consolidados por tipo.
         linhas.append(
             f"{categoria['nome']} | {categoria['tipo']} | "
             f"{formatar_moeda(categoria['total'])}"
@@ -349,6 +371,7 @@ def relatorio_mensal(request):
     if dados['notificacoes']:
 
         for notificacao in dados['notificacoes']:
+            # Notificacoes longas sao quebradas para caber na pagina.
             linhas.extend(
                 quebrar_linha_pdf(
                     f"{notificacao['tipo']}: {notificacao['texto']}"
@@ -360,11 +383,13 @@ def relatorio_mensal(request):
             'Nenhuma alteracao relevante em relacao ao mes anterior.'
         )
 
+    # Nome do arquivo inclui ano e mes da competencia.
     nome_arquivo = (
         f"relatorio_financeiro_"
         f"{mes_atual.year}_{mes_atual.month:02d}.pdf"
     )
 
+    # Cria a resposta HTTP que forca o download do PDF.
     response = HttpResponse(
         gerar_pdf_texto(linhas),
         content_type='application/pdf'

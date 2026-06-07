@@ -1,18 +1,19 @@
-// OBTÉM JSON SALVO NO HTML
+// OBTEM JSON SALVO NO HTML
+// Este arquivo monta os graficos e interacoes do dashboard.
 function obterJsonScript(id) {
 
     // Busca elemento pelo ID
     const el = document.getElementById(id);
 
-    // Retorna null caso não exista
+    // Retorna null caso nao exista
     if (!el) return null;
 
-    // Converte conteúdo para objeto JSON
+    // Converte conteudo para objeto JSON
     return JSON.parse(el.textContent);
 }
 
 
-// CRIA GRÁFICO FINANCEIRO
+// CRIA GRAFICO FINANCEIRO
 function criarGraficoFinanceiro() {
 
     // Dados vindos do backend
@@ -20,7 +21,7 @@ function criarGraficoFinanceiro() {
         "graficoFinanceiroData"
     );
 
-    // Canvas do gráfico
+    // Canvas do grafico
     const canvas = document.getElementById(
         "graficoFinanceiro"
     );
@@ -30,7 +31,7 @@ function criarGraficoFinanceiro() {
         return;
 
 
-    // CRIA GRÁFICO
+    // CRIA GRAFICO
     new Chart(canvas, {
 
         data: {
@@ -60,7 +61,7 @@ function criarGraficoFinanceiro() {
 
                     label: "Despesas",
 
-                    // Valores negativos para gráfico
+                    // Valores negativos para grafico
                     data: dados.despesas.map(
                         (valor) => -Math.abs(valor)
                     ),
@@ -96,7 +97,7 @@ function criarGraficoFinanceiro() {
         },
 
 
-        // CONFIGURAÇÕES DO GRÁFICO
+        // CONFIGURACA•ES DO GRAFICO
         options: {
 
             responsive: true,
@@ -152,7 +153,7 @@ function criarGraficoFinanceiro() {
                             size: 10
                         },
 
-                        // Formata valores monetários
+                        // Formata valores monetarios
                         callback: (value) =>
                             `R$ ${Math.abs(value)}`,
                     },
@@ -163,7 +164,7 @@ function criarGraficoFinanceiro() {
 }
 
 
-// CRIA GRÁFICO DE CATEGORIAS
+// CRIA GRAFICO DE CATEGORIAS
 function criarGraficoCategorias() {
 
     // Dados das categorias
@@ -171,7 +172,7 @@ function criarGraficoCategorias() {
         "categoriasData"
     ) || [];
 
-    // Canvas do gráfico
+    // Canvas do grafico
     const canvas = document.getElementById(
         "graficoCategorias"
     );
@@ -188,7 +189,7 @@ function criarGraficoCategorias() {
     const dados = categorias;
 
 
-    // CRIA GRÁFICO
+    // CRIA GRAFICO
     new Chart(canvas, {
 
         type: "doughnut",
@@ -220,19 +221,19 @@ function criarGraficoCategorias() {
         },
 
 
-        // CONFIGURAÇÕES
+        // CONFIGURACA•ES
         options: {
 
             responsive: true,
 
             maintainAspectRatio: false,
 
-            // Espaço interno do gráfico
+            // Espaco interno do grafico
             cutout: "58%",
 
             plugins: {
 
-                // Remove legenda padrão
+                // Remove legenda padrao
                 legend: {
                     display: false
                 },
@@ -260,7 +261,7 @@ function criarGraficoCategorias() {
     });
 }
 
-// MARCAR NOTIFICAÇÃO COMO LIDA
+// MARCAR NOTIFICACAO COMO LIDA
 document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".notification-read")
@@ -285,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// FORMATA VALOR MONETÁRIO
+// FORMATA VALOR MONETARIO
 function formatarMoeda(valor) {
 
     return Number(valor || 0).toLocaleString(
@@ -298,12 +299,13 @@ function formatarMoeda(valor) {
 }
 
 
-// EXECUTA APÓS CARREGAR PÁGINA
+// EXECUTA APOS CARREGAR PAGINA
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Cria gráfico financeiro
+    // Cria grafico financeiro
     criarGraficoFinanceiro();
 
-    // Cria gráfico de categorias
+    // Cria grafico de categorias
     criarGraficoCategorias();
 });
+

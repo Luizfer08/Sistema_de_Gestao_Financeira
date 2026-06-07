@@ -4,6 +4,10 @@ from django.contrib import admin
 # Rotas
 from django.urls import path, include, reverse_lazy
 
+# Redireciona o favicon para um icone existente nos arquivos estaticos.
+from django.views.generic.base import RedirectView
+from django.contrib.staticfiles.storage import staticfiles_storage
+
 # Views padrão do Django (reset de senha)
 from django.contrib.auth import views as auth_views
 
@@ -14,6 +18,15 @@ urlpatterns = [
 
     # ADMIN
     path('admin/', admin.site.urls),
+
+    # FAVICON
+    path(
+        'favicon.ico',
+        RedirectView.as_view(
+            url=staticfiles_storage.url('financeiro/img/icone.png')
+        ),
+        name='favicon'
+    ),
 
     # HOME (login)
     path('', login_view, name='home'),

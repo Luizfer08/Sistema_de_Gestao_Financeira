@@ -1,9 +1,11 @@
-# DATAS E VALORES
+# Date cria datas normalizadas para o primeiro dia de cada mes.
 from datetime import date
+
+# Decimal evita perda de precisao em calculos financeiros.
 from decimal import Decimal
 
 
-# RETORNA O PRIMEIRO DIA DO MÊS
+# Retorna o primeiro dia do mes usado como competencia financeira.
 def inicio_do_mes(data_ref):
 
     return date(
@@ -13,7 +15,7 @@ def inicio_do_mes(data_ref):
     )
 
 
-# CALCULA QUANTIDADE DE MESES ENTRE DUAS DATAS
+# Calcula a distancia em meses entre duas competencias.
 def meses_entre(data_inicial, data_final):
 
     return (
@@ -26,39 +28,38 @@ def meses_entre(data_inicial, data_final):
     )
 
 
-# VERIFICA SE LANÇAMENTO OCORRE NO MÊS
+# Verifica se uma receita ou despesa deve aparecer no mes informado.
 def ocorre_no_mes(lancamento, data_ref):
 
-    # Mês do lançamento
+    # Normaliza a data original do lancamento para o inicio do mes.
     mes_lancamento = inicio_do_mes(
         lancamento.data
     )
 
-    # Mês de referência
+    # Normaliza a data selecionada na tela para o inicio do mes.
     mes_referencia = inicio_do_mes(
         data_ref
     )
 
-    # Não exibe lançamentos futuros
+    # Lancamentos cadastrados no futuro nao entram em meses anteriores.
     if mes_referencia < mes_lancamento:
 
         return False
 
-    # LANÇAMENTO RECORRENTE
-    # Aparece em todos os meses após criação
+    # Lancamento fixo entra em todos os meses a partir do cadastro.
     if lancamento.recorrente:
 
         return True
 
-    # LANÇAMENTO PARCELADO
+    # Lancamento parcelado entra somente enquanto houver parcela ativa.
     if lancamento.parcelada:
 
-        # Quantidade de parcelas
+        # Caso a quantidade nao esteja preenchida, considera uma parcela.
         quantidade = (
             lancamento.quantidade_parcelas or 1
         )
 
-        # Verifica se parcela ainda está ativa
+        # Exemplo: 2 parcelas em maio entram em maio e junho.
         return (
 
             meses_entre(
@@ -71,23 +72,23 @@ def ocorre_no_mes(lancamento, data_ref):
             quantidade
         )
 
-    # LANÇAMENTO NORMAL
+    # Lancamento comum entra apenas no mes em que foi cadastrado.
     return mes_lancamento == mes_referencia
 
 
-# FILTRA LANÇAMENTOS DA COMPETÊNCIA
+# Filtra e ordena lancamentos validos para uma competencia.
 def filtrar_por_competencia(queryset, data_ref):
 
     return sorted(
 
-        # Filtra apenas lançamentos válidos
+        # Mantem apenas itens que pertencem ao mes selecionado.
         [
             item
             for item in queryset
             if ocorre_no_mes(item, data_ref)
         ],
 
-        # Ordena por data e descrição
+        # Ordena por data e descricao para exibir a tabela de forma previsivel.
         key=lambda item: (
             item.data,
             item.descricao.lower()
@@ -95,15 +96,15 @@ def filtrar_por_competencia(queryset, data_ref):
     )
 
 
-# SOMA VALORES DA COMPETÊNCIA
+# Soma os valores dos lancamentos que pertencem a competencia informada.
 def somar_por_competencia(queryset, data_ref):
 
     total = Decimal('0')
 
-    # Percorre lançamentos
+    # Percorre receitas ou despesas recebidas do banco.
     for item in queryset:
 
-        # Soma apenas lançamentos válidos
+        # Soma somente itens validos para o mes selecionado.
         if ocorre_no_mes(item, data_ref):
 
             total += item.valor

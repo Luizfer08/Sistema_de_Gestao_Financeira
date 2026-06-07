@@ -1,13 +1,13 @@
-# RENDER / REDIRECT
+# Render devolve a pagina HTML de categorias.
 from django.shortcuts import render
 
-# SEGURANÇA
+# Login_required protege a tela para usuarios autenticados.
 from django.contrib.auth.decorators import login_required
 
-# JSON
+# JsonResponse devolve respostas para chamadas AJAX.
 from django.http import JsonResponse
 
-# SERVICES
+# Services concentram as regras de negocio de categorias.
 from financeiro.services.categoria_service import (
     criar_categoria,
     listar_categorias,
@@ -16,55 +16,52 @@ from financeiro.services.categoria_service import (
 )
 
 
-# LISTAR CATEGORIAS
+# Renderiza a tela de categorias separando receitas e despesas.
 @login_required
 def listar_categorias_view(request):
 
-    # Busca categorias de receita
+    # Categorias de receita aparecem apenas em telas de receita.
     categorias_receita = listar_categorias(request.user, 'receita')
 
-    # Busca categorias de despesa
+    # Categorias de despesa aparecem apenas em telas de despesa.
     categorias_despesa = listar_categorias(request.user, 'despesa')
 
-    # Renderiza página com dados das categorias
     return render(request, 'financeiro/categorias/listar.html', {
         'categorias_receita': categorias_receita,
         'categorias_despesa': categorias_despesa,
 
-        # Soma total de categorias cadastradas
+        # Total usado no contador da tela.
         'total_categorias': categorias_receita.count() + categorias_despesa.count()
     })
 
 
-# CRIAR CATEGORIA
+# Cria uma categoria por requisicao AJAX.
 @login_required
 def criar_categoria_view(request):
 
-    # Valida método da requisição
+    # Criacao deve acontecer apenas por POST.
     if request.method != 'POST':
         return JsonResponse({
             'success': False,
-            'error': 'Método inválido'
+            'error': 'Metodo invalido'
         }, status=405)
 
     try:
 
-        # Obtém dados enviados pelo formulário
+        # Dados recebidos do popup de categoria.
         nome = (request.POST.get('nome') or "").strip()
         tipo = (request.POST.get('tipo') or "").strip()
         cor = (request.POST.get('cor') or "").strip()
 
-        # Valida nome obrigatório
         if not nome:
             return JsonResponse({
                 'success': False,
-                'error': 'Nome obrigatório'
+                'error': 'Nome obrigatorio'
             })
 
-        # Cria categoria
         categoria = criar_categoria(request.user, nome, tipo, cor)
 
-        # Retorna dados da categoria criada
+        # Retorna os dados para o JavaScript atualizar a tabela.
         return JsonResponse({
             'success': True,
             'id': categoria.id,
@@ -73,7 +70,6 @@ def criar_categoria_view(request):
             'cor': categoria.cor
         })
 
-    # Captura erros da operação
     except Exception as e:
         return JsonResponse({
             'success': False,
@@ -81,41 +77,38 @@ def criar_categoria_view(request):
         }, status=400)
 
 
-# EDITAR CATEGORIA
+# Edita uma categoria por requisicao AJAX.
 @login_required
 def editar_categoria_view(request, id):
 
-    # Valida método da requisição
+    # Edicao deve acontecer apenas por POST.
     if request.method != 'POST':
         return JsonResponse({
             'success': False,
-            'error': 'Método inválido'
+            'error': 'Metodo invalido'
         }, status=405)
 
     try:
 
-        # Obtém dados enviados pelo formulário
+        # Nome e cor sao os campos editaveis.
         nome = (request.POST.get('nome') or "").strip()
         cor = (request.POST.get('cor') or "").strip()
 
-        # Valida nome obrigatório
         if not nome:
             return JsonResponse({
                 'success': False,
-                'error': 'Nome obrigatório'
+                'error': 'Nome obrigatorio'
             })
 
-        # Atualiza categoria
         categoria = editar_categoria(id, request.user, nome, cor)
 
-        # Retorna dados atualizados
+        # Retorna os dados atualizados para o JavaScript.
         return JsonResponse({
             'success': True,
             'nome': categoria.nome,
             'cor': categoria.cor
         })
 
-    # Captura erros da operação
     except Exception as e:
         return JsonResponse({
             'success': False,
@@ -123,28 +116,25 @@ def editar_categoria_view(request, id):
         }, status=400)
 
 
-# EXCLUIR CATEGORIA
+# Exclui uma categoria por requisicao AJAX.
 @login_required
 def excluir_categoria_view(request, id):
 
-    # Valida método da requisição
+    # Exclusao deve acontecer apenas por POST.
     if request.method != 'POST':
         return JsonResponse({
             'success': False,
-            'error': 'Método inválido'
+            'error': 'Metodo invalido'
         }, status=405)
 
     try:
 
-        # Remove categoria
         excluir_categoria(id, request.user)
 
-        # Retorna sucesso da operação
         return JsonResponse({
             'success': True
         })
 
-    # Captura erros da operação
     except Exception as e:
         return JsonResponse({
             'success': False,

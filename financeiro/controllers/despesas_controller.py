@@ -1,17 +1,17 @@
-# RENDER
-from django.shortcuts import render
-
-# SEGURANÇA
-from django.contrib.auth.decorators import login_required
-
-# JSON
-from django.http import JsonResponse
-
-# DATAS E VALORES
+# Date e Decimal ajudam no filtro mensal e nos calculos percentuais.
 from datetime import date
 from decimal import Decimal
 
-# SERVICES
+# Render devolve a pagina HTML de despesas.
+from django.shortcuts import render
+
+# Login_required protege a tela para usuarios autenticados.
+from django.contrib.auth.decorators import login_required
+
+# JsonResponse devolve respostas para chamadas AJAX.
+from django.http import JsonResponse
+
+# Services usados pela tela de despesas.
 from financeiro.services.despesa_service import (
     criar_despesa,
     listar_despesas_por_periodo,
@@ -23,76 +23,72 @@ from financeiro.services.despesa_service import (
 from financeiro.services.categoria_service import listar_categorias
 
 
-# LISTA DOS MESES
+# Nomes dos meses exibidos no filtro mensal.
 MESES = [
-    'Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho',
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
 ]
 
 
-# CONVERTE OBJETO DESPESA PARA JSON
+# Converte uma despesa do banco para o formato JSON usado pelo JavaScript.
 def despesa_json(despesa):
 
     return {
 
-        # Identificação
+        # Identificacao do registro.
         'id': despesa.id,
 
-        # Dados principais
+        # Dados principais exibidos na tabela.
         'descricao': despesa.descricao,
         'valor': float(despesa.valor),
 
-        # Datas formatadas
+        # Datas nos formatos de exibicao e de input HTML.
         'data': despesa.data.strftime('%d/%m/%Y'),
         'data_iso': despesa.data.strftime('%Y-%m-%d'),
 
-        # Categoria
+        # Categoria usada na coluna e no ponto colorido.
         'categoria_id': despesa.categoria.id if despesa.categoria else '',
         'categoria': despesa.categoria.nome if despesa.categoria else "Sem categoria",
         'categoria_cor': despesa.categoria.cor if despesa.categoria else "#8FEBDD",
 
-        # Conta vinculada
+        # Conta e exibida apenas nas despesas.
         'conta': despesa.conta,
 
-        # Configurações financeiras
+        # Configuracoes de despesa fixa e despesa parcelada.
         'recorrente': despesa.recorrente,
         'parcelada': despesa.parcelada,
-
-        # Quantidade de parcelas
         'quantidade_parcelas': despesa.quantidade_parcelas or ''
     }
 
 
-# OBTÉM MÊS E ANO DA URL
+# Obtem o mes e ano selecionados na URL.
 def obter_mes_referencia(request):
 
     hoje = date.today()
 
     try:
 
-        # Obtém mês e ano enviados pela URL
         ano = int(request.GET.get('ano', hoje.year))
         mes = int(request.GET.get('mes', hoje.month))
 
         return date(ano, mes, 1)
 
-    # Caso valor inválido retorna mês atual
     except ValueError:
         return date(hoje.year, hoje.month, 1)
 
 
-# SOMA OU SUBTRAI MESES
+# Soma ou subtrai meses mantendo o primeiro dia.
 def somar_mes(data_ref, delta):
 
     mes = data_ref.month + delta
     ano = data_ref.year
 
-    # Ajusta mês anterior
+    # Ajusta quando volta para o ano anterior.
     while mes < 1:
         mes += 12
         ano -= 1
 
-    # Ajusta próximo mês
+    # Ajusta quando avanca para o proximo ano.
     while mes > 12:
         mes -= 12
         ano += 1
@@ -100,7 +96,7 @@ def somar_mes(data_ref, delta):
     return date(ano, mes, 1)
 
 
-# RETORNA ÚLTIMO DIA DO MÊS
+# Retorna o ultimo dia do mes selecionado.
 def fim_do_mes(data_ref):
 
     proximo_mes = somar_mes(data_ref, 1)
@@ -110,45 +106,45 @@ def fim_do_mes(data_ref):
     )
 
 
-# LISTAR DESPESAS
+# Renderiza a tela de despesas do mes selecionado.
 @login_required
 def listar_despesas_view(request):
 
-    # Define mês atual selecionado
+    # Competencia atual da tela.
     mes_atual = obter_mes_referencia(request)
 
-    # Define mês anterior e próximo
+    # Links de navegacao mensal.
     mes_anterior = somar_mes(mes_atual, -1)
     proximo_mes = somar_mes(mes_atual, 1)
 
-    # Lista despesas do período
+    # Despesas validas para a competencia.
     despesas = listar_despesas_por_periodo(
         request.user,
         mes_atual,
         fim_do_mes(mes_atual)
     )
 
-    # Lista categorias de despesa
+    # Apenas categorias de despesa sao listadas no popup de despesa.
     categorias = listar_categorias(
         request.user,
         'despesa'
     )
 
-    # Total do mês atual
+    # Total do mes atual.
     total_mes = total_despesas_por_periodo(
         request.user,
         mes_atual,
         fim_do_mes(mes_atual)
     )
 
-    # Total do mês anterior
+    # Total do mes anterior para gerar alerta percentual.
     total_mes_anterior = total_despesas_por_periodo(
         request.user,
         mes_anterior,
         fim_do_mes(mes_anterior)
     )
 
-    # Percentual de aumento das despesas
+    # Alerta aparece apenas quando a despesa aumenta.
     percentual_alerta = None
 
     if total_mes_anterior and total_mes > total_mes_anterior:
@@ -159,53 +155,43 @@ def listar_despesas_view(request):
             (diferenca / Decimal(total_mes_anterior)) * 100
         )
 
-    # Renderiza página
     return render(request, 'financeiro/despesas/listar.html', {
 
         'despesas': despesas,
         'categorias': categorias,
-
-        # Nome do mês atual
         'mes_nome': MESES[mes_atual.month - 1],
-
-        # Dados de navegação
         'mes_atual': mes_atual,
         'mes_anterior': mes_anterior,
         'proximo_mes': proximo_mes,
-
-        # Dados financeiros
         'total_mes': total_mes,
         'percentual_alerta': percentual_alerta
     })
 
 
-# CRIAR DESPESA
+# Cria uma despesa por requisicao AJAX.
 @login_required
 def criar_despesa_view(request):
 
-    # Valida método da requisição
+    # Criacao deve acontecer apenas por POST.
     if request.method != 'POST':
 
         return JsonResponse({
             'success': False,
-            'error': 'Método inválido'
+            'error': 'Metodo invalido'
         })
 
     try:
 
-        # Cria despesa
         despesa = criar_despesa(
             request.user,
             request.POST
         )
 
-        # Retorna dados da despesa criada
         return JsonResponse({
             'success': True,
             **despesa_json(despesa)
         })
 
-    # Captura erros
     except Exception as e:
 
         return JsonResponse({
@@ -214,34 +200,31 @@ def criar_despesa_view(request):
         })
 
 
-# EDITAR DESPESA
+# Edita uma despesa por requisicao AJAX.
 @login_required
 def editar_despesa_view(request, id):
 
-    # Valida método da requisição
+    # Edicao deve acontecer apenas por POST.
     if request.method != 'POST':
 
         return JsonResponse({
             'success': False,
-            'error': 'Método inválido'
+            'error': 'Metodo invalido'
         })
 
     try:
 
-        # Atualiza despesa
         despesa = editar_despesa(
             id,
             request.user,
             request.POST
         )
 
-        # Retorna dados atualizados
         return JsonResponse({
             'success': True,
             **despesa_json(despesa)
         })
 
-    # Captura erros
     except Exception as e:
 
         return JsonResponse({
@@ -250,29 +233,26 @@ def editar_despesa_view(request, id):
         })
 
 
-# EXCLUIR DESPESA
+# Exclui uma despesa por requisicao AJAX.
 @login_required
 def excluir_despesa_view(request, id):
 
-    # Valida método da requisição
+    # Exclusao deve acontecer apenas por POST.
     if request.method != 'POST':
 
         return JsonResponse({
             'success': False,
-            'error': 'Método inválido'
+            'error': 'Metodo invalido'
         })
 
     try:
 
-        # Remove despesa
         excluir_despesa(id, request.user)
 
-        # Retorna sucesso
         return JsonResponse({
             'success': True
         })
 
-    # Captura erros
     except Exception as e:
 
         return JsonResponse({

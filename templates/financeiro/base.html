@@ -59,14 +59,19 @@
 
             <div class="app-user-dropdown">
 
+                <a href="{% url 'financeiro:alterar_dados' %}">
+                    Alterar dados
+                </a>
+
                 <form action="{% url 'financeiro:excluir_usuario' %}"
                     method="POST"
-                    onsubmit="return confirm('Tem certeza que deseja excluir este usuario? Essa acao nao pode ser desfeita.');">
+                    onsubmit="return confirm('Tem certeza que desejá excluir este usuário? Essa ação nao pode ser desfeita.');">
 
                     {% csrf_token %}
 
-                    <button type="submit">
-                        Excluir usuario
+                    <button class="is-danger"
+                        type="submit">
+                        Excluir usuário
                     </button>
 
                 </form>

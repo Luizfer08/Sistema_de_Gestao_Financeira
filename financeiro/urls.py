@@ -1,5 +1,7 @@
+# Path cria as rotas acessadas pelo navegador ou por requisicoes AJAX.
 from django.urls import path
 
+# Views de autenticacao, cadastro, termos e usuario.
 from financeiro.controllers.auth_controller import (
     login_view,
     api_login,
@@ -7,20 +9,21 @@ from financeiro.controllers.auth_controller import (
     cadastro_view,
     api_cadastro,
     excluir_usuario_view,
+    alterar_dados_view,
     termos_view
 )
 
-# HOME
+# View inicial do sistema.
 from financeiro.controllers.auth_controller import home_view
 
-# DASHBOARD
+# Views do dashboard e do relatorio mensal.
 from financeiro.controllers.dashboard_controller import (
     dashboard,
     dashboard_dados,
     relatorio_mensal
 )
 
-# RECEITAS
+# Views responsaveis pelas receitas.
 from financeiro.controllers.receitas_controller import (
     listar_receitas_view,
     criar_receita_view,
@@ -28,7 +31,7 @@ from financeiro.controllers.receitas_controller import (
     excluir_receita_view
 )
 
-# DESPESAS
+# Views responsaveis pelas despesas.
 from financeiro.controllers.despesas_controller import (
     listar_despesas_view,
     criar_despesa_view,
@@ -36,7 +39,7 @@ from financeiro.controllers.despesas_controller import (
     excluir_despesa_view
 )
 
-# CATEGORIAS
+# Views responsaveis pelas categorias.
 from financeiro.controllers.categorias_controller import (
     listar_categorias_view,
     criar_categoria_view,
@@ -44,40 +47,45 @@ from financeiro.controllers.categorias_controller import (
     excluir_categoria_view
 )
 
+
+# Namespace usado nos templates com {% url 'financeiro:nome_da_rota' %}.
 app_name = 'financeiro'
 
+
+# Lista de rotas do aplicativo financeiro.
 urlpatterns = [
 
+    # Pagina inicial: decide se envia para login ou dashboard.
     path('', home_view, name='home'),
 
-    # AUTENTICAÇÃO
+    # Rotas de autenticacao e dados do usuario.
     path('login/', login_view, name='login'),
     path('api/login/', api_login, name='api_login'),
     path('logout/', logout_view, name='logout'),
+    path('usuario/alterar-dados/', alterar_dados_view, name='alterar_dados'),
     path('usuario/excluir/', excluir_usuario_view, name='excluir_usuario'),
     path('cadastro/', cadastro_view, name='cadastro'),
     path('api/cadastro/', api_cadastro, name='api_cadastro'),
     path('termos/', termos_view, name='termos'),
 
-    # DASHBOARD
+    # Rotas do dashboard financeiro.
     path('dashboard/', dashboard, name='dashboard'),
     path('dashboard/dados/', dashboard_dados, name='dashboard_dados'),
     path('dashboard/relatorio/', relatorio_mensal, name='relatorio_mensal'),
 
-    # RECEITAS
+    # Rotas de receitas.
     path('receitas/', listar_receitas_view, name='listar_receitas'),
     path('receitas/criar/', criar_receita_view, name='criar_receita'),
     path('receitas/editar/<int:id>/', editar_receita_view, name='editar_receita'),
     path('receitas/excluir/<int:id>/', excluir_receita_view, name='excluir_receita'),
 
-    # DESPESAS
+    # Rotas de despesas.
     path('despesas/', listar_despesas_view, name='listar_despesas'),
     path('despesas/criar/', criar_despesa_view, name='criar_despesa'),
     path('despesas/editar/<int:id>/', editar_despesa_view, name='editar_despesa'),
     path('despesas/excluir/<int:id>/', excluir_despesa_view, name='excluir_despesa'),
 
-  
-    # CATEGORIAS
+    # Rotas de categorias.
     path('categorias/', listar_categorias_view, name='listar_categorias'),
     path('categorias/criar/', criar_categoria_view, name='criar_categoria'),
     path('categorias/editar/<int:id>/', editar_categoria_view, name='editar_categoria'),

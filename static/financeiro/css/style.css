@@ -1,3 +1,5 @@
+/* Estilos globais das telas internas do sistema financeiro. */
+
 .receitas-page,
 .receitas-page *,
 .despesas-page,
@@ -62,6 +64,169 @@ body {
 .app-toast.is-visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+.profile-page {
+    align-items: flex-start;
+    display: flex;
+    justify-content: center;
+    min-height: calc(100vh - 92px);
+    padding: 42px 16px;
+}
+
+.profile-card {
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 16px 38px rgba(17, 24, 39, 0.08);
+    max-width: 720px;
+    padding: 34px;
+    width: 100%;
+}
+
+.profile-card-header {
+    align-items: center;
+    display: flex;
+    gap: 16px;
+    margin-bottom: 26px;
+}
+
+.profile-card-header img {
+    height: 52px;
+    width: 52px;
+}
+
+.profile-card-header h1 {
+    color: #111827;
+    font-size: 28px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.profile-card-header p {
+    color: #607089;
+    font-size: 15px;
+    margin: 4px 0 0;
+}
+
+.profile-messages {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.profile-message {
+    border-radius: 12px;
+    color: #111827;
+    font-size: 14px;
+    padding: 12px 14px;
+}
+
+.profile-message.is-success {
+    background: #d7ffd3;
+}
+
+.profile-message.is-error {
+    background: #ffd7d7;
+}
+
+.profile-form {
+    display: grid;
+    gap: 18px;
+}
+
+.profile-form label {
+    color: #111827;
+    display: grid;
+    font-size: 14px;
+    font-weight: 600;
+    gap: 8px;
+}
+
+.profile-form input {
+    background: #f4f6f8;
+    border: 1px solid #d7dee8;
+    border-radius: 10px;
+    color: #111827;
+    font-size: 15px;
+    min-height: 46px;
+    outline: none;
+    padding: 0 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-form input:focus {
+    border-color: #8fe8dd;
+    box-shadow: 0 0 0 3px rgba(143, 232, 221, 0.28);
+}
+
+.profile-form input[readonly] {
+    color: #7a8798;
+    cursor: not-allowed;
+}
+
+.profile-password-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profile-actions {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 8px;
+}
+
+.profile-actions a,
+.profile-actions button {
+    border: 0;
+    border-radius: 14px;
+    color: #111827;
+    font-size: 15px;
+    font-weight: 600;
+    min-height: 42px;
+    padding: 0 20px;
+    text-decoration: none;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.profile-actions a {
+    align-items: center;
+    background: #f4f6f8;
+    display: inline-flex;
+}
+
+.profile-actions button {
+    background: #b0ffa6;
+}
+
+.profile-actions a:hover,
+.profile-actions button:hover {
+    filter: brightness(0.97);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 720px) {
+
+    .profile-card {
+        padding: 24px;
+    }
+
+    .profile-password-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-actions {
+        align-items: stretch;
+        flex-direction: column-reverse;
+    }
+
+    .profile-actions a,
+    .profile-actions button {
+        justify-content: center;
+        width: 100%;
+    }
 }
 
 .receita-check:has(input:disabled),
@@ -169,23 +334,31 @@ body {
     margin: 0;
 }
 
+.app-user-dropdown a,
 .app-user-dropdown button {
     background: transparent;
     border: 0;
     border-radius: 9px;
     color: #111827;
+    display: block;
+    font-family: "Cabin", Arial, sans-serif;
     font-size: 13px;
+    font-weight: 400;
+    line-height: 1.2;
     padding: 9px 10px;
     text-align: left;
+    text-decoration: none;
+    text-transform: none;
     transition: all 0.2s ease;
     width: 100%;
 }
 
+.app-user-dropdown a:hover,
 .app-user-dropdown button:hover {
     background: #f4f6f9;
 }
 
-.app-user-dropdown form:first-child button {
+.app-user-dropdown button.is-danger {
     color: #f44355;
 }
 
