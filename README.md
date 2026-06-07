@@ -1,6 +1,4 @@
-# Sistema de Gestao Financeira
-
-Sistema web desenvolvido em Django para controle de receitas, despesas, categorias, dashboard financeiro, relatorios mensais e termos de uso.
+# Sistema de Gestao Financeira Pessoal
 
 ## Tecnologias utilizadas
 
