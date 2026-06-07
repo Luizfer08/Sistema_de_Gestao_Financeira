@@ -1,6 +1,7 @@
+// Este arquivo controla cadastro, aceite dos termos e busca de CEP.
 document.addEventListener("DOMContentLoaded", function(){
 
-    // FORMULÁRIO DE CADASTRO
+    // FORMULARIO DE CADASTRO
     const form = document.getElementById("formCadastro");
 
     // CAMPO DE MENSAGENS
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function(){
     const termos = document.getElementById("termos");
 
 
-    // OBTÉM TOKEN CSRF DO DJANGO
+    // OBTEM TOKEN CSRF DO DJANGO
     function getCSRFToken() {
 
         const input = document.querySelector(
@@ -46,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
 
-    // ENVIO DO FORMULÁRIO
+    // ENVIO DO FORMULARIO
     if(form){
 
         form.addEventListener("submit", function(e){
@@ -67,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function(){
             if (!senhaInput || !confirmarInput) {
 
                 console.error(
-                    "Inputs de senha não encontrados"
+                    "Inputs de senha nÃ£o encontrados"
                 );
 
                 mensagem.innerHTML = `
@@ -100,14 +101,14 @@ document.addEventListener("DOMContentLoaded", function(){
 
                 mensagem.innerHTML = `
                     <div class="alert alert-danger">
-                        As senhas não coincidem
+                        As senhas nÃ£o coincidem
                     </div>
                 `;
 
                 return;
             }
 
-            // Valida tamanho mínimo da senha
+            // Valida tamanho minimo da senha
             if (senha.length < 6) {
 
                 mensagem.innerHTML = `
@@ -131,13 +132,13 @@ document.addEventListener("DOMContentLoaded", function(){
                 return;
             }
 
-            // CRIA OBJETO COM DADOS DO FORMULÁRIO
+            // CRIA OBJETO COM DADOS DO FORMULARIO
             const formData = new FormData(form);
 
             // Adiciona campo de aceite
             formData.append("aceitou", "true");
 
-            // ENVIA REQUISIÇÃO DE CADASTRO
+            // ENVIA REQUISICAO DE CADASTRO
             fetch("/api/cadastro/", {
 
                 method: "POST",
@@ -173,14 +174,14 @@ document.addEventListener("DOMContentLoaded", function(){
 
             })
 
-            // Captura erros da requisição
+            // Captura erros da requisicao
             .catch((err) => {
 
                 console.error(err);
 
                 mensagem.innerHTML = `
                     <div class="alert alert-danger">
-                        Erro na requisição
+                        Erro na requisiÃ§Ã£o
                     </div>
                 `;
             });
@@ -193,12 +194,12 @@ document.addEventListener("DOMContentLoaded", function(){
     const cepInput = document.getElementById("cep");
 
 
-    // BUSCA ENDEREÇO AUTOMÁTICO PELO CEP
+    // BUSCA ENDERECO AUTOMATICO PELO CEP
     if(cepInput){
 
         cepInput.addEventListener("blur", function(){
 
-            // Remove caracteres não numéricos
+            // Remove caracteres nao numericos
             const cep = this.value.replace(/\D/g, '');
 
             // Valida tamanho do CEP
@@ -211,12 +212,12 @@ document.addEventListener("DOMContentLoaded", function(){
 
             .then(data => {
 
-                // CEP não encontrado
+                // CEP nao encontrado
                 if(data.erro){
 
                     mensagem.innerHTML = `
                         <div class="alert alert-danger">
-                            CEP não encontrado
+                            CEP nÃ£o encontrado
                         </div>
                     `;
 
@@ -248,3 +249,4 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
 });
+

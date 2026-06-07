@@ -1,10 +1,12 @@
-﻿// URL PADRÃO PARA CRIAÇÃO DE CATEGORIAS
+// URL padrao para criacao de categorias
 const URL_CRIAR = typeof URL_CRIAR_CATEGORIA !== "undefined"
     ? URL_CRIAR_CATEGORIA
     : "/categorias/criar/";
 
+// Este arquivo controla criacao, edicao, exclusao e cores das categorias.
 
-// LISTA DE CORES DISPONÍVEIS
+
+// Lista de cores disponiveis
 const CORES_CATEGORIA = [
     "#8FEBDD", "#62BFF0", "#5A4226", "#FFA0A4", "#399886",
     "#858585", "#C7C7CD", "#08AF4A", "#594CF2", "#A30CE9", "#FEAB1B",
@@ -13,10 +15,12 @@ const CORES_CATEGORIA = [
 ];
 
 
-// CONTROLA CATEGORIA EM EDIÇÃO
+// Controla a categoria que esta em edicao
 let categoriaEmEdicao = null;
 
 let categoriaParaExcluir = null;
+
+// Guarda estados temporarios usados pelos modais de categoria.
 
 
 // EXECUTA APOS CARREGAR A PAGINA
@@ -25,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Monta paleta de cores
     montarPaleta();
 
-    // FORMULÁRIO DE CATEGORIA
+    // FORMULARIO DE CATEGORIA
     const formCategoria = document.getElementById("formCategoria");
 
     if (!formCategoria) return;
@@ -49,12 +53,12 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-    // ENVIO DO FORMULÁRIO
+    // ENVIO DO FORMULARIO
     formCategoria.addEventListener("submit", function (e) {
 
         e.preventDefault();
 
-        // CAMPOS DO FORMULÁRIO
+        // CAMPOS DO FORMULARIO
         const nomeInput = document.getElementById("nomeCategoria");
 
         const tipoInput = document.getElementById("tipoCategoria");
@@ -68,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Nome digitado
         const nome = nomeInput.value.trim();
 
-        // Valida nome obrigatório
+        // Valida nome obrigatorio
         if (!nome) {
 
             alert("Digite o nome da categoria");
@@ -76,11 +80,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Desabilita botão durante envio
+        // Desabilita botao durante envio
         btn.disabled = true;
         btn.innerText = "Salvando...";
 
-        // URL DE CRIAÇÃO OU EDIÇÃO
+        // URL de criacao OU EDICAO
         const url = categoriaEmEdicao
 
             ? `/categorias/editar/${categoriaEmEdicao}/`
@@ -95,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
             : `nome=${encodeURIComponent(nome)}&tipo=${encodeURIComponent(tipoInput.value)}&cor=${encodeURIComponent(corInput.value)}`;
 
 
-        // REQUISIÇÃO PARA API
+        // Requisicao para API
         fetch(url, {
 
             method: "POST",
@@ -159,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Captura erros
         .catch(() => alert("Erro ao salvar categoria"))
 
-        // Reativa botÃ£o
+        // Reativa botao
         .finally(() => {
 
             btn.disabled = false;
@@ -170,7 +174,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// OBTÉM TOKEN CSRF DO DJANGO
+// OBTEM TOKEN CSRF DO DJANGO
 function getCSRFToken() {
 
     return document.querySelector(
@@ -188,7 +192,7 @@ function montarPaleta() {
 
     if (!container) return;
 
-    // Gera botões de cores
+    // Gera botoes de cores
     container.innerHTML = CORES_CATEGORIA.map((cor, index) => `
 
         <button
@@ -201,7 +205,7 @@ function montarPaleta() {
 
     `).join("");
 
-    // Evento de seleção das cores
+    // Evento de selecao das cores
     container.querySelectorAll(".categoria-color").forEach((btn) => {
 
         btn.addEventListener("click", function () {
@@ -234,7 +238,7 @@ function selecionarCor(cor) {
 // ABRE MODAL DE CATEGORIA
 function abrirModalCategoria(tipo, categoria = null) {
 
-    // Define categoria em ediÃ§Ã£o
+    // Define categoria em edicao
     categoriaEmEdicao = categoria?.id || null;
 
     // ELEMENTOS DO MODAL
@@ -252,7 +256,7 @@ function abrirModalCategoria(tipo, categoria = null) {
         "tipoCategoria"
     );
 
-    // Define título do modal
+    // Define titulo do modal
     titulo.innerText = categoriaEmEdicao
 
         ? "Editar categoria"
@@ -291,10 +295,10 @@ function fecharModalCategoria() {
         "formCategoria"
     );
 
-    // Limpa edição atual
+    // Limpa edicao atual
     categoriaEmEdicao = null;
 
-    // Reseta formulário
+    // Reseta formulario
     form.reset();
 
     selecionarCor("#8FEBDD");
@@ -305,7 +309,7 @@ function fecharModalCategoria() {
 }
 
 
-// FECHA MODAL COM ANIMAÇÃO
+// Fecha modal com animacao
 function fecharModalComAnimacao(modal) {
 
     modal.classList.remove("is-open");
@@ -382,7 +386,7 @@ function linhaCategoriaHtml(id, nome, cor) {
     // Protege HTML contra caracteres especiais
     const nomeSeguro = escapeHtml(nome);
 
-    // Ãcones padrÃ£o
+    // Icones padrao
     const icons = typeof CATEGORIA_ICONS !== "undefined"
         ? CATEGORIA_ICONS
         : {};
@@ -419,7 +423,7 @@ function linhaCategoriaHtml(id, nome, cor) {
 }
 
 
-// ABRE MODAL DE EDIÇÃO COM DADOS DA CATEGORIA
+// Abre modal de edicao com dados da categoria
 function editarCategoria(id) {
 
     const row = document.getElementById(
@@ -564,7 +568,7 @@ function verificarListaVazia(tipo) {
         `lista-${tipo}`
     );
 
-    // Se ainda existem itens nÃ£o faz nada
+    // Se ainda existem itens nao faz nada
     if (!lista || lista.children.length > 0)
         return;
 
@@ -598,7 +602,7 @@ function atualizarTotal(delta) {
 // CONVERTE RGB PARA HEXADECIMAL
 function rgbParaHex(valor) {
 
-    // Se já estiver em HEX retorna valor
+    // Se ja estiver em HEX retorna valor
     if (!valor || valor.startsWith("#"))
         return valor || "#8FEBDD";
 

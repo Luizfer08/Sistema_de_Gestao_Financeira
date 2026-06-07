@@ -1,12 +1,13 @@
+// Este arquivo controla login, mostrar senha e mensagens de erro.
 document.addEventListener("DOMContentLoaded", function () {
 
-    // FORMULÁRIO LOGIN
+    // FORMULARIO LOGIN
     const form = document.getElementById("formLogin");
 
     // MENSAGEM DE ERRO
     const erro = document.getElementById("erro");
 
-    // BOTÃO MOSTRAR SENHA
+    // BOTAO MOSTRAR SENHA
     const toggleSenha = document.querySelector("[data-password-toggle]");
 
     // INPUT SENHA
@@ -24,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // VERIFICA SE O FORMULÁRIO EXISTE
+    // VERIFICA SE O FORMULARIO EXISTE
     if (!form) return;
 
     // CSRF TOKEN
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         const formData = new FormData(form);
 
-        // REQUISIÇÃO LOGIN
+        // REQUISICAO LOGIN
         fetch("/api/login/", {
             method: "POST",
             body: formData,
@@ -56,20 +57,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // LOGIN INVÁLIDO
+            // LOGIN INVALIDO
             erro.classList.remove("d-none");
-            erro.innerText = data.error || "Login inválido";
+            erro.innerText = data.error || "Login invÃ¡lido";
         })
 
-        // ERRO REQUISIÇÃO
+        // ERRO REQUISICAO
         .catch(() => {
 
             erro.classList.remove("d-none");
 
-            erro.innerText = "Não foi possível realizar o login agora.";
+            erro.innerText = "NÃ£o foi possÃ­vel realizar o login agora.";
 
         });
 
     });
 
 });
+

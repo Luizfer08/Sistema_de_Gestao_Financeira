@@ -1,8 +1,10 @@
-// CONTROLA DESPESA EM EDIÇÃO
+// Controla a despesa que esta em edicao
 let despesaEmEdicao = null;
 
+// Este arquivo controla o popup, a tabela e as requisicoes AJAX de despesas.
 
-// OBTÉM TOKEN CSRF DO DJANGO
+
+// OBTEM TOKEN CSRF DO DJANGO
 function getCSRFToken() {
 
     return document.querySelector(
@@ -11,10 +13,10 @@ function getCSRFToken() {
 }
 
 
-// EXECUTA APÓS CARREGAR A PÁGINA
+// EXECUTA APOS CARREGAR A PAGINA
 document.addEventListener("DOMContentLoaded", function () {
 
-    // FORMULÁRIO DE DESPESA
+    // FORMULARIO DE DESPESA
     const formDespesa = document.getElementById(
         "formDespesa"
     );
@@ -55,33 +57,33 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // Verifica existência do formulário
+    // Verifica existencia do formulario
     if (!formDespesa) return;
 
 
-    // ENVIO DO FORMULÁRIO
+    // ENVIO DO FORMULARIO
     formDespesa.addEventListener("submit", function (e) {
 
         e.preventDefault();
 
-        // Dados do formulário
+        // Dados do formulario
         const formData = new FormData(this);
 
         const editando = Boolean(despesaEmEdicao);
 
-        // Botão de envio
+        // Botao de envio
         const btn = formDespesa.querySelector(
             'button[type="submit"]'
         );
 
-        // URL DE CRIAÇÃO
+        // URL DE CRIACAO
         const urlCriar = typeof URL_CRIAR_DESPESA !== "undefined"
 
             ? URL_CRIAR_DESPESA
 
             : "/despesas/criar/";
 
-        // URL DE EDIÇÃO
+        // URL DE EDICAO
         const urlEditar = `${
             typeof DESPESA_URL_EDITAR_BASE !== "undefined"
 
@@ -90,13 +92,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 : "/despesas/editar/"
         }${despesaEmEdicao}/`;
 
-        // Desabilita botão
+        // Desabilita botao
         btn.disabled = true;
 
         btn.innerText = "Salvando...";
 
 
-        // REQUISIÇÃO PARA API
+        // REQUISICAO PARA API
         fetch(despesaEmEdicao ? urlEditar : urlCriar, {
 
             method: "POST",
@@ -122,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Mês atual da tela
+            // Mes atual da tela
             const mesAtual = typeof DESPESA_MES_ATUAL !== "undefined"
 
                 ? DESPESA_MES_ATUAL
@@ -144,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 : 0;
 
 
-            // Atualiza tabela caso despesa pertença ao mês atual
+            // Atualiza tabela caso despesa pertenca ao mes atual
             if (data.data_iso.startsWith(mesAtual)) {
 
                 // Atualiza linha existente
@@ -166,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     );
                 }
 
-            // Remove linha caso tenha mudado de mês
+            // Remove linha caso tenha mudado de mes
             } else if (linhaExistente) {
 
                 linhaExistente.remove();
@@ -190,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Captura erros
         .catch(() => alert("Erro ao salvar despesa"))
 
-        // Reativa botão
+        // Reativa botao
         .finally(() => {
 
             btn.disabled = false;
@@ -269,13 +271,13 @@ function abrirModalDespesa(dados = null) {
         "quantidadeParcelas"
     );
 
-    // Define despesa em edição
+    // Define despesa em edicao
     despesaEmEdicao = dados?.id || null;
 
-    // Reseta formulário
+    // Reseta formulario
     form.reset();
 
-    // Define título do modal
+    // Define titulo do modal
     titulo.innerText = despesaEmEdicao
 
         ? "Editar Despesa"
@@ -283,7 +285,7 @@ function abrirModalDespesa(dados = null) {
         : "Adicionar Despesa";
 
 
-    // PREENCHE DADOS NO MODO EDIÇÃO
+    // PREENCHE DADOS NO MODO EDICAO
     if (dados) {
 
         form.elements.descricao.value =
@@ -320,7 +322,7 @@ function abrirModalDespesa(dados = null) {
 
     } else if (quantidadeParcelas) {
 
-        // Desabilita parcelas no modo criação
+        // Desabilita parcelas no modo criacao
         quantidadeParcelas.disabled = true;
 
         quantidadeParcelas.required = false;
@@ -361,13 +363,13 @@ function fecharModalDespesa() {
         "quantidadeParcelas"
     );
 
-    // Limpa edição atual
+    // Limpa edicao atual
     despesaEmEdicao = null;
 
-    // Reseta formulário
+    // Reseta formulario
     form.reset();
 
-    // Define título padrão
+    // Define titulo padrao
     document.getElementById(
         "modalDespesaTitulo"
     ).innerText = "Adicionar Despesa";
@@ -388,7 +390,7 @@ function fecharModalDespesa() {
 }
 
 
-// FECHA MODAL COM ANIMAÇÃO
+// FECHA MODAL COM ANIMACAO
 function fecharModalComAnimacao(modal) {
 
     modal.classList.remove("is-open");
@@ -406,7 +408,7 @@ function fecharModalComAnimacao(modal) {
 // GERA HTML DA LINHA DE DESPESA
 function linhaDespesaHtml(data) {
 
-    // ÍCONES PADRÃO
+    // ICONES PADRAO
     const icons = typeof DESPESA_ICONS !== "undefined"
 
         ? DESPESA_ICONS
@@ -557,7 +559,7 @@ function atualizarLinhaDespesa(data) {
 }
 
 
-// ABRE MODAL PARA EDIÇÃO
+// ABRE MODAL PARA EDICAO
 function editarDespesa(id) {
 
     const row = document.getElementById(
@@ -593,7 +595,7 @@ function editarDespesa(id) {
 // EXCLUI DESPESA
 function excluirDespesa(id) {
 
-    // Confirma exclusão
+    // Confirma exclusao
     if (!confirm(
         "Deseja excluir esta despesa?"
     )) return;
@@ -607,7 +609,7 @@ function excluirDespesa(id) {
         row?.dataset.valor || 0
     );
 
-    // REQUISIÇÃO DE EXCLUSÃO
+    // REQUISICAO DE EXCLUSAO
     fetch(`/despesas/excluir/${id}/`, {
 
         method: "POST",
@@ -650,7 +652,7 @@ function verificarTabelaVazia() {
         "tabelaDespesas"
     );
 
-    // Se ainda existem itens não faz nada
+    // Se ainda existem itens nao faz nada
     if (!tabela || tabela.children.length > 0)
         return;
 
@@ -687,7 +689,7 @@ function atualizarTotalDespesa(delta) {
 }
 
 
-// EXTRAI VALOR MONETÁRIO
+// EXTRAI VALOR MONETARIO
 function extrairValor(valor) {
 
     return Number(
@@ -706,7 +708,7 @@ function extrairValor(valor) {
 }
 
 
-// NORMALIZA VALOR NUMÉRICO
+// NORMALIZA VALOR NUMERICO
 function normalizarNumero(valor) {
 
     return String(valor || "")
@@ -714,7 +716,7 @@ function normalizarNumero(valor) {
 }
 
 
-// CONVERTE PARA NÚMERO
+// CONVERTE PARA NUMERO
 function parseNumero(valor) {
 
     return Number(
@@ -723,7 +725,7 @@ function parseNumero(valor) {
 }
 
 
-// FORMATA VALOR MONETÁRIO
+// FORMATA VALOR MONETARIO
 function formatarMoeda(valor) {
 
     return Number(valor || 0).toLocaleString(
@@ -790,3 +792,4 @@ function mostrarMensagemSucesso(texto) {
         setTimeout(() => toast.remove(), 250);
     }, 2600);
 }
+

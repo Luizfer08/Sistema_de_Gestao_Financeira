@@ -1,12 +1,18 @@
-from django.contrib import admin  # importa o sistema de administração do Django
+# Importa o painel administrativo padrao do Django.
+from django.contrib import admin
 
-from .models import AceiteTermos, Categoria, Receita, Despesa  # importa os modelos criados
+# Importa os models que devem aparecer no admin.
+from .models import AceiteTermos, Categoria, Receita, Despesa
 
 
-admin.site.register(Categoria)  # registra a tabela Categoria no painel administrativo
+# Disponibiliza as categorias no painel administrativo.
+admin.site.register(Categoria)
 
-admin.site.register(Receita)  # registra a tabela Receita no painel administrativo
+# Disponibiliza as receitas no painel administrativo.
+admin.site.register(Receita)
 
-admin.site.register(Despesa)  # registra a tabela Despesa no painel administrativo
+# Disponibiliza as despesas no painel administrativo.
+admin.site.register(Despesa)
 
-admin.site.register(AceiteTermos) # registra a tabela AceiteTermos no painel administrativo
+# Disponibiliza os aceites dos termos no painel administrativo.
+admin.site.register(AceiteTermos)

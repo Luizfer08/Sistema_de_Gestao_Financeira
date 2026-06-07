@@ -5,6 +5,7 @@ from .auth_controller import (
     cadastro_view,
     api_login,
     api_cadastro,
+    alterar_dados_view,
 )
 
 from .dashboard_controller import (

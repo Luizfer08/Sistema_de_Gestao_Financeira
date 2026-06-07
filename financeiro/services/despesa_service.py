@@ -1,47 +1,44 @@
-# REPOSITORY
+# Service responsavel pelas regras de negocio de despesas.
 from financeiro.repositories import despesa_repository as repo
 
 
-# CRIAR DESPESA
+# Valida e cria uma despesa.
 def criar_despesa(usuario, data):
 
-    # Obtém valor informado
+    # Valor e obrigatorio porque participa dos calculos financeiros.
     valor = data.get('valor')
 
-    # Valida valor obrigatório
     if not valor:
 
         raise ValueError(
-            "Valor é obrigatório"
+            "Valor e obrigatorio"
         )
 
     try:
 
-        # Converte valor para float
+        # Converte para numero antes de validar se e positivo.
         valor = float(valor)
 
-    # Valor inválido
     except:
 
         raise ValueError(
-            "Valor inválido"
+            "Valor invalido"
         )
 
-    # Valida valor positivo
+    # Despesas com valor zero ou negativo nao devem ser cadastradas.
     if valor <= 0:
 
         raise ValueError(
             "Valor deve ser maior que zero"
         )
 
-    # Cria despesa
     return repo.criar(
         usuario,
         data
     )
 
 
-# TOTAL GERAL DE DESPESAS
+# Retorna o total geral de despesas do usuario.
 def total_despesas(usuario):
 
     return repo.somar_despesas(
@@ -49,7 +46,7 @@ def total_despesas(usuario):
     )
 
 
-# TOTAL DE DESPESAS ATÉ DATA
+# Retorna o total de despesas ate uma data.
 def total_despesas_por_data(usuario, data):
 
     return repo.somar_despesas_por_data(
@@ -58,7 +55,7 @@ def total_despesas_por_data(usuario, data):
     )
 
 
-# TOTAL DE DESPESAS POR PERÍODO
+# Retorna o total de despesas dentro de uma competencia.
 def total_despesas_por_periodo(usuario, data_inicio, data_fim):
 
     return repo.somar_despesas_por_periodo(
@@ -68,7 +65,7 @@ def total_despesas_por_periodo(usuario, data_inicio, data_fim):
     )
 
 
-# LISTAR TODAS AS DESPESAS
+# Lista todas as despesas cadastradas pelo usuario.
 def listar_despesas(usuario):
 
     return repo.listar_por_usuario(
@@ -76,7 +73,7 @@ def listar_despesas(usuario):
     )
 
 
-# LISTAR DESPESAS POR PERÍODO
+# Lista despesas validas para o periodo selecionado.
 def listar_despesas_por_periodo(usuario, data_inicio, data_fim):
 
     return repo.listar_por_periodo(
@@ -86,44 +83,40 @@ def listar_despesas_por_periodo(usuario, data_inicio, data_fim):
     )
 
 
-# EDITAR DESPESA
+# Edita uma despesa existente.
 def editar_despesa(id, usuario, data):
 
-    # Busca despesa
+    # Garante que o usuario so edite despesas proprias.
     despesa = repo.obter_por_id(
         id,
         usuario
     )
 
-    # Verifica se despesa existe
     if not despesa:
 
         raise ValueError(
-            "Despesa não encontrada"
+            "Despesa nao encontrada"
         )
 
-    # Atualiza despesa
     return repo.atualizar(
         despesa,
         data
     )
 
 
-# EXCLUIR DESPESA
+# Exclui uma despesa existente.
 def excluir_despesa(id, usuario):
 
-    # Busca despesa
+    # Garante que o usuario so exclua despesas proprias.
     despesa = repo.obter_por_id(
         id,
         usuario
     )
 
-    # Verifica se despesa existe
     if not despesa:
 
         raise ValueError(
-            "Despesa não encontrada"
+            "Despesa nao encontrada"
         )
 
-    # Remove despesa
     repo.deletar(despesa)

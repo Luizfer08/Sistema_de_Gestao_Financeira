@@ -1,47 +1,44 @@
-# REPOSITORY
+# Service responsavel pelas regras de negocio de receitas.
 from financeiro.repositories import receita_repository as repo
 
 
-# CRIAR RECEITA
+# Valida e cria uma receita.
 def criar_receita(usuario, data):
 
-    # Obtém valor informado
+    # Valor e obrigatorio porque participa dos calculos financeiros.
     valor = data.get('valor')
 
-    # Valida valor obrigatório
     if not valor:
 
         raise ValueError(
-            "Valor é obrigatório"
+            "Valor e obrigatorio"
         )
 
     try:
 
-        # Converte valor para float
+        # Converte para numero antes de validar se e positivo.
         valor = float(valor)
 
-    # Valor inválido
     except:
 
         raise ValueError(
-            "Valor inválido"
+            "Valor invalido"
         )
 
-    # Valida valor positivo
+    # Receitas com valor zero ou negativo nao devem ser cadastradas.
     if valor <= 0:
 
         raise ValueError(
             "Valor deve ser maior que zero"
         )
 
-    # Cria receita
     return repo.criar(
         usuario,
         data
     )
 
 
-# TOTAL GERAL DE RECEITAS
+# Retorna o total geral de receitas do usuario.
 def total_receitas(usuario):
 
     return repo.somar_receitas(
@@ -49,7 +46,7 @@ def total_receitas(usuario):
     )
 
 
-# TOTAL DE RECEITAS ATÉ DATA
+# Retorna o total de receitas ate uma data.
 def total_receitas_por_data(usuario, data):
 
     return repo.somar_receitas_por_data(
@@ -58,7 +55,7 @@ def total_receitas_por_data(usuario, data):
     )
 
 
-# TOTAL DE RECEITAS POR PERÍODO
+# Retorna o total de receitas dentro de uma competencia.
 def total_receitas_por_periodo(usuario, data_inicio, data_fim):
 
     return repo.somar_receitas_por_periodo(
@@ -68,7 +65,7 @@ def total_receitas_por_periodo(usuario, data_inicio, data_fim):
     )
 
 
-# LISTAR TODAS AS RECEITAS
+# Lista todas as receitas cadastradas pelo usuario.
 def listar_receitas(usuario):
 
     return repo.listar_por_usuario(
@@ -76,7 +73,7 @@ def listar_receitas(usuario):
     )
 
 
-# LISTAR RECEITAS POR PERÍODO
+# Lista receitas validas para o periodo selecionado.
 def listar_receitas_por_periodo(usuario, data_inicio, data_fim):
 
     return repo.listar_por_periodo(
@@ -86,44 +83,40 @@ def listar_receitas_por_periodo(usuario, data_inicio, data_fim):
     )
 
 
-# EDITAR RECEITA
+# Edita uma receita existente.
 def editar_receita(id, usuario, data):
 
-    # Busca receita
+    # Garante que o usuario so edite receitas proprias.
     receita = repo.obter_por_id(
         id,
         usuario
     )
 
-    # Verifica se receita existe
     if not receita:
 
         raise ValueError(
-            "Receita não encontrada"
+            "Receita nao encontrada"
         )
 
-    # Atualiza receita
     return repo.atualizar(
         receita,
         data
     )
 
 
-# EXCLUIR RECEITA
+# Exclui uma receita existente.
 def excluir_receita(id, usuario):
 
-    # Busca receita
+    # Garante que o usuario so exclua receitas proprias.
     receita = repo.obter_por_id(
         id,
         usuario
     )
 
-    # Verifica se receita existe
     if not receita:
 
         raise ValueError(
-            "Receita não encontrada"
+            "Receita nao encontrada"
         )
 
-    # Remove receita
     repo.deletar(receita)

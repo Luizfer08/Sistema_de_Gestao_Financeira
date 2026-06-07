@@ -1,46 +1,38 @@
-# MODELS
+# Repository responsavel pelo acesso ao banco de dados de categorias.
 from financeiro.models import Categoria
 
 
-# CRIA NOVA CATEGORIA
+# Cria uma categoria para receitas ou despesas.
 def criar(usuario, nome, tipo='despesa', cor='#8FEBDD'):
 
     return Categoria.objects.create(
 
-        # Usuário dono da categoria
         usuario=usuario,
-
-        # Nome da categoria
         nome=nome,
-
-        # Tipo da categoria
         tipo=tipo,
-
-        # Cor utilizada na interface
         cor=cor
     )
 
 
-# LISTA CATEGORIAS DO USUÁRIO
+# Lista categorias do usuario, com filtro opcional por tipo.
 def listar_por_usuario(usuario, tipo=None):
 
-    # Busca categorias do usuário
+    # Busca somente categorias pertencentes ao usuario logado.
     categorias = Categoria.objects.filter(
         usuario=usuario
     )
 
-    # Filtra por tipo caso informado
+    # Quando informado, limita o resultado a receita ou despesa.
     if tipo:
 
         categorias = categorias.filter(
             tipo=tipo
         )
 
-    # Ordena categorias por nome
     return categorias.order_by('nome')
 
 
-# BUSCA CATEGORIA PELO ID
+# Busca uma categoria pelo id garantindo que ela pertence ao usuario.
 def obter_por_id(id, usuario):
 
     return Categoria.objects.filter(
@@ -49,24 +41,22 @@ def obter_por_id(id, usuario):
     ).first()
 
 
-# ATUALIZA CATEGORIA
+# Atualiza os dados editaveis da categoria.
 def atualizar(categoria, nome, cor=None):
 
-    # Atualiza nome
     categoria.nome = nome
 
-    # Atualiza cor caso informada
+    # A cor so muda quando uma nova cor e enviada.
     if cor:
 
         categoria.cor = cor
 
-    # Salva alterações
     categoria.save()
 
     return categoria
 
 
-# REMOVE CATEGORIA
+# Remove uma categoria do banco de dados.
 def deletar(categoria):
 
     categoria.delete()

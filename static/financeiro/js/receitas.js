@@ -1,8 +1,10 @@
-// CONTROLA RECEITA EM EDIÇÃO
+// Controla a receita que esta em edicao
 let receitaEmEdicao = null;
 
+// Este arquivo controla o popup, a tabela e as requisicoes AJAX de receitas.
 
-// OBTÉM TOKEN CSRF DO DJANGO
+
+// OBTEM TOKEN CSRF DO DJANGO
 function getCSRFToken() {
 
     return document.querySelector(
@@ -11,10 +13,10 @@ function getCSRFToken() {
 }
 
 
-// EXECUTA APÓS CARREGAR A PÁGINA
+// EXECUTA APOS CARREGAR A PAGINA
 document.addEventListener("DOMContentLoaded", function () {
 
-    // FORMULÁRIO DE RECEITA
+    // FORMULARIO DE RECEITA
     const formReceita = document.getElementById(
         "formReceita"
     );
@@ -55,40 +57,40 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // Verifica existência do formulário
+    // Verifica existencia do formulario
     if (!formReceita) return;
 
 
-    // ENVIO DO FORMULÁRIO
+    // ENVIO DO FORMULARIO
     formReceita.addEventListener("submit", function (e) {
 
         e.preventDefault();
 
-        // Dados do formulário
+        // Dados do formulario
         const formData = new FormData(this);
 
         const editando = Boolean(receitaEmEdicao);
 
-        // Botão de envio
+        // Botao de envio
         const btn = formReceita.querySelector(
             'button[type="submit"]'
         );
 
-        // Ícones configuráveis
+        // Icones configuraveis
         const icons = typeof RECEITA_ICONS !== "undefined"
 
             ? RECEITA_ICONS
 
             : {};
 
-        // URL DE CRIAÇÃO
+        // URL DE CRIACAO
         const urlCriar = typeof URL_CRIAR_RECEITA !== "undefined"
 
             ? URL_CRIAR_RECEITA
 
             : "/receitas/criar/";
 
-        // URL DE EDIÇÃO
+        // URL DE EDICAO
         const urlEditar = `${
             typeof RECEITA_URL_EDITAR_BASE !== "undefined"
 
@@ -97,13 +99,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 : "/receitas/editar/"
         }${receitaEmEdicao}/`;
 
-        // Desabilita botão durante envio
+        // Desabilita botao durante envio
         btn.disabled = true;
 
         btn.innerText = "Salvando...";
 
 
-        // REQUISIÇÃO PARA API
+        // REQUISICAO PARA API
         fetch(receitaEmEdicao ? urlEditar : urlCriar, {
 
             method: "POST",
@@ -129,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Mês atual exibido na tela
+            // Mes atual exibido na tela
             const mesAtual = typeof RECEITA_MES_ATUAL !== "undefined"
 
                 ? RECEITA_MES_ATUAL
@@ -151,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 : 0;
 
 
-            // Atualiza tabela caso receita pertença ao mês atual
+            // Atualiza tabela caso receita pertenca ao mes atual
             if (data.data_iso.startsWith(mesAtual)) {
 
                 // Atualiza linha existente
@@ -174,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     );
                 }
 
-            // Remove linha caso receita tenha mudado de mês
+            // Remove linha caso receita tenha mudado de mes
             } else if (linhaExistente) {
 
                 linhaExistente.remove();
@@ -198,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Captura erros
         .catch(() => alert("Erro ao salvar receita"))
 
-        // Reativa botão
+        // Reativa botao
         .finally(() => {
 
             btn.disabled = false;
@@ -281,13 +283,13 @@ function abrirModalReceita(dados = null) {
         "quantidadeParcelasReceita"
     );
 
-    // Define receita em edição
+    // Define receita em edicao
     receitaEmEdicao = dados?.id || null;
 
-    // Reseta formulário
+    // Reseta formulario
     form.reset();
 
-    // Define título do modal
+    // Define titulo do modal
     titulo.innerText = receitaEmEdicao
 
         ? "Editar Receita"
@@ -295,7 +297,7 @@ function abrirModalReceita(dados = null) {
         : "Adicionar Receita";
 
 
-    // PREENCHE DADOS NO MODO EDIÇÃO
+    // PREENCHE DADOS NO MODO EDICAO
     if (dados) {
 
         form.elements.descricao.value =
@@ -370,13 +372,13 @@ function fecharModalReceita() {
         "quantidadeParcelasReceita"
     );
 
-    // Limpa edição atual
+    // Limpa edicao atual
     receitaEmEdicao = null;
 
-    // Reseta formulário
+    // Reseta formulario
     form.reset();
 
-    // Define título padrão
+    // Define titulo padrao
     document.getElementById(
         "modalReceitaTitulo"
     ).innerText = "Adicionar Receita";
@@ -397,7 +399,7 @@ function fecharModalReceita() {
 }
 
 
-// FECHA MODAL COM ANIMAÇÃO
+// FECHA MODAL COM ANIMACAO
 function fecharModalComAnimacao(modal) {
 
     modal.classList.remove("is-open");
@@ -415,7 +417,7 @@ function fecharModalComAnimacao(modal) {
 // GERA HTML DA LINHA DE RECEITA
 function linhaReceitaHtml(data) {
 
-    // ÍCONES PADRÃO
+    // ICONES PADRAO
     const icons = typeof RECEITA_ICONS !== "undefined"
 
         ? RECEITA_ICONS
@@ -559,7 +561,7 @@ function atualizarLinhaReceita(data) {
 }
 
 
-// ABRE MODAL PARA EDIÇÃO
+// ABRE MODAL PARA EDICAO
 function editarReceita(id) {
 
     const row = document.getElementById(
@@ -593,7 +595,7 @@ function editarReceita(id) {
 // EXCLUI RECEITA
 function excluirReceita(id) {
 
-    // Confirma exclusão
+    // Confirma exclusao
     if (!confirm(
         "Deseja excluir esta receita?"
     )) return;
@@ -607,7 +609,7 @@ function excluirReceita(id) {
         row?.dataset.valor || 0
     );
 
-    // REQUISIÇÃO DE EXCLUSÃO
+    // REQUISICAO DE EXCLUSAO
     fetch(`/receitas/excluir/${id}/`, {
 
         method: "POST",
@@ -650,7 +652,7 @@ function verificarTabelaVazia() {
         "tabelaReceitas"
     );
 
-    // Se ainda existem itens não faz nada
+    // Se ainda existem itens nao faz nada
     if (!tabela || tabela.children.length > 0)
         return;
 
@@ -687,7 +689,7 @@ function atualizarTotalReceita(delta) {
 }
 
 
-// EXTRAI VALOR MONETÁRIO
+// EXTRAI VALOR MONETARIO
 function extrairValor(valor) {
 
     return Number(
@@ -706,7 +708,7 @@ function extrairValor(valor) {
 }
 
 
-// NORMALIZA VALOR NUMÉRICO
+// NORMALIZA VALOR NUMERICO
 function normalizarNumero(valor) {
 
     return String(valor || "")
@@ -714,7 +716,7 @@ function normalizarNumero(valor) {
 }
 
 
-// CONVERTE PARA NÚMERO
+// CONVERTE PARA NUMERO
 function parseNumero(valor) {
 
     return Number(
@@ -723,7 +725,7 @@ function parseNumero(valor) {
 }
 
 
-// FORMATA VALOR MONETÁRIO
+// FORMATA VALOR MONETARIO
 function formatarMoeda(valor) {
 
     return Number(valor || 0).toLocaleString(
@@ -790,3 +792,4 @@ function mostrarMensagemSucesso(texto) {
         setTimeout(() => toast.remove(), 250);
     }, 2600);
 }
+
