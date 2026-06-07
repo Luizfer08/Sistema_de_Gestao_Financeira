@@ -6,6 +6,7 @@
 - Django
 - PostgreSQL
 - HTML, CSS e JavaScript
+- Chart.js e BootStrap
 
 ## Requisitos
 
