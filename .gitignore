@@ -8,4 +8,5 @@ db.sqlite3
 # Ambiente
 .env
 
+
 .coverage
