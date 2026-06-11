@@ -131,3 +131,43 @@ Observacao: esse comando esta configurado para buscar um usuario especifico pelo
 financeiro/management/commands/gerar_1000_registros.py
 ```
 
+## Como rodar os testes
+
+O projeto possui testes automatizados separados por responsabilidade dentro da pasta:
+
+```text
+financeiro/tests/
+```
+
+Para executar todos os testes do app financeiro, use:
+
+```bash
+python manage.py test financeiro
+```
+
+## Como medir a cobertura dos testes
+
+Para medir a cobertura, instale a ferramenta Coverage.py:
+
+```bash
+pip install coverage
+```
+
+Depois execute os testes usando o Coverage:
+
+```bash
+python -m coverage run manage.py test financeiro
+```
+
+Para exibir o percentual de cobertura no terminal:
+
+```bash
+python -m coverage report -m
+```
+
+Tambem e possivel gerar um relatorio visual em HTML:
+
+```bash
+python -m coverage html
+```
+
