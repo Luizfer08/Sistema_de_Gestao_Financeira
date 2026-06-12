@@ -1,26 +1,75 @@
 from pathlib import Path
 import os
+
 from dotenv import load_dotenv
-from django.core.management.utils import get_random_secret_key
+
 
 # BASE
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-import os
-from dotenv import load_dotenv
-
 load_dotenv()
 
+
+# Converte variaveis de ambiente textuais em booleanos.
+def env_bool(nome, padrao=False):
+
+    valor = os.environ.get(nome)
+
+    if valor is None:
+
+        return padrao
+
+    return valor.strip().lower() in {
+        '1',
+        'true',
+        'yes',
+        'on',
+        'sim'
+    }
+
+
+# Converte listas separadas por virgula vindas do arquivo .env.
+def env_list(nome, padrao=None):
+
+    valor = os.environ.get(nome)
+
+    if not valor:
+
+        return padrao or []
+
+    return [
+        item.strip()
+        for item in valor.split(',')
+        if item.strip()
+    ]
+
+
+# Em producao, a chave secreta precisa existir e ser fixa.
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 if not SECRET_KEY:
-    print(" SECRET_KEY não encontrada, gerando chave temporária...")
-    SECRET_KEY = get_random_secret_key()
 
-DEBUG = True
+    raise RuntimeError(
+        'Configure a variavel SECRET_KEY no arquivo .env.'
+    )
 
-ALLOWED_HOSTS = []
+
+# DEBUG deve ser ligado apenas em desenvolvimento.
+DEBUG = env_bool('DEBUG', False)
+
+
+# Em producao, informe os dominios permitidos no .env.
+ALLOWED_HOSTS = env_list(
+    'ALLOWED_HOSTS',
+    ['127.0.0.1', 'localhost'] if DEBUG else []
+)
+
+if not DEBUG and not ALLOWED_HOSTS:
+
+    raise RuntimeError(
+        'Configure ALLOWED_HOSTS no arquivo .env para producao.'
+    )
 
 
 # APPS
@@ -33,7 +82,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # App principal do projeto
+    # App principal do projeto.
     'financeiro',
 ]
 
@@ -44,17 +93,15 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-
     'django.middleware.csrf.CsrfViewMiddleware',
-
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 
-#  URL PRINCIPAL
+# URL PRINCIPAL
+
 ROOT_URLCONF = 'gestao_financeira.urls'
 
 
@@ -63,12 +110,8 @@ ROOT_URLCONF = 'gestao_financeira.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-
-        
         'DIRS': [BASE_DIR / 'templates'],
-
         'APP_DIRS': True,
-
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -80,21 +123,22 @@ TEMPLATES = [
 ]
 
 
-#  WSGI
+# WSGI
+
 WSGI_APPLICATION = 'gestao_financeira.wsgi.application'
+
 
 # DATABASE
 
-load_dotenv() 
-DATABASES = { 
-    'default': { 
-        'ENGINE': 'django.db.backends.postgresql', 
-        'NAME': os.getenv('DB_NAME'), 
-        'USER': os.getenv('DB_USER'), 
-        'PASSWORD': os.getenv('DB_PASSWORD'), 
-        'HOST': os.getenv('DB_HOST'), 
-        'PORT': os.getenv('DB_PORT'), 
-    } 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+    }
 }
 
 
@@ -102,20 +146,33 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'MinimumLengthValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'CommonPasswordValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'NumericPasswordValidator'
+        ),
     },
 ]
 
 
+# LOCALIZACAO
 
 LANGUAGE_CODE = 'pt-br'
 
@@ -126,6 +183,7 @@ USE_TZ = True
 
 
 # STATIC FILES
+
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
@@ -141,33 +199,65 @@ LOGIN_URL = 'financeiro:login'
 LOGIN_REDIRECT_URL = 'financeiro:dashboard'
 LOGOUT_REDIRECT_URL = 'financeiro:login'
 
-# SEGURANÇA 
+
+# SEGURANCA
+
 X_FRAME_OPTIONS = 'DENY'
 
-# DESATIVA EM DESENVOLVIMENTO (senão quebra login)
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+# Cookies seguros ficam ativos por padrao quando DEBUG esta desligado.
+SESSION_COOKIE_SECURE = env_bool(
+    'SESSION_COOKIE_SECURE',
+    not DEBUG
+)
+CSRF_COOKIE_SECURE = env_bool(
+    'CSRF_COOKIE_SECURE',
+    not DEBUG
+)
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'same-origin'
 
-# EMAIL USUÁRIO
+# Use somente em producao com HTTPS configurado.
+SECURE_SSL_REDIRECT = env_bool(
+    'SECURE_SSL_REDIRECT',
+    False
+)
+
+CSRF_TRUSTED_ORIGINS = env_list(
+    'CSRF_TRUSTED_ORIGINS'
+)
+
+
+# EMAIL USUARIO
+
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+
 # EMAIL SENHA
+
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 
-# CONFIGURAÇÃO SMTP
+
+# CONFIGURACAO SMTP
+
 if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
-    # BACKEND EMAIL REAL
+
+    # Backend real para envio por SMTP.
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    # SERVIDOR GMAIL
+
+    # Servidor Gmail.
     EMAIL_HOST = 'smtp.gmail.com'
-    # PORTA TLS
+
+    # Porta TLS.
     EMAIL_PORT = 587
-    # SEGURANÇA TLS
+
+    # Seguranca TLS.
     EMAIL_USE_TLS = True
 
     DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
     SERVER_EMAIL = EMAIL_HOST_USER
 
-# BACKEND CONSOLE
 else:
-    # EMAIL APENAS NO TERMINAL
+
+    # Em desenvolvimento sem SMTP, o e-mail aparece no terminal.
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
