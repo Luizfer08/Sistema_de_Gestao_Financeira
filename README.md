@@ -53,16 +53,38 @@ pip install python-dotenv psycopg2-binary
 
 ### 4. Configure o arquivo `.env`
 
-Na raiz do projeto, crie um arquivo chamado `.env` com as informacoes do banco:
+Na raiz do projeto, crie um arquivo chamado `.env` com as informacoes do banco e da seguranca.
+Voce pode usar o arquivo `.env.example` como modelo:
+
+```bash
+copy .env.example .env
+```
+
+Depois preencha as variaveis:
 
 ```env
 SECRET_KEY=sua_chave_secreta
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
 DB_NAME=nome_do_banco
 DB_USER=usuario_do_banco
 DB_PASSWORD=senha_do_banco
 DB_HOST=localhost
 DB_PORT=5432
 ```
+
+Para ambiente de producao, use `DEBUG=False` e informe o dominio real do sistema:
+
+```env
+DEBUG=False
+ALLOWED_HOSTS=seudominio.com,www.seudominio.com
+SESSION_COOKIE_SECURE=True
+CSRF_COOKIE_SECURE=True
+SECURE_SSL_REDIRECT=True
+CSRF_TRUSTED_ORIGINS=https://seudominio.com,https://www.seudominio.com
+```
+
+A variavel `SECRET_KEY` e obrigatoria. O sistema nao gera mais chave temporaria automaticamente, pois isso nao e seguro para uma aplicacao que trata dados financeiros.
 
 Para recuperacao de senha por e-mail, tambem podem ser adicionadas:
 
@@ -170,4 +192,3 @@ Tambem e possivel gerar um relatorio visual em HTML:
 ```bash
 python -m coverage html
 ```
-
